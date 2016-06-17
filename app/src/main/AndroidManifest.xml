@@ -19,6 +19,7 @@
         </activity>
         <activity
             android:name=".EditItemActivity"
+            android:label="Edit Item"
             android:windowSoftInputMode="stateAlwaysVisible" >
         </activity>
     </application>
