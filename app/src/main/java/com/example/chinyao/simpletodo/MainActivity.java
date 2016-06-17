@@ -1,6 +1,7 @@
 package com.example.chinyao.simpletodo;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.commons.io.FileUtils;
@@ -25,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<String> items;
     ArrayAdapter<String> itemsAdapter; // connect ArrayList and ListView
+
+    private final int REQUEST_CODE = 5566;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +63,22 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        Toast.makeText(this, "Version 2016.06.17.14.52", Toast.LENGTH_SHORT).show();
+        lvItems.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapter,
+                                                   View item,
+                                                   int position,
+                                                   long id) {
+                        Intent i = new Intent(MainActivity.this, EditItemActivity.class);
+                        i.putExtra("position", position);
+                        i.putExtra("content", ((TextView) item).getText().toString());
+                        startActivityForResult(i, REQUEST_CODE);
+                    }
+                }
+        );
+
+        Toast.makeText(this, "Version 2016.06.17.16.24", Toast.LENGTH_SHORT).show();
     }
 
     public void onAddItem(View view) {
