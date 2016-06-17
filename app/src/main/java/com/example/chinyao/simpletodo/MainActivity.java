@@ -70,15 +70,15 @@ public class MainActivity extends AppCompatActivity {
                                                    View item,
                                                    int position,
                                                    long id) {
-                        Intent i = new Intent(MainActivity.this, EditItemActivity.class);
-                        i.putExtra("position", position);
-                        i.putExtra("content", ((TextView) item).getText().toString());
-                        startActivityForResult(i, REQUEST_CODE);
+                        Intent data = new Intent(MainActivity.this, EditItemActivity.class);
+                        data.putExtra("position", position);
+                        data.putExtra("content", ((TextView) item).getText().toString());
+                        startActivityForResult(data, REQUEST_CODE);
                     }
                 }
         );
 
-        Toast.makeText(this, "Version 2016.06.17.16.24", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Version 2016.06.17.16.44", Toast.LENGTH_SHORT).show();
     }
 
     public void onAddItem(View view) {
@@ -111,6 +111,21 @@ public class MainActivity extends AppCompatActivity {
 
             etNewItem.setText("");
             writeItems();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            int position = data.getIntExtra("position", -1);
+            String content = data.getStringExtra("content");
+
+            if (position != -1) {
+                items.set(position, content); // need to notify
+                itemsAdapter.notifyDataSetChanged();
+
+                writeItems();
+            }
         }
     }
 
