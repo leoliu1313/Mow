@@ -3,6 +3,7 @@ package com.example.chinyao.simpletodo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -37,6 +38,20 @@ public class MainActivity extends AppCompatActivity {
         itemsAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, items);
         lvItems.setAdapter(itemsAdapter);
+
+        lvItems.setOnItemLongClickListener(
+                new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> adapter,
+                                                   View item,
+                                                   int position,
+                                                   long id) {
+                        items.remove(position); // need to notify
+                        itemsAdapter.notifyDataSetChanged();
+                        return true;
+                    }
+                }
+        );
     }
 
     public void onAddItem(View view) {
