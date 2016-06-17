@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.apache.commons.io.FileUtils;
 
@@ -57,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        Toast.makeText(this, "Version 2016.06.17.14.52", Toast.LENGTH_SHORT).show();
     }
 
     public void onAddItem(View view) {
