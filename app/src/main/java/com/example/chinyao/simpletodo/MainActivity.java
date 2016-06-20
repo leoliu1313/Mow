@@ -184,6 +184,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         else if (BackEnd_Mode == 2) {
+            // TODO: use Shared Preferences instead of SQL
+            // http://guides.codepath.com/android/Persisting-Data-to-the-Device
+            // https://developer.android.com/reference/android/content/SharedPreferences.html
             // get the first book in the result
             SettingModel theSettingModel = cupboard().withDatabase(db).query(SettingModel.class).get();
             if (theSettingModel == null) {
@@ -197,6 +200,7 @@ public class MainActivity extends AppCompatActivity {
                 theSettingModel.firstTime = false;
                 cupboard().withDatabase(db).put(theSettingModel);
             }
+            
             // Get the cursor for this query
             Cursor cursorTodoModel = cupboard().withDatabase(db).query(TodoModel.class).getCursor();
             try {
