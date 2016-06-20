@@ -103,7 +103,8 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        Toast.makeText(this, "Version 2016.06.20.15.42", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Version 1606201557", Toast.LENGTH_SHORT).show();
+        // update this with PracticeDatabaseHelper.java and app/build.gradle
     }
 
     public void onAddItem(View view) {

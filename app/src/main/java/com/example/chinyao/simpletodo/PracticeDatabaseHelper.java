@@ -8,7 +8,9 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 public class PracticeDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "cupboardTest.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 1606201557;
+    // update this with MainActivity.java and app/build.gradle
+    // we need to update this when data model changes
 
     public PracticeDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
