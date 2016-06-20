@@ -24,4 +24,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.0.0'
     compile 'commons-io:commons-io:2.4'
+    compile 'nl.qbusict:cupboard:2.1.4'
 }
