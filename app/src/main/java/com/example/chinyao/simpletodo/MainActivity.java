@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,12 +41,20 @@ public class MainActivity extends AppCompatActivity {
     // 1: file system
     // 2: Cupboard
 
+    private final int CustomAdapter = 2;
+    // 1: ArrayAdapter
+    // 2: custom adapter
+
     // need to use findViewById to get object from layout
     ListView lvItems;
     EditText etNewItem;
 
+    // data
     ArrayList<String> items;
-    ArrayAdapter<String> itemsAdapter; // connect ArrayList and ListView
+
+    // connect ArrayList and ListView
+    ArrayAdapter<String> itemsAdapter;
+    ItemAdapter itemsCustomAdapter;
 
     private final int REQUEST_CODE = 5566; // Intent
 
@@ -68,9 +77,15 @@ public class MainActivity extends AppCompatActivity {
         readItems();
 
         //  connect ArrayList and ListView
-        itemsAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, items);
-        lvItems.setAdapter(itemsAdapter);
+        if (CustomAdapter == 1) {
+            itemsAdapter = new ArrayAdapter<>(this,
+                    android.R.layout.simple_list_item_1, items);
+            lvItems.setAdapter(itemsAdapter);
+        }
+        else if (CustomAdapter == 2) {
+            itemsCustomAdapter = new ItemAdapter(this, items);
+            lvItems.setAdapter(itemsCustomAdapter);
+        }
 
         lvItems.setOnItemLongClickListener(
                 new AdapterView.OnItemLongClickListener() {
@@ -80,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                                                    int position,
                                                    long id) {
                         items.remove(position); // need to notify
-                        itemsAdapter.notifyDataSetChanged();
+                        notifyAdapter();
 
                         writeItems();
                         return true;
@@ -97,13 +112,19 @@ public class MainActivity extends AppCompatActivity {
                                                    long id) {
                         Intent data = new Intent(MainActivity.this, EditItemActivity.class);
                         data.putExtra("position", position);
-                        data.putExtra("content", ((TextView) item).getText().toString());
+                        if (CustomAdapter == 1) {
+                            data.putExtra("content", ((TextView) item).getText().toString());
+                        }
+                        else if (CustomAdapter == 2) {
+                            data.putExtra("content",
+                                    ((TextView) ((RelativeLayout) item).getChildAt(0)).getText().toString());
+                        }
                         startActivityForResult(data, REQUEST_CODE);
                     }
                 }
         );
 
-        Toast.makeText(this, "Version 1606201557", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Version 1606201700", Toast.LENGTH_SHORT).show();
         // update this with PracticeDatabaseHelper.java and app/build.gradle
     }
 
@@ -113,7 +134,12 @@ public class MainActivity extends AppCompatActivity {
             switch (AddItem_Mode) {
                 case 1:
                     // 1: insert to the end via adapter plus scroll
-                    itemsAdapter.add(itemText); // cannot add to the beginning
+                    if (CustomAdapter == 1) {
+                        itemsAdapter.add(itemText); // cannot add to the beginning
+                    }
+                    else if (CustomAdapter == 2) {
+                        itemsCustomAdapter.add(itemText); // cannot add to the beginning
+                    }
                     lvItems.smoothScrollToPosition(lvItems.getCount() - 1);
                     break;
                 case 2:
@@ -123,13 +149,13 @@ public class MainActivity extends AppCompatActivity {
                 case 3:
                     // 3: insert to the end via data source plus scroll
                     items.add(itemText);
-                    itemsAdapter.notifyDataSetChanged();
+                    notifyAdapter();
                     lvItems.smoothScrollToPosition(lvItems.getCount() - 1); // need to notify
                     break;
                 case 4:
                     // 4: insert to the beginning via data source plus scroll
                     items.add(0, itemText); // need to notify
-                    itemsAdapter.notifyDataSetChanged();
+                    notifyAdapter();
                     lvItems.smoothScrollToPosition(0); // need to notify
                     break;
                 default:
@@ -157,16 +183,25 @@ public class MainActivity extends AppCompatActivity {
 
             if (position != -1) {
                 items.set(position, content); // need to notify
-                itemsAdapter.notifyDataSetChanged();
+                notifyAdapter();
 
                 writeItems();
             }
         }
     }
 
+    private void notifyAdapter() {
+        if (CustomAdapter == 1) {
+            itemsAdapter.notifyDataSetChanged();
+        }
+        else if (CustomAdapter == 2) {
+            itemsCustomAdapter.notifyDataSetChanged();
+        }
+    }
+
     private void defaultItems() {
         items = new ArrayList<>();
-        for (int index = 1; index <= DefaultItemCount; index++) {
+        for (int index = DefaultItemCount; index >= 1; index--) {
             items.add("Item " + Integer.toString(index));
         }
     }
@@ -200,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
                 theSettingModel.firstTime = false;
                 cupboard().withDatabase(db).put(theSettingModel);
             }
-            
+
             // Get the cursor for this query
             Cursor cursorTodoModel = cupboard().withDatabase(db).query(TodoModel.class).getCursor();
             try {

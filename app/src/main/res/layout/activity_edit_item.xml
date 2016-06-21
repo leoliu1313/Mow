@@ -28,10 +28,10 @@
         android:inputType="textMultiLine"
         android:ems="10"
         android:id="@+id/editText"
-        android:layout_below="@+id/editItemMsg"
+        android:layout_below="@+id/saveButton"
+        android:layout_marginTop="20dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="30dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
@@ -40,9 +40,8 @@
         android:layout_height="wrap_content"
         android:text="@string/saveButton"
         android:id="@+id/saveButton"
-        android:layout_below="@+id/editText"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="20dp"
-        android:onClick="saveItem" />
+        android:onClick="saveItem"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>
