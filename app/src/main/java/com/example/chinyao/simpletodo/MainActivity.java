@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        Toast.makeText(this, "Version 1606201700", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Version 1606201950", Toast.LENGTH_SHORT).show();
         // update this with DatabaseHelper.java and app/build.gradle
     }
 
