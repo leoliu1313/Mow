@@ -21,6 +21,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 
 import nl.qbusict.cupboard.QueryResultIterable;
@@ -50,10 +51,10 @@ public class MainActivity extends AppCompatActivity {
     EditText etNewItem;
 
     // data
-    ArrayList<String> items;
+    ArrayList<TodoModel> items;
 
     // connect ArrayList and ListView
-    ArrayAdapter<String> itemsAdapter;
+    ArrayAdapter<TodoModel> itemsAdapter;
     ItemAdapter itemsCustomAdapter;
 
     private final int REQUEST_CODE = 5566; // Intent
@@ -130,31 +131,32 @@ public class MainActivity extends AppCompatActivity {
 
     public void onAddItem(View view) {
         String itemText = etNewItem.getText().toString();
+        TodoModel newItem = new TodoModel(itemText, "Low Priority", new Date());
         if (!itemText.isEmpty()) {
             switch (AddItem_Mode) {
                 case 1:
                     // 1: insert to the end via adapter plus scroll
                     if (CustomAdapter == 1) {
-                        itemsAdapter.add(itemText); // cannot add to the beginning
+                        itemsAdapter.add(newItem); // cannot add to the beginning
                     }
                     else if (CustomAdapter == 2) {
-                        itemsCustomAdapter.add(itemText); // cannot add to the beginning
+                        itemsCustomAdapter.add(newItem); // cannot add to the beginning
                     }
                     lvItems.smoothScrollToPosition(lvItems.getCount() - 1);
                     break;
                 case 2:
                     // 2: insert to the end via data source plus no scroll
-                    items.add(itemText);
+                    items.add(newItem);
                     break;
                 case 3:
                     // 3: insert to the end via data source plus scroll
-                    items.add(itemText);
+                    items.add(newItem);
                     notifyAdapter();
                     lvItems.smoothScrollToPosition(lvItems.getCount() - 1); // need to notify
                     break;
                 case 4:
                     // 4: insert to the beginning via data source plus scroll
-                    items.add(0, itemText); // need to notify
+                    items.add(0, newItem); // need to notify
                     notifyAdapter();
                     lvItems.smoothScrollToPosition(0); // need to notify
                     break;
@@ -182,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
             String content = data.getStringExtra("content");
 
             if (position != -1) {
-                items.set(position, content); // need to notify
+                items.get(position).content = content; // need to notify
                 notifyAdapter();
 
                 writeItems();
@@ -202,7 +204,9 @@ public class MainActivity extends AppCompatActivity {
     private void defaultItems() {
         items = new ArrayList<>();
         for (int index = DefaultItemCount; index >= 1; index--) {
-            items.add("Item " + Integer.toString(index));
+            items.add(new TodoModel("Item " + Integer.toString(index),
+                    "Low Priority",
+                    new Date()));
         }
     }
 
@@ -211,7 +215,13 @@ public class MainActivity extends AppCompatActivity {
             File filesDir = getFilesDir();
             File todoFile = new File(filesDir, "todo.txt");
             try {
-                items = new ArrayList<String>(FileUtils.readLines(todoFile));
+                ArrayList<String> inputs =
+                        new ArrayList<String>(FileUtils.readLines(todoFile));
+                for (int index = 0; index < inputs.size(); index++) {
+                    items.add(new TodoModel(inputs.get(index),
+                            "Low Priority",
+                            new Date()));
+                }
             } catch (IOException e) {
                 e.printStackTrace();
                 defaultItems();
@@ -247,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
                 while (it.hasNext()) {
                     TodoModel theTodoModel = it.next();
                     // do something with bunny
-                    items.add(theTodoModel.content);
+                    items.add(theTodoModel);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -272,7 +282,7 @@ public class MainActivity extends AppCompatActivity {
             // TODO: only update the necessary items instead of all
             cupboard().withDatabase(db).delete(TodoModel.class, null);
             for (int index = 0; index < items.size(); index++) {
-                cupboard().withDatabase(db).put(new TodoModel(items.get(index)));
+                cupboard().withDatabase(db).put(items.get(index));
             }
         }
     }

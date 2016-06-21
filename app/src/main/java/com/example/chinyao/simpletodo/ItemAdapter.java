@@ -12,7 +12,7 @@ import java.util.ArrayList;
 /**
  * Created by chinyao on 6/20/2016.
  */
-public class ItemAdapter extends ArrayAdapter<String> {
+public class ItemAdapter extends ArrayAdapter<TodoModel> {
     // View lookup cache
     // reduce findViewById() calls
     private static class ViewHolder {
@@ -20,14 +20,14 @@ public class ItemAdapter extends ArrayAdapter<String> {
         TextView priority;
     }
 
-    public ItemAdapter(Context context, ArrayList<String> items) {
+    public ItemAdapter(Context context, ArrayList<TodoModel> items) {
         super(context, 0, items);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
-        String item = getItem(position);
+        TodoModel item = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         ViewHolder viewHolder; // view lookup cache stored in tag
         if (convertView == null) {
@@ -41,7 +41,8 @@ public class ItemAdapter extends ArrayAdapter<String> {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         // Populate the data into the template view using the data object
-        viewHolder.content.setText(item);
+        viewHolder.content.setText(item.content);
+        viewHolder.priority.setText(item.priority);
         // Return the completed view to render on screen
         return convertView;
     }
