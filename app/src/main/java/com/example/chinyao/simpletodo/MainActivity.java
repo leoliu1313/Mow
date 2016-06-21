@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
         // create ArrayList
         if (BackEnd_Mode == 2) {
-            PracticeDatabaseHelper dbHelper = new PracticeDatabaseHelper(this);
+            DatabaseHelper dbHelper = new DatabaseHelper(this);
             db = dbHelper.getWritableDatabase();
         }
         readItems();
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
         );
 
         Toast.makeText(this, "Version 1606201700", Toast.LENGTH_SHORT).show();
-        // update this with PracticeDatabaseHelper.java and app/build.gradle
+        // update this with DatabaseHelper.java and app/build.gradle
     }
 
     public void onAddItem(View view) {

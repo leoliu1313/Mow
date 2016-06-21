@@ -10,7 +10,7 @@ android {
         targetSdkVersion 24
         versionCode 1
         versionName "1.1606201700"
-        // update this with MainActivity.java and PracticeDatabaseHelper.java and app/build.gradle
+        // update this with MainActivity.java and DatabaseHelper.java and app/build.gradle
     }
     buildTypes {
         release {
