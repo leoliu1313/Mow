@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -20,6 +21,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -28,23 +30,28 @@ import nl.qbusict.cupboard.QueryResultIterable;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
-public class MainActivity extends AppCompatActivity {
+// LISTENER
+public class MainActivity extends AppCompatActivity implements EditItemFragment.EditItemListener {
 
     private final int DefaultItemCount = 3;
 
-    private final int AddItem_Mode = 4;
+    private final int AddItemMode = 4;
     // 1: insert to the end via adapter plus scroll
     // 2: insert to the end via data source plus no scroll
     // 3: insert to the end via data source plus scroll
     // 4: insert to the beginning via data source plus scroll
 
-    private final int BackEnd_Mode = 2;
+    private final int BackEndMode = 2;
     // 1: file system
     // 2: Cupboard
 
     private final int CustomAdapter = 2;
     // 1: ArrayAdapter
     // 2: custom adapter
+
+    private final int ActivityOrFragment = 2;
+    // 1: Activity
+    // 2: Fragment
 
     // need to use findViewById to get object from layout
     ListView lvItems;
@@ -60,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     private final int REQUEST_CODE = 5566; // Intent
 
     SQLiteDatabase db;
+    SimpleDateFormat sdf;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +78,10 @@ public class MainActivity extends AppCompatActivity {
         lvItems = (ListView) findViewById(R.id.lvItems);
         etNewItem = (EditText) findViewById(R.id.etNewItem);
 
+        sdf = new SimpleDateFormat("MM/dd/yyyy");
+
         // create ArrayList
-        if (BackEnd_Mode == 2) {
+        if (BackEndMode == 2) {
             DatabaseHelper dbHelper = new DatabaseHelper(this);
             db = dbHelper.getWritableDatabase();
         }
@@ -88,6 +98,13 @@ public class MainActivity extends AppCompatActivity {
             lvItems.setAdapter(itemsCustomAdapter);
         }
 
+        setListener();
+
+        Toast.makeText(this, "Version 1606201950", Toast.LENGTH_SHORT).show();
+        // update this with DatabaseHelper.java and app/build.gradle
+    }
+
+    public void setListener() {
         lvItems.setOnItemLongClickListener(
                 new AdapterView.OnItemLongClickListener() {
                     @Override
@@ -103,37 +120,67 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-
         lvItems.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapter,
-                                                   View item,
-                                                   int position,
-                                                   long id) {
-                        Intent data = new Intent(MainActivity.this, EditItemActivity.class);
-                        data.putExtra("position", position);
-                        if (CustomAdapter == 1) {
-                            data.putExtra("content", ((TextView) item).getText().toString());
+                                            View item,
+                                            int position,
+                                            long id) {
+                        if (ActivityOrFragment == 1) {
+                            Intent data = new Intent(MainActivity.this, EditItemActivity.class);
+                            data.putExtra("position", position);
+                            if (CustomAdapter == 1) {
+                                data.putExtra("content", ((TextView) item).getText().toString());
+                            } else if (CustomAdapter == 2) {
+                                data.putExtra("content",
+                                        ((TextView) ((RelativeLayout) item).getChildAt(0)).getText().toString());
+                            }
+                            startActivityForResult(data, REQUEST_CODE);
                         }
-                        else if (CustomAdapter == 2) {
-                            data.putExtra("content",
-                                    ((TextView) ((RelativeLayout) item).getChildAt(0)).getText().toString());
+                        else if (ActivityOrFragment == 2) {
+                            // LISTENER
+                            FragmentManager fm = getSupportFragmentManager();
+                            EditItemFragment theFragment =
+                                    EditItemFragment.newInstance(position, items.get(position));
+                            theFragment.show(fm, "fragment_edit_name");
                         }
-                        startActivityForResult(data, REQUEST_CODE);
                     }
                 }
         );
+    }
 
-        Toast.makeText(this, "Version 1606201950", Toast.LENGTH_SHORT).show();
-        // update this with DatabaseHelper.java and app/build.gradle
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            int position = data.getIntExtra("position", -1);
+            String content = data.getStringExtra("content");
+
+            if (position != -1) {
+                items.get(position).content = content; // need to notify
+                notifyAdapter();
+
+                writeItems();
+            }
+        }
+    }
+
+    // LISTENER
+    // This method is invoked in the activity when the listener is triggered
+    // Access the data result passed to the activity here
+    @Override
+    public void onFinishEditItemListener(int position, TodoModel theTodoModel) {
+        items.get(position).refresh(theTodoModel); // need to notify
+        notifyAdapter();
+
+        writeItems();
     }
 
     public void onAddItem(View view) {
         String itemText = etNewItem.getText().toString();
-        TodoModel newItem = new TodoModel(itemText, "Low Priority", new Date());
+        TodoModel newItem = new TodoModel(itemText, "Low Priority", sdf.format(new Date()));
         if (!itemText.isEmpty()) {
-            switch (AddItem_Mode) {
+            switch (AddItemMode) {
                 case 1:
                     // 1: insert to the end via adapter plus scroll
                     if (CustomAdapter == 1) {
@@ -177,21 +224,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            int position = data.getIntExtra("position", -1);
-            String content = data.getStringExtra("content");
-
-            if (position != -1) {
-                items.get(position).content = content; // need to notify
-                notifyAdapter();
-
-                writeItems();
-            }
-        }
-    }
-
     private void notifyAdapter() {
         if (CustomAdapter == 1) {
             itemsAdapter.notifyDataSetChanged();
@@ -206,12 +238,12 @@ public class MainActivity extends AppCompatActivity {
         for (int index = DefaultItemCount; index >= 1; index--) {
             items.add(new TodoModel("Item " + Integer.toString(index),
                     "Low Priority",
-                    new Date()));
+                    sdf.format(new Date())));
         }
     }
 
     private void readItems() {
-        if (BackEnd_Mode == 1) {
+        if (BackEndMode == 1) {
             File filesDir = getFilesDir();
             File todoFile = new File(filesDir, "todo.txt");
             try {
@@ -220,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
                 for (int index = 0; index < inputs.size(); index++) {
                     items.add(new TodoModel(inputs.get(index),
                             "Low Priority",
-                            new Date()));
+                            sdf.format(new Date())));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -228,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
                 writeItems();
             }
         }
-        else if (BackEnd_Mode == 2) {
+        else if (BackEndMode == 2) {
             // TODO: use Shared Preferences instead of SQL
             // http://guides.codepath.com/android/Persisting-Data-to-the-Device
             // https://developer.android.com/reference/android/content/SharedPreferences.html
@@ -269,7 +301,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void writeItems() {
-        if (BackEnd_Mode == 1) {
+        if (BackEndMode == 1) {
             File filesDir = getFilesDir();
             File todoFile = new File(filesDir, "todo.txt");
             try {
@@ -278,7 +310,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-        else if (BackEnd_Mode == 2) {
+        else if (BackEndMode == 2) {
             // TODO: only update the necessary items instead of all
             cupboard().withDatabase(db).delete(TodoModel.class, null);
             for (int index = 0; index < items.size(); index++) {

@@ -14,16 +14,16 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignBottom="@+id/itemDate"
+        android:layout_alignBottom="@+id/itemPriority"
         android:gravity="center_vertical"
         android:maxLines="1" />
 
     <TextView
+        android:id="@+id/itemDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Priority"
-        android:id="@+id/itemPriority"
+        android:text="Date"
         android:gravity="center_vertical"
         android:layout_marginRight="25dp"
         android:layout_marginTop="10dp"
@@ -32,14 +32,14 @@
         android:layout_alignParentEnd="true" />
 
     <TextView
+        android:id="@+id/itemPriority"
+        android:layout_below="@+id/itemDate"
+        android:layout_alignLeft="@+id/itemDate"
+        android:layout_alignStart="@+id/itemDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Date"
-        android:id="@+id/itemDate"
+        android:text="Priority"
         android:gravity="center_vertical"
-        android:layout_below="@+id/itemPriority"
-        android:layout_marginBottom="10dp"
-        android:layout_alignLeft="@+id/itemPriority"
-        android:layout_alignStart="@+id/itemPriority" />
+        android:layout_marginBottom="10dp" />
 </RelativeLayout>

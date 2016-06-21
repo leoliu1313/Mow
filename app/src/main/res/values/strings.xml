@@ -4,4 +4,7 @@
     <string name="add_item">Add a new item...</string>
     <string name="editItemMsg">Edit Item Below:</string>
     <string name="saveButton">Save</string>
+    <string name="msgContent">TODO</string>
+    <string name="msgPriority">Priority</string>
+    <string name="msgDate">Date</string>
 </resources>
