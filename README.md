@@ -47,7 +47,7 @@ The following **additional** features are implemented:
 * [ ] Support images
 * [ ] Support camera
 * [ ] Support categories like hash tag
-* [ ] Try to implement Google Keep (The UI is so beautiful)
+* [ ] Try to implement Google Keep (UI is so beautiful)
 
 ## Video Walkthrough 
 
