@@ -25,7 +25,24 @@ The following **optional** features are implemented:
 
 The following **additional** features are implemented:
 
-* [x] List anything else that you can get done to improve the app functionality!
+* [x] Avoid showing keyboard when app starts
+* [x] Avoid showing keyboard when app switches from another app with keyboard open
+* [x] Hide keyboard after adding an item
+* [x] Improve performance of custom ArrayAdapter with ViewHolder pattern
+* [x] Support other Dialog libraries such as material-dialogs and android-betterpickers
+* [x] Scroll to top after adding an item to the top of the list
+* [ ] Flash on the new added item
+* [ ] Scroll the new edited item to top after editing an item
+* [ ] Flash on the new edited item
+* [ ] Use Shared Preferences instead of SQL
+* [ ] Try other libraries instead of android-betterpickers
+* [ ] Press enter to add an item
+* [ ] Support search function
+* [ ] Only update the necessary items instead of all
+* [ ] Sync up with online server
+* [ ] Sync up with Google Calendar
+* [ ] Support images
+* [ ] Support camera
 
 ## Video Walkthrough 
 

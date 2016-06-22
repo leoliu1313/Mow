@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -118,7 +117,7 @@ public class MainActivity extends AppCompatActivity
 
         setListener();
 
-        Toast.makeText(this, "Version 1606212230", Toast.LENGTH_SHORT).show();
+        // Toast.makeText(this, "Version 1606212230", Toast.LENGTH_SHORT).show();
         // update this with DatabaseHelper.java and app/build.gradle
     }
 
@@ -343,7 +342,7 @@ public class MainActivity extends AppCompatActivity
                           int dayOfMonth) {
         int position = dialog.getArguments().getInt("position", -1);
         if (position != -1) {
-            // TODO: use other library instead of android-betterpickers
+            // TODO: try other libraries instead of android-betterpickers
             // there is a month bug over here
             items.get(position).date =
                     String.format("%02d", monthOfYear + 1) + "/" +
