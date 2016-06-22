@@ -9,7 +9,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 24
         versionCode 1
-        versionName "1.1606201950"
+        versionName "1.1606212230"
         // update this with MainActivity.java and DatabaseHelper.java and app/build.gradle
     }
     buildTypes {
@@ -26,4 +26,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.0.0'
     compile 'commons-io:commons-io:2.4'
     compile 'nl.qbusict:cupboard:2.1.4'
+    compile 'com.afollestad.material-dialogs:core:0.8.6.0'
+    compile 'com.code-troopers.betterpickers:library:2.5.6'
 }

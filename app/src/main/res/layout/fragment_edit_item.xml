@@ -18,7 +18,7 @@
             android:layout_marginRight="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/msgContent" />
+            android:text="@string/edit_item_content" />
         <EditText
             android:id="@+id/editContent"
             android:textAppearance="?android:attr/textAppearanceLarge"
@@ -37,7 +37,7 @@
             android:layout_marginRight="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/msgPriority" />
+            android:text="@string/edit_item_priority" />
         <EditText
             android:id="@+id/editPriority"
             android:textAppearance="?android:attr/textAppearanceLarge"
@@ -56,7 +56,7 @@
             android:layout_marginRight="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/msgDate" />
+            android:text="@string/edit_item_date" />
         <EditText
             android:id="@+id/editDate"
             android:textAppearance="?android:attr/textAppearanceLarge"

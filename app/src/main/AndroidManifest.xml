@@ -19,7 +19,7 @@
         </activity>
         <activity
             android:name=".EditItemActivity"
-            android:label="Edit Item"
+            android:label="@string/edit_item_title"
             android:windowSoftInputMode="stateAlwaysVisible" >
         </activity>
     </application>

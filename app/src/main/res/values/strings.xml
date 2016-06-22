@@ -1,10 +1,15 @@
 <resources>
     <string name="app_name">SimpleTodo</string>
-    <string name="add">Add</string>
-    <string name="add_item">Add a new item...</string>
-    <string name="editItemMsg">Edit Item Below:</string>
-    <string name="saveButton">Save</string>
-    <string name="msgContent">TODO</string>
-    <string name="msgPriority">Priority</string>
-    <string name="msgDate">Date</string>
+    <string name="add_item_hint">Add a new item...</string>
+    <string name="add_button">Add</string>
+    <string name="edit_item_title">Edit Item</string>
+    <string name="edit_item">Edit Item Below:</string>
+    <string name="edit_item_content">TODO</string>
+    <string name="edit_item_priority">Priority</string>
+    <string name="edit_item_date">Date</string>
+    <string name="save_button">Save</string>
+    <string name="remove_item_title">Remove Item?</string>
+    <string name="remove_item_pos">Yes</string>
+    <string name="remove_item_neg">No</string>
+    <string name="back_button">Back</string>
 </resources>

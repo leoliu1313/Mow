@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -17,12 +19,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
+
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -31,9 +40,11 @@ import nl.qbusict.cupboard.QueryResultIterable;
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 // LISTENER
-public class MainActivity extends AppCompatActivity implements EditItemFragment.EditItemListener {
+public class MainActivity extends AppCompatActivity
+        implements EditItemFragment.EditItemListener, CalendarDatePickerDialogFragment.OnDateSetListener {
 
     private final int DefaultItemCount = 3;
+    // for the first time
 
     private final int AddItemMode = 4;
     // 1: insert to the end via adapter plus scroll
@@ -49,11 +60,12 @@ public class MainActivity extends AppCompatActivity implements EditItemFragment.
     // 1: ArrayAdapter
     // 2: custom adapter
 
-    private final int ActivityOrFragment = 2;
-    // 1: Activity
+    private final int UIMode = 3;
+    // 1: Activity via Intent
     // 2: Fragment
+    // 3: material-dialogs
 
-    // need to use findViewById to get object from layout
+    // we need to use findViewById to get the following from layout
     ListView lvItems;
     EditText etNewItem;
 
@@ -62,9 +74,11 @@ public class MainActivity extends AppCompatActivity implements EditItemFragment.
 
     // connect ArrayList and ListView
     ArrayAdapter<TodoModel> itemsAdapter;
-    ItemAdapter itemsCustomAdapter;
+    ItemAdapter itemsCustomAdapter; // custom adapter
 
-    private final int REQUEST_CODE = 5566; // Intent
+    private final int REQUEST_CODE = 5566; // Activity via Intent
+
+    private static final String TAG_CODE = "5566"; // DialogFragment Tag
 
     SQLiteDatabase db;
     SimpleDateFormat sdf;
@@ -100,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements EditItemFragment.
 
         setListener();
 
-        Toast.makeText(this, "Version 1606201950", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Version 1606212230", Toast.LENGTH_SHORT).show();
         // update this with DatabaseHelper.java and app/build.gradle
     }
 
@@ -112,10 +126,38 @@ public class MainActivity extends AppCompatActivity implements EditItemFragment.
                                                    View item,
                                                    int position,
                                                    long id) {
-                        items.remove(position); // need to notify
-                        notifyAdapter();
+                        if (UIMode == 1 || UIMode == 2) {
+                            items.remove(position); // need to notify
+                            notifyAdapter();
 
-                        writeItems();
+                            writeItems();
+                        }
+                        else if (UIMode == 3) {
+                            // TODO: find a better way instead of final int
+                            final int position_tag = position;
+                            TodoModel theTodoModel = items.get(position);
+                            new MaterialDialog.Builder(MainActivity.this)
+                                    .title(getString(R.string.remove_item_title))
+                                    .content(theTodoModel.content + "\n\n" +
+                                             theTodoModel.priority + "\n\n" +
+                                             theTodoModel.date)
+                                    .positiveText(getString(R.string.remove_item_pos))
+                                    .negativeText(getString(R.string.remove_item_neg))
+                                    .onAny(new MaterialDialog.SingleButtonCallback() {
+                                        @Override
+                                        public void onClick(@NonNull MaterialDialog dialog,
+                                                            @NonNull DialogAction which) {
+                                            // which.name(); // enum > String
+                                            if (which.equals(DialogAction.POSITIVE)) {
+                                                items.remove(position_tag); // need to notify
+                                                notifyAdapter();
+
+                                                writeItems();
+                                            }
+                                        }
+                                    })
+                                    .show();
+                        }
                         return true;
                     }
                 }
@@ -127,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements EditItemFragment.
                                             View item,
                                             int position,
                                             long id) {
-                        if (ActivityOrFragment == 1) {
+                        if (UIMode == 1) {
                             Intent data = new Intent(MainActivity.this, EditItemActivity.class);
                             data.putExtra("position", position);
                             if (CustomAdapter == 1) {
@@ -138,12 +180,15 @@ public class MainActivity extends AppCompatActivity implements EditItemFragment.
                             }
                             startActivityForResult(data, REQUEST_CODE);
                         }
-                        else if (ActivityOrFragment == 2) {
+                        else if (UIMode == 2) {
                             // LISTENER
                             FragmentManager fm = getSupportFragmentManager();
                             EditItemFragment theFragment =
                                     EditItemFragment.newInstance(position, items.get(position));
                             theFragment.show(fm, "fragment_edit_name");
+                        }
+                        else if (UIMode == 3) {
+                            showMaterialDialog(position);
                         }
                     }
                 }
@@ -174,6 +219,131 @@ public class MainActivity extends AppCompatActivity implements EditItemFragment.
         notifyAdapter();
 
         writeItems();
+    }
+
+    public void showMaterialDialog(int position){
+        // TODO: find a better way instead of final int
+        final int position_tag = position;
+        TodoModel theTodoModel = items.get(position);
+        new MaterialDialog.Builder(MainActivity.this)
+                .title(getString(R.string.edit_item_title))
+                .items(new ArrayList<String>(Arrays.asList(
+                        theTodoModel.content,
+                        theTodoModel.priority,
+                        theTodoModel.date
+                )))
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog,
+                                            View view,
+                                            int which,
+                                            CharSequence text) {
+                        /*
+                        Toast.makeText(MainActivity.this,
+                                Integer.toString(which) + " " + text.toString(),
+                                Toast.LENGTH_SHORT).show();
+                        */
+                        if (which == 0) {
+                            MaterialDialog theDialog =
+                                    new MaterialDialog.Builder(MainActivity.this)
+                                    .inputType(InputType.TYPE_CLASS_TEXT)
+                                    .positiveText(getString(R.string.save_button))
+                                    .input("", text, false, new MaterialDialog.InputCallback() {
+                                        @Override
+                                        public void onInput(@NonNull MaterialDialog dialog,
+                                                            CharSequence input) {
+                                            /*
+                                            Toast.makeText(MainActivity.this,
+                                                    input.toString(),
+                                                    Toast.LENGTH_SHORT).show();
+                                            */
+
+                                            items.get(position_tag).content =
+                                                    input.toString(); // need to notify
+                                            notifyAdapter();
+
+                                            writeItems();
+
+                                            // showMaterialDialog(position_tag);
+                                        }
+                                    }).build();
+                            theDialog.getInputEditText().setSingleLine(false);
+                            theDialog.show();
+                        }
+                        else if (which == 1) {
+                            int preselectedIndex = -1;
+                            if (items.get(position_tag).priority.equals("Low Priority")) {
+                                preselectedIndex = 2;
+                            }
+                            else if (items.get(position_tag).priority.equals("Mid Priority")) {
+                                preselectedIndex = 1;
+                            }
+                            else if (items.get(position_tag).priority.equals("High Priority")) {
+                                preselectedIndex = 0;
+                            }
+                            new MaterialDialog.Builder(MainActivity.this)
+                                    .items(R.array.priority)
+                                    .itemsCallbackSingleChoice(preselectedIndex,
+                                            new MaterialDialog.ListCallbackSingleChoice() {
+                                        @Override
+                                        public boolean onSelection(MaterialDialog dialog,
+                                                                   View view,
+                                                                   int which,
+                                                                   CharSequence text) {
+                                            if (which == 2) {
+                                                items.get(position_tag).priority = "Low Priority";
+                                            }
+                                            else if (which == 1) {
+                                                items.get(position_tag).priority = "Mid Priority";
+                                            }
+                                            else if (which == 0) {
+                                                items.get(position_tag).priority = "High Priority";
+                                            }
+                                            notifyAdapter();
+
+                                            writeItems();
+
+                                            return true; // allow selection
+                                        }
+                                    })
+                                    .positiveText(getString(R.string.save_button))
+                                    .show();
+                        }
+                        else if (which == 2) {
+                            Calendar cal = Calendar.getInstance();
+                            cal.setTime(sdf.parse(items.get(position_tag).date, new ParsePosition(0)));
+                            CalendarDatePickerDialogFragment cdp =
+                                    new CalendarDatePickerDialogFragment()
+                                    .setOnDateSetListener(MainActivity.this)
+                                    .setPreselectedDate(cal.get(Calendar.YEAR),
+                                            cal.get(Calendar.MONTH),
+                                            cal.get(Calendar.DATE));
+                            Bundle args = new Bundle();
+                            args.putInt("position", position_tag);
+                            cdp.setArguments(args);
+                            cdp.show(getSupportFragmentManager(), TAG_CODE);
+                        }
+                    }
+                })
+                .negativeText(getString(R.string.back_button))
+                .show();
+    }
+
+    @Override
+    public void onDateSet(CalendarDatePickerDialogFragment dialog,
+                          int year,
+                          int monthOfYear,
+                          int dayOfMonth) {
+        int position = dialog.getArguments().getInt("position", -1);
+        if (position != -1) {
+            items.get(position).date =
+                    String.format("%02d", monthOfYear) + "/" +
+                    String.format("%02d", dayOfMonth) + "/" +
+                    String.format("%04d", year); // need to notify
+            notifyAdapter();
+
+            writeItems();
+        }
     }
 
     public void onAddItem(View view) {

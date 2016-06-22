@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/editItemMsg"
+        android:text="@string/edit_item"
         android:id="@+id/editItemMsg"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
@@ -38,7 +38,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/saveButton"
+        android:text="@string/save_button"
         android:id="@+id/saveButton"
         android:onClick="saveItem"
         android:layout_alignParentTop="true"

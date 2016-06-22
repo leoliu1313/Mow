@@ -7,7 +7,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -57,7 +56,7 @@ public class EditItemFragment extends DialogFragment implements TextView.OnEdito
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Fetch arguments from bundle and set title
-        getDialog().setTitle(getArguments().getString("title", "Edit"));
+        getDialog().setTitle(getString(R.string.edit_item_title));
         // Get field from view
         editContent = (EditText) view.findViewById(R.id.editContent);
         editContent.setText(getArguments().getString("content", ""));
@@ -65,10 +64,13 @@ public class EditItemFragment extends DialogFragment implements TextView.OnEdito
         editPriority.setText(getArguments().getString("priority", ""));
         editDate = (EditText) view.findViewById(R.id.editDate);
         editDate.setText(getArguments().getString("date", ""));
+
         // Show soft keyboard automatically and request focus to field
+        /*
         editContent.requestFocus();
         getDialog().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        */
 
         // LISTENER
         // Setup a callback when the "Done" button is pressed on keyboard
@@ -96,5 +98,4 @@ public class EditItemFragment extends DialogFragment implements TextView.OnEdito
         }
         return false;
     }
-
 }
