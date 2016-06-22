@@ -337,7 +337,7 @@ public class MainActivity extends AppCompatActivity
         int position = dialog.getArguments().getInt("position", -1);
         if (position != -1) {
             items.get(position).date =
-                    String.format("%02d", monthOfYear) + "/" +
+                    String.format("%02d", monthOfYear + 1) + "/" +
                     String.format("%02d", dayOfMonth) + "/" +
                     String.format("%04d", year); // need to notify
             notifyAdapter();
