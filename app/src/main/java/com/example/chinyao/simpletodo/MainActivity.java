@@ -43,7 +43,11 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 public class MainActivity extends AppCompatActivity
         implements EditItemFragment.EditItemListener, CalendarDatePickerDialogFragment.OnDateSetListener {
 
-    private final int DefaultItemCount = 3;
+    private final int DefaultItemMode = 2;
+    // 1: debug first time
+    // 2: real first time
+
+    private final int DefaultItemCount = 20;
     // for the first time
 
     private final int AddItemMode = 4;
@@ -413,10 +417,37 @@ public class MainActivity extends AppCompatActivity
 
     private void defaultItems() {
         items = new ArrayList<>();
-        for (int index = DefaultItemCount; index >= 1; index--) {
-            items.add(new TodoModel("Item " + Integer.toString(index),
-                    sdf.format(new Date()),
+        if (DefaultItemMode == 1) {
+            for (int index = DefaultItemCount; index >= 1; index--) {
+                items.add(new TodoModel("Item " + Integer.toString(index),
+                        sdf.format(new Date()),
+                        "Low Priority"
+                ));
+            }
+        }
+        else if (DefaultItemMode == 2) {
+            items.add(new TodoModel("My Birthday",
+                    "08/08/2016",
                     "Low Priority"
+            ));
+            items.add(new TodoModel("Google Keep\n\n" +
+                    "The UI is so beautiful\n" +
+                    "Try to implement it",
+                    "07/31/2016",
+                    "Low Priority"
+            ));
+            items.add(new TodoModel("Independence Day",
+                    "07/04/2016",
+                    "Low Priority"
+            ));
+            items.add(new TodoModel("Game of Thrones",
+                    "06/26/2016",
+                    "Low Priority"
+            ));
+            items.add(new TodoModel("CodePath Pre-work\n\n" +
+                    "Extend it : >",
+                    "06/22/2016",
+                    "High Priority"
             ));
         }
     }
