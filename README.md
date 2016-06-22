@@ -53,7 +53,7 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/s09T1z8.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='http://i.imgur.com/s09T1z8.gif' title='Video Walkthrough' width="300" alt='Video Walkthrough' />
 
 GIF created with [ScreenToGif 2](https://screentogif.codeplex.com/).
 
