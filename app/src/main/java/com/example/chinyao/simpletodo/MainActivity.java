@@ -139,8 +139,9 @@ public class MainActivity extends AppCompatActivity
                             new MaterialDialog.Builder(MainActivity.this)
                                     .title(getString(R.string.remove_item_title))
                                     .content(theTodoModel.content + "\n\n" +
-                                             theTodoModel.priority + "\n\n" +
-                                             theTodoModel.date)
+                                             theTodoModel.date + "\n\n" +
+                                             theTodoModel.priority
+                                    )
                                     .positiveText(getString(R.string.remove_item_pos))
                                     .negativeText(getString(R.string.remove_item_neg))
                                     .onAny(new MaterialDialog.SingleButtonCallback() {
@@ -229,8 +230,8 @@ public class MainActivity extends AppCompatActivity
                 .title(getString(R.string.edit_item_title))
                 .items(new ArrayList<String>(Arrays.asList(
                         theTodoModel.content,
-                        theTodoModel.priority,
-                        theTodoModel.date
+                        theTodoModel.date,
+                        theTodoModel.priority
                 )))
                 .itemsCallback(new MaterialDialog.ListCallback() {
                     @Override
@@ -271,45 +272,6 @@ public class MainActivity extends AppCompatActivity
                             theDialog.show();
                         }
                         else if (which == 1) {
-                            int preselectedIndex = -1;
-                            if (items.get(position_tag).priority.equals("Low Priority")) {
-                                preselectedIndex = 2;
-                            }
-                            else if (items.get(position_tag).priority.equals("Mid Priority")) {
-                                preselectedIndex = 1;
-                            }
-                            else if (items.get(position_tag).priority.equals("High Priority")) {
-                                preselectedIndex = 0;
-                            }
-                            new MaterialDialog.Builder(MainActivity.this)
-                                    .items(R.array.priority)
-                                    .itemsCallbackSingleChoice(preselectedIndex,
-                                            new MaterialDialog.ListCallbackSingleChoice() {
-                                        @Override
-                                        public boolean onSelection(MaterialDialog dialog,
-                                                                   View view,
-                                                                   int which,
-                                                                   CharSequence text) {
-                                            if (which == 2) {
-                                                items.get(position_tag).priority = "Low Priority";
-                                            }
-                                            else if (which == 1) {
-                                                items.get(position_tag).priority = "Mid Priority";
-                                            }
-                                            else if (which == 0) {
-                                                items.get(position_tag).priority = "High Priority";
-                                            }
-                                            notifyAdapter();
-
-                                            writeItems();
-
-                                            return true; // allow selection
-                                        }
-                                    })
-                                    .positiveText(getString(R.string.save_button))
-                                    .show();
-                        }
-                        else if (which == 2) {
                             Calendar cal = Calendar.getInstance();
                             cal.setTime(sdf.parse(items.get(position_tag).date,
                                     new ParsePosition(0)));
@@ -324,6 +286,46 @@ public class MainActivity extends AppCompatActivity
                             cdp.setArguments(args);
                             cdp.show(getSupportFragmentManager(), TAG_CODE);
                         }
+                        else if (which == 2) {
+                            int preselectedIndex = -1;
+                            if (items.get(position_tag).priority.equals("Low Priority")) {
+                                preselectedIndex = 2;
+                            }
+                            else if (items.get(position_tag).priority.equals("Mid Priority")) {
+                                preselectedIndex = 1;
+                            }
+                            else if (items.get(position_tag).priority.equals("High Priority")) {
+                                preselectedIndex = 0;
+                            }
+                            new MaterialDialog.Builder(MainActivity.this)
+                                    .items(R.array.priority)
+                                    .itemsCallbackSingleChoice(preselectedIndex,
+                                            new MaterialDialog.ListCallbackSingleChoice() {
+                                                @Override
+                                                public boolean onSelection(MaterialDialog dialog,
+                                                                           View view,
+                                                                           int which,
+                                                                           CharSequence text) {
+                                                    if (which == 2) {
+                                                        items.get(position_tag).priority = "Low Priority";
+                                                    }
+                                                    else if (which == 1) {
+                                                        items.get(position_tag).priority = "Mid Priority";
+                                                    }
+                                                    else if (which == 0) {
+                                                        items.get(position_tag).priority = "High Priority";
+                                                    }
+                                                    notifyAdapter();
+
+                                                    writeItems();
+
+                                                    return true; // allow selection
+                                                }
+                                            })
+                                    .positiveText(getString(R.string.save_button))
+                                    .show();
+                        }
+                        // end of "which == x" condition check
                     }
                 })
                 .negativeText(getString(R.string.back_button))
@@ -351,7 +353,10 @@ public class MainActivity extends AppCompatActivity
 
     public void onAddItem(View view) {
         String itemText = etNewItem.getText().toString();
-        TodoModel newItem = new TodoModel(itemText, "Low Priority", sdf.format(new Date()));
+        TodoModel newItem = new TodoModel(itemText,
+                sdf.format(new Date()),
+                "Low Priority"
+        );
         if (!itemText.isEmpty()) {
             switch (AddItemMode) {
                 case 1:
@@ -410,8 +415,9 @@ public class MainActivity extends AppCompatActivity
         items = new ArrayList<>();
         for (int index = DefaultItemCount; index >= 1; index--) {
             items.add(new TodoModel("Item " + Integer.toString(index),
-                    "Low Priority",
-                    sdf.format(new Date())));
+                    sdf.format(new Date()),
+                    "Low Priority"
+            ));
         }
     }
 
@@ -424,8 +430,9 @@ public class MainActivity extends AppCompatActivity
                         new ArrayList<String>(FileUtils.readLines(todoFile));
                 for (int index = 0; index < inputs.size(); index++) {
                     items.add(new TodoModel(inputs.get(index),
-                            "Low Priority",
-                            sdf.format(new Date())));
+                            sdf.format(new Date()),
+                            "Low Priority"
+                    ));
                 }
             } catch (IOException e) {
                 e.printStackTrace();

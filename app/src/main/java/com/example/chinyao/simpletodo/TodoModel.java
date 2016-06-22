@@ -8,25 +8,25 @@ public class TodoModel {
     public Long _id; // for cupboard
 
     public String content;
-    public String priority;
     public String date;
+    public String priority;
 
     // we need this for SQL
     public TodoModel() {
         this.content = "";
-        this.priority = "";
         this.date = "";
+        this.priority = "";
     }
 
-    public TodoModel(String content, String priority, String date) {
+    public TodoModel(String content, String date, String priority) {
         if (content != null) this.content = content;
-        if (priority != null) this.priority = priority;
         if (date != null) this.date = date;
+        if (priority != null) this.priority = priority;
     }
 
     public void refresh(TodoModel theTodoModel) {
         this.content = theTodoModel.content;
-        this.priority = theTodoModel.priority;
         this.date = theTodoModel.date;
+        this.priority = theTodoModel.priority;
     }
 }

@@ -20,8 +20,8 @@ public class EditItemFragment extends DialogFragment implements TextView.OnEdito
 
     private int position;
     private EditText editContent;
-    private EditText editPriority;
     private EditText editDate;
+    private EditText editPriority;
 
     public EditItemFragment() {
         // Empty constructor is required for DialogFragment
@@ -34,8 +34,8 @@ public class EditItemFragment extends DialogFragment implements TextView.OnEdito
         Bundle args = new Bundle();
         theFragment.position = position;
         args.putString("content", theTodoModel.content);
-        args.putString("priority", theTodoModel.priority);
         args.putString("date", theTodoModel.date);
+        args.putString("priority", theTodoModel.priority);
         theFragment.setArguments(args);
         return theFragment;
     }
@@ -60,10 +60,10 @@ public class EditItemFragment extends DialogFragment implements TextView.OnEdito
         // Get field from view
         editContent = (EditText) view.findViewById(R.id.editContent);
         editContent.setText(getArguments().getString("content", ""));
-        editPriority = (EditText) view.findViewById(R.id.editPriority);
-        editPriority.setText(getArguments().getString("priority", ""));
         editDate = (EditText) view.findViewById(R.id.editDate);
         editDate.setText(getArguments().getString("date", ""));
+        editPriority = (EditText) view.findViewById(R.id.editPriority);
+        editPriority.setText(getArguments().getString("priority", ""));
 
         // Show soft keyboard automatically and request focus to field
         /*
@@ -90,8 +90,9 @@ public class EditItemFragment extends DialogFragment implements TextView.OnEdito
             listener.onFinishEditItemListener(position,
                     new TodoModel(
                     editContent.getText().toString(),
-                    editPriority.getText().toString(),
-                    editDate.getText().toString()));
+                    editDate.getText().toString(),
+                    editPriority.getText().toString()
+            ));
             // Close the dialog and return back to the parent activity
             dismiss();
             return true;

@@ -17,8 +17,8 @@ public class ItemAdapter extends ArrayAdapter<TodoModel> {
     // reduce findViewById() calls
     private static class ViewHolder {
         TextView content;
-        TextView priority;
         TextView date;
+        TextView priority;
     }
 
     public ItemAdapter(Context context, ArrayList<TodoModel> items) {
@@ -35,8 +35,8 @@ public class ItemAdapter extends ArrayAdapter<TodoModel> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_todo, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.content = (TextView) convertView.findViewById(R.id.itemContent);
-            viewHolder.priority = (TextView) convertView.findViewById(R.id.itemPriority);
             viewHolder.date = (TextView) convertView.findViewById(R.id.itemDate);
+            viewHolder.priority = (TextView) convertView.findViewById(R.id.itemPriority);
             convertView.setTag(viewHolder);
         }
         else {
@@ -44,8 +44,8 @@ public class ItemAdapter extends ArrayAdapter<TodoModel> {
         }
         // Populate the data into the template view using the data object
         viewHolder.content.setText(item.content);
-        viewHolder.priority.setText(item.priority);
         viewHolder.date.setText(item.date);
+        viewHolder.priority.setText(item.priority);
         // Return the completed view to render on screen
         return convertView;
     }
