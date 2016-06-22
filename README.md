@@ -4,7 +4,7 @@
 
 Submitted by: **Ching-yao Liu**
 
-Time spent: **23** hours spent in total
+Time spent: **29** hours spent in total
 
 ## User Stories
 
