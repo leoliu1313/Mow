@@ -311,7 +311,8 @@ public class MainActivity extends AppCompatActivity
                         }
                         else if (which == 2) {
                             Calendar cal = Calendar.getInstance();
-                            cal.setTime(sdf.parse(items.get(position_tag).date, new ParsePosition(0)));
+                            cal.setTime(sdf.parse(items.get(position_tag).date,
+                                    new ParsePosition(0)));
                             CalendarDatePickerDialogFragment cdp =
                                     new CalendarDatePickerDialogFragment()
                                     .setOnDateSetListener(MainActivity.this)
@@ -336,6 +337,8 @@ public class MainActivity extends AppCompatActivity
                           int dayOfMonth) {
         int position = dialog.getArguments().getInt("position", -1);
         if (position != -1) {
+            // TODO: use other library instead of android-betterpickers
+            // there is a month bug over here
             items.get(position).date =
                     String.format("%02d", monthOfYear + 1) + "/" +
                     String.format("%02d", dayOfMonth) + "/" +
@@ -459,7 +462,7 @@ public class MainActivity extends AppCompatActivity
                 while (it.hasNext()) {
                     TodoModel theTodoModel = it.next();
                     // do something with bunny
-                    items.add(theTodoModel);
+                    items.add(0, theTodoModel);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
