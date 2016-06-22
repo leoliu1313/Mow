@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.view.View;
@@ -20,6 +21,8 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
+import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
 import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
 
 import org.apache.commons.io.FileUtils;
@@ -29,7 +32,6 @@ import java.io.IOException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -229,49 +231,53 @@ public class MainActivity extends AppCompatActivity
         // TODO: find a better way instead of final int
         final int position_tag = position;
         TodoModel theTodoModel = items.get(position);
-        MaterialDialog theDialog =
-        new MaterialDialog.Builder(MainActivity.this)
+
+        final MaterialSimpleListAdapter adapter = new MaterialSimpleListAdapter(this);
+        adapter.add(new MaterialSimpleListItem.Builder(this)
+                .content(theTodoModel.content)
+                .icon(R.drawable.ic_bookmark_border_black_18dp)
+                .backgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimaryLight))
+                .build());
+        adapter.add(new MaterialSimpleListItem.Builder(this)
+                .content(theTodoModel.date)
+                .icon(R.drawable.ic_date_range_black_18dp)
+                .backgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorDateLight))
+                .build());
+        adapter.add(new MaterialSimpleListItem.Builder(this)
+                .content(theTodoModel.priority)
+                .icon(R.drawable.ic_priority_high_black_18dp)
+                .backgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorAccentLight))
+                .build());
+
+        new MaterialDialog.Builder(this)
                 .title(getString(R.string.edit_item_title))
-                .items(new ArrayList<String>(Arrays.asList(
-                        theTodoModel.content,
-                        theTodoModel.date,
-                        theTodoModel.priority
-                )))
-                .itemsCallback(new MaterialDialog.ListCallback() {
+                .adapter(adapter, new MaterialDialog.ListCallback() {
                     @Override
-                    public void onSelection(MaterialDialog dialog,
-                                            View view,
-                                            int which,
-                                            CharSequence text) {
-                        /*
-                        Toast.makeText(MainActivity.this,
-                                Integer.toString(which) + " " + text.toString(),
-                                Toast.LENGTH_SHORT).show();
-                        */
+                    public void onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+                        MaterialSimpleListItem item = adapter.getItem(which);
+                        String itemText = item.getContent().toString();
                         if (which == 0) {
                             MaterialDialog theDialog =
                                     new MaterialDialog.Builder(MainActivity.this)
-                                    .inputType(InputType.TYPE_CLASS_TEXT)
-                                    .positiveText(getString(R.string.save_button))
-                                    .input("", text, false, new MaterialDialog.InputCallback() {
-                                        @Override
-                                        public void onInput(@NonNull MaterialDialog dialog,
-                                                            CharSequence input) {
-                                            /*
-                                            Toast.makeText(MainActivity.this,
-                                                    input.toString(),
-                                                    Toast.LENGTH_SHORT).show();
-                                            */
+                                            .inputType(InputType.TYPE_CLASS_TEXT)
+                                            .positiveText(getString(R.string.save_button))
+                                            .input("", itemText, false, new MaterialDialog.InputCallback() {
+                                                @Override
+                                                public void onInput(@NonNull MaterialDialog dialog,
+                                                                    CharSequence input) {
+                                                    // Toast.makeText(MainActivity.this,
+                                                    //         input.toString(),
+                                                    //         Toast.LENGTH_SHORT).show();
 
-                                            items.get(position_tag).content =
-                                                    input.toString(); // need to notify
-                                            notifyAdapter();
+                                                    items.get(position_tag).content =
+                                                            input.toString(); // need to notify
+                                                    notifyAdapter();
 
-                                            writeItems();
+                                                    writeItems();
 
-                                            // showMaterialDialog(position_tag);
-                                        }
-                                    }).build();
+                                                    // showMaterialDialog(position_tag);
+                                                }
+                                            }).build();
                             theDialog.getInputEditText().setSingleLine(false);
                             theDialog.show();
                         }
@@ -281,10 +287,11 @@ public class MainActivity extends AppCompatActivity
                                     new ParsePosition(0)));
                             CalendarDatePickerDialogFragment cdp =
                                     new CalendarDatePickerDialogFragment()
-                                    .setOnDateSetListener(MainActivity.this)
-                                    .setPreselectedDate(cal.get(Calendar.YEAR),
-                                            cal.get(Calendar.MONTH),
-                                            cal.get(Calendar.DATE));
+                                            .setThemeCustom(R.style.DateTheme)
+                                            .setOnDateSetListener(MainActivity.this)
+                                            .setPreselectedDate(cal.get(Calendar.YEAR),
+                                                    cal.get(Calendar.MONTH),
+                                                    cal.get(Calendar.DATE));
                             Bundle args = new Bundle();
                             args.putInt("position", position_tag);
                             cdp.setArguments(args);
@@ -329,12 +336,10 @@ public class MainActivity extends AppCompatActivity
                                     .positiveText(getString(R.string.save_button))
                                     .show();
                         }
-                        // end of "which == x" condition check
+                        dialog.dismiss();
                     }
                 })
-                .negativeText(getString(R.string.back_button))
-                .build();
-        theDialog.show();
+                .show();
     }
 
     @Override
@@ -431,11 +436,11 @@ public class MainActivity extends AppCompatActivity
                     "08/08/2016",
                     "Low Priority"
             ));
-            items.add(new TodoModel("Google Keep\n\n" +
+            items.add(new TodoModel("Google Keep\n" +
                     "The UI is so beautiful\n" +
                     "Try to implement it",
                     "07/31/2016",
-                    "Low Priority"
+                    "High Priority"
             ));
             items.add(new TodoModel("Independence Day",
                     "07/04/2016",
@@ -445,7 +450,7 @@ public class MainActivity extends AppCompatActivity
                     "06/26/2016",
                     "Low Priority"
             ));
-            items.add(new TodoModel("CodePath Pre-work\n\n" +
+            items.add(new TodoModel("CodePath Pre-work\n" +
                     "Extend it : >",
                     "06/22/2016",
                     "High Priority"

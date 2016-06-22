@@ -1,6 +1,7 @@
 package com.example.chinyao.simpletodo;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,18 @@ public class ItemAdapter extends ArrayAdapter<TodoModel> {
         viewHolder.content.setText(item.content);
         viewHolder.date.setText(item.date);
         viewHolder.priority.setText(item.priority);
+        if (item.priority.equals("High Priority")) {
+            viewHolder.priority.setTextColor(
+                    ContextCompat.getColor(getContext(), R.color.colorAccent));
+        }
+        else if (item.priority.equals("Mid Priority")) {
+            viewHolder.priority.setTextColor(
+                    ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
+        }
+        else if (item.priority.equals("Low Priority")) {
+            viewHolder.priority.setTextColor(
+                    ContextCompat.getColor(getContext(), R.color.colorPrimary));
+        }
         // Return the completed view to render on screen
         return convertView;
     }

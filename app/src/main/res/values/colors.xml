@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorPrimaryLight">#FFE082</color>
     <color name="colorPrimary">#FFC107</color>
-    <color name="colorPrimaryDark">#FFA000</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="colorDate">#00c853</color>
+    <color name="colorPrimaryDark">#FF6F00</color>
+    <color name="colorAccentLight">#FF80AB</color>
+    <color name="colorAccent">#ff4081</color>
+    <color name="colorDateLight">#69F0AE</color>
+    <color name="colorDate">#00C853</color>
 </resources>

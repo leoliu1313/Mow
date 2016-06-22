@@ -7,5 +7,10 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+    <style name="DateTheme" parent="BetterPickersRadialTimePickerDialog">
+        <item name="bpAccentColor">@color/colorDate</item>
+        <item name="bpTitleColor">@color/colorDate</item>
+        <item name="bpLineColor">@color/colorDate</item>
+    </style>
 
 </resources>

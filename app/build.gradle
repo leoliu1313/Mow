@@ -27,5 +27,6 @@ dependencies {
     compile 'commons-io:commons-io:2.4'
     compile 'nl.qbusict:cupboard:2.1.4'
     compile 'com.afollestad.material-dialogs:core:0.8.6.0'
+    compile 'com.afollestad.material-dialogs:commons:0.8.6.0'
     compile 'com.code-troopers.betterpickers:library:2.5.6'
 }
