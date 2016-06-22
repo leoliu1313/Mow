@@ -41,8 +41,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:onClick="onAddItem"
-        android:backgroundTint="@color/colorAccent"
-        style="@style/AppTheme" />
+        android:backgroundTint="@color/colorAccent" />
 
 
 </RelativeLayout>

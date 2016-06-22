@@ -235,17 +235,17 @@ public class MainActivity extends AppCompatActivity
         final MaterialSimpleListAdapter adapter = new MaterialSimpleListAdapter(this);
         adapter.add(new MaterialSimpleListItem.Builder(this)
                 .content(theTodoModel.content)
-                .icon(R.drawable.ic_bookmark_border_black_18dp)
+                .icon(R.drawable.ic_bookmark_border_black_48dp)
                 .backgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimaryLight))
                 .build());
         adapter.add(new MaterialSimpleListItem.Builder(this)
                 .content(theTodoModel.date)
-                .icon(R.drawable.ic_date_range_black_18dp)
+                .icon(R.drawable.ic_date_range_black_48dp)
                 .backgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorDateLight))
                 .build());
         adapter.add(new MaterialSimpleListItem.Builder(this)
                 .content(theTodoModel.priority)
-                .icon(R.drawable.ic_priority_high_black_18dp)
+                .icon(R.drawable.ic_priority_high_black_48dp)
                 .backgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorAccentLight))
                 .build());
 
@@ -437,7 +437,7 @@ public class MainActivity extends AppCompatActivity
                     "Low Priority"
             ));
             items.add(new TodoModel("Google Keep\n" +
-                    "The UI is so beautiful\n" +
+                    "UI is awesome\n" +
                     "Try to implement it",
                     "07/31/2016",
                     "High Priority"
