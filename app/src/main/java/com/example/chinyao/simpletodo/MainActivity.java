@@ -229,6 +229,7 @@ public class MainActivity extends AppCompatActivity
         // TODO: find a better way instead of final int
         final int position_tag = position;
         TodoModel theTodoModel = items.get(position);
+        MaterialDialog theDialog =
         new MaterialDialog.Builder(MainActivity.this)
                 .title(getString(R.string.edit_item_title))
                 .items(new ArrayList<String>(Arrays.asList(
@@ -332,7 +333,8 @@ public class MainActivity extends AppCompatActivity
                     }
                 })
                 .negativeText(getString(R.string.back_button))
-                .show();
+                .build();
+        theDialog.show();
     }
 
     @Override
