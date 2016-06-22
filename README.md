@@ -30,6 +30,7 @@ The following **additional** features are implemented:
 * [x] Hide keyboard after adding an item
 * [x] Improve performance of custom ArrayAdapter with ViewHolder pattern
 * [x] Support other Dialog libraries such as material-dialogs and android-betterpickers
+* [x] Support Yes/No Dialog when removing an item
 * [x] Scroll to top after adding an item to the top of the list
 * [ ] Flash on the new added item
 * [ ] Scroll the new edited item to top after editing an item
@@ -38,11 +39,15 @@ The following **additional** features are implemented:
 * [ ] Try other libraries instead of android-betterpickers
 * [ ] Press enter to add an item
 * [ ] Support search function
+* [ ] Support manual order change
+* [ ] Support sorting function
 * [ ] Only update the necessary items instead of all
 * [ ] Sync up with online server
 * [ ] Sync up with Google Calendar
 * [ ] Support images
 * [ ] Support camera
+* [ ] Support categories like hash tag
+* [ ] Try to implement Google Keep (The UI is so beautiful)
 
 ## Video Walkthrough 
 
