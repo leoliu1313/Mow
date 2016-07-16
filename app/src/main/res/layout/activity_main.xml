@@ -43,5 +43,4 @@
         android:onClick="onAddItem"
         android:backgroundTint="@color/colorAccent" />
 
-
 </RelativeLayout>

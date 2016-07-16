@@ -6,15 +6,18 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,6 +26,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
+import com.bumptech.glide.Glide;
 import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
 
 import org.apache.commons.io.FileUtils;
@@ -35,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Random;
 
 import nl.qbusict.cupboard.QueryResultIterable;
 
@@ -70,6 +75,11 @@ public class MainActivity extends AppCompatActivity
     // 2: Fragment
     // 3: material-dialogs
 
+    private final int CoordinatorLayout = 2;
+    // styles.xml
+    // 1: not CoordinatorLayout
+    // 2:     CoordinatorLayout
+
     // we need to use findViewById to get the following from layout
     ListView lvItems;
     EditText etNewItem;
@@ -82,8 +92,8 @@ public class MainActivity extends AppCompatActivity
     ItemAdapter itemsCustomAdapter; // custom adapter
 
     private final int REQUEST_CODE = 5566; // Activity via Intent
-
     private static final String TAG_CODE = "5566"; // DialogFragment Tag
+    private static final Random RANDOM = new Random();
 
     SQLiteDatabase db;
     SimpleDateFormat sdf;
@@ -91,7 +101,22 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        if (CoordinatorLayout == 2) {
+            // http://guides.codepath.com/android/Design-Support-Library
+            // http://guides.codepath.com/android/Handling-Scrolls-with-CoordinatorLayout
+            setContentView(R.layout.activity_detail);
+            final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            CollapsingToolbarLayout collapsingToolbar =
+                    (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+            collapsingToolbar.setTitle(getString(R.string.app_name));
+            final ImageView imageView = (ImageView) findViewById(R.id.backdrop);
+            Glide.with(this).load(getRandomCheeseDrawable()).centerCrop().into(imageView);
+        }
+        else if (CoordinatorLayout == 1) {
+            setContentView(R.layout.activity_main);
+        }
 
         // need to use findViewById to get object from layout
         lvItems = (ListView) findViewById(R.id.lvItems);
@@ -533,6 +558,22 @@ public class MainActivity extends AppCompatActivity
             for (int index = 0; index < items.size(); index++) {
                 cupboard().withDatabase(db).put(items.get(index));
             }
+        }
+    }
+
+    public static int getRandomCheeseDrawable() {
+        switch (RANDOM.nextInt(5)) {
+            default:
+            case 0:
+                return R.drawable.cheese_1;
+            case 1:
+                return R.drawable.cheese_2;
+            case 2:
+                return R.drawable.cheese_3;
+            case 3:
+                return R.drawable.cheese_4;
+            case 4:
+                return R.drawable.cheese_5;
         }
     }
 }

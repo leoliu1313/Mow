@@ -1,16 +1,28 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <!-- MainActivity.java -->
+    <!-- 1: not CoordinatorLayout Theme.AppCompat.Light.DarkActionBar -->
+    <!-- 2:     CoordinatorLayout Theme.AppCompat.Light.NoActionBar -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
     <style name="DateTheme" parent="BetterPickersRadialTimePickerDialog">
         <item name="bpAccentColor">@color/colorDate</item>
         <item name="bpTitleColor">@color/colorDate</item>
         <item name="bpLineColor">@color/colorDate</item>
+    </style>
+
+    <style name="Widget.CardContent" parent="android:Widget">
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingTop">24dp</item>
+        <item name="android:paddingBottom">24dp</item>
+        <item name="android:orientation">vertical</item>
     </style>
 
 </resources>
