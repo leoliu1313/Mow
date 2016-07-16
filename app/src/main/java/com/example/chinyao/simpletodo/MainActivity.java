@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
@@ -101,6 +102,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (CoordinatorLayout == 2) {
             // http://guides.codepath.com/android/Design-Support-Library
             // http://guides.codepath.com/android/Handling-Scrolls-with-CoordinatorLayout
@@ -121,6 +123,11 @@ public class MainActivity extends AppCompatActivity
         // need to use findViewById to get object from layout
         lvItems = (ListView) findViewById(R.id.lvItems);
         etNewItem = (EditText) findViewById(R.id.etNewItem);
+
+        if (CoordinatorLayout == 2) {
+            // scroll ListView in CoordinatorLayout 
+            ViewCompat.setNestedScrollingEnabled(lvItems, true);
+        }
 
         sdf = new SimpleDateFormat("MM/dd/yyyy");
 
