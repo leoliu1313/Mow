@@ -6,10 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
@@ -50,7 +51,9 @@ import nl.qbusict.cupboard.QueryResultIterable;
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 public class MainActivity extends AppCompatActivity
-        implements EditItemFragment.EditItemListener, CalendarDatePickerDialogFragment.OnDateSetListener {
+        implements EditItemFragment.EditItemListener,
+        CalendarDatePickerDialogFragment.OnDateSetListener,
+        AppBarLayout.OnOffsetChangedListener {
 
     private final int DefaultItemMode = 2;
     // 1: debug first time
@@ -86,6 +89,7 @@ public class MainActivity extends AppCompatActivity
     // we need to use findViewById to get the following from layout
     private ListView itemsListView;
     private EditText newItemEditText;
+    private ImageView imageView;
 
     // data
     private ArrayList<TodoModel> itemsArrayList;
@@ -107,7 +111,14 @@ public class MainActivity extends AppCompatActivity
     // DialogFragment Tag for CalendarDatePickerDialogFragment.OnDateSetListener
     private static final String TAG_CODE = "5566";
 
+    // getRandomDrawable
     private static final Random RANDOM = new Random();
+    private static int currentDrawable = -1;
+
+    // AppBarLayout.OnOffsetChangedListener
+    private int onOffsetChangedState = 0;
+    private Handler handler = null;
+    private Runnable runnable = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,8 +148,8 @@ public class MainActivity extends AppCompatActivity
             tf = Typeface.create(tf, Typeface.ITALIC);
             collapsingToolbar.setCollapsedTitleTypeface(tf);
 
-            final ImageView imageView = (ImageView) findViewById(R.id.backdrop);
-            Glide.with(this).load(getRandomCheeseDrawable()).centerCrop().into(imageView);
+            imageView = (ImageView) findViewById(R.id.backdrop);
+            glideRandomDrawable();
         }
         else if (CoordinatorLayout == 1) {
             setContentView(R.layout.activity_main);
@@ -175,8 +186,22 @@ public class MainActivity extends AppCompatActivity
 
         setListener();
 
-        // Toast.makeText(this, "Version 1606212230", Toast.LENGTH_SHORT).show();
+        /*
         // update this with DatabaseHelper.java and app/build.gradle
+        if (CustomAdapter == 1) {
+            Toast.makeText(this,
+                           "Version 1607170156",
+                           Toast.LENGTH_SHORT)
+                 .show();
+        }
+        else if (CustomAdapter == 2) {
+            Snackbar.make(findViewById(R.id.fab),
+                          "Version 1607170156",
+                          Snackbar.LENGTH_LONG)
+                    .setAction("Action", null)
+                    .show();
+        }
+        */
     }
 
     // Activity via Intent
@@ -198,11 +223,23 @@ public class MainActivity extends AppCompatActivity
     // onClick callback
     public void onAddItem(View view) {
         String itemText = newItemEditText.getText().toString();
-        TodoModel newItem = new TodoModel(itemText,
-                sdf.format(new Date()),
-                "Low Priority"
-        );
+        addItem(itemText);
+        // hide keyboard
+        // View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm =
+                    (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+        newItemEditText.setText("");
+    }
+
+    private void addItem(String itemText) {
         if (!itemText.isEmpty()) {
+            TodoModel newItem = new TodoModel(itemText,
+                    sdf.format(new Date()),
+                    "Low Priority"
+            );
             switch (AddItemMode) {
                 case 1:
                     // 1: insert to the end via adapter plus scroll
@@ -234,15 +271,6 @@ public class MainActivity extends AppCompatActivity
                     break;
             }
 
-            // hide keyboard
-            // View view = this.getCurrentFocus();
-            if (view != null) {
-                InputMethodManager imm =
-                        (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-            }
-
-            newItemEditText.setText("");
             writeItems();
         }
     }
@@ -355,14 +383,72 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
         );
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "TODO: will add an item", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
+        if (CoordinatorLayout == 2) {
+            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    MaterialDialog theDialog =
+                            new MaterialDialog.Builder(MainActivity.this)
+                                    .title(R.string.add_button)
+                                    .inputType(InputType.TYPE_CLASS_TEXT)
+                                    .positiveText(getString(R.string.save_button))
+                                    .inputRangeRes(1, 200, R.color.colorAccentLight)
+                                    .input(0, 0, new MaterialDialog.InputCallback() {
+                                        @Override
+                                        public void onInput(@NonNull MaterialDialog dialog,
+                                                            CharSequence input) {
+                                            addItem(input.toString());
+                                        }
+                                    }).build();
+                    theDialog.getInputEditText().setSingleLine(false);
+                    theDialog.show();
+                }
+            });
+
+            final AppBarLayout appbar = (AppBarLayout) findViewById(R.id.appbar);
+            appbar.addOnOffsetChangedListener(this);
+        }
+    }
+
+    // AppBarLayout.OnOffsetChangedListener
+    // http://stackoverflow.com/questions/32213783/detecting-when-appbarlayout-collapsingtoolbarlayout-is-completely-expanded
+    // http://stackoverflow.com/questions/31872653/how-can-i-determine-that-collapsingtoolbar-is-collapsed
+    // http://stackoverflow.com/questions/3072173/how-to-call-a-method-after-a-delay-in-android
+    // http://stackoverflow.com/questions/18671067/how-to-stop-handler-runnable
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int offset) {
+        /*
+        Log.d("MainActivity", "start");
+        Log.d("MainActivity", Integer.toString(appBarLayout.getTotalScrollRange()));
+        Log.d("MainActivity", Integer.toString(offset));
+        */
+        if (handler == null) {
+            handler = new Handler();
+        }
+        if (onOffsetChangedState == 0 && (appBarLayout.getTotalScrollRange() + offset) == 0) {
+            onOffsetChangedState = 1;
+            if (runnable != null) {
+                handler.removeCallbacks(runnable);
+                runnable = null;
             }
-        });
+            runnable = new Runnable() {
+                @Override
+                public void run() {
+                    glideRandomDrawable();
+                }
+            };
+            //Do something after 1 second
+            handler.postDelayed(runnable, 1000);
+        }
+        else if (onOffsetChangedState == 1 && (appBarLayout.getTotalScrollRange() + offset) > 30) {
+            if (runnable != null) {
+                handler.removeCallbacks(runnable);
+                runnable = null;
+            }
+            onOffsetChangedState = 0;
+        }
     }
 
     private void showMaterialDialog(int position){
@@ -383,7 +469,8 @@ public class MainActivity extends AppCompatActivity
                                     new MaterialDialog.Builder(MainActivity.this)
                                             .inputType(InputType.TYPE_CLASS_TEXT)
                                             .positiveText(getString(R.string.save_button))
-                                            .input("", itemText, false, new MaterialDialog.InputCallback() {
+                                            .inputRangeRes(1, 200, R.color.colorAccentLight)
+                                            .input(null, itemText, new MaterialDialog.InputCallback() {
                                                 @Override
                                                 public void onInput(@NonNull MaterialDialog dialog,
                                                                     CharSequence input) {
@@ -621,8 +708,18 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private static int getRandomCheeseDrawable() {
-        switch (RANDOM.nextInt(3)) {
+    private void glideRandomDrawable() {
+        Glide.with(MainActivity.this).load(getRandomDrawable()).centerCrop().into(imageView);
+    }
+
+    private static int getRandomDrawable() {
+        final int totalDrawable = 3;
+        int nextDrawable = RANDOM.nextInt(totalDrawable);
+        while (currentDrawable == nextDrawable) {
+            nextDrawable = RANDOM.nextInt(totalDrawable);
+        }
+        currentDrawable = nextDrawable;
+        switch (currentDrawable) {
             default:
             case 0:
                 return R.drawable.coffee_21;
