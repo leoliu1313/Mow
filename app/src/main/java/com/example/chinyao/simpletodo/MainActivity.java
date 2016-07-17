@@ -8,6 +8,8 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
@@ -47,7 +49,6 @@ import nl.qbusict.cupboard.QueryResultIterable;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
-// LISTENER
 public class MainActivity extends AppCompatActivity
         implements EditItemFragment.EditItemListener, CalendarDatePickerDialogFragment.OnDateSetListener {
 
@@ -55,8 +56,8 @@ public class MainActivity extends AppCompatActivity
     // 1: debug first time
     // 2: real first time
 
-    private final int DefaultItemCount = 20;
-    // for the first time
+    private final int DefaultDebugItemCount = 20;
+    // for debug first time
 
     private final int AddItemMode = 4;
     // 1: insert to the end via adapter plus scroll
@@ -66,11 +67,11 @@ public class MainActivity extends AppCompatActivity
 
     private final int BackEndMode = 2;
     // 1: file system
-    // 2: Cupboard
+    // 2: Cupboard for SQLiteDatabase
 
     private final int CustomAdapter = 2;
     // 1: ArrayAdapter
-    // 2: custom adapter
+    // 2: custom adapter for custom item view
 
     private final int UIMode = 3;
     // 1: Activity via Intent
@@ -80,25 +81,33 @@ public class MainActivity extends AppCompatActivity
     private final int CoordinatorLayout = 2;
     // styles.xml
     // 1: not CoordinatorLayout
-    // 2:     CoordinatorLayout
+    // 2:     CoordinatorLayout for CollapsingToolbarLayout
 
     // we need to use findViewById to get the following from layout
-    ListView lvItems;
-    EditText etNewItem;
+    private ListView itemsListView;
+    private EditText newItemEditText;
 
     // data
-    ArrayList<TodoModel> items;
+    private ArrayList<TodoModel> itemsArrayList;
 
-    // connect ArrayList and ListView
-    ArrayAdapter<TodoModel> itemsAdapter;
-    ItemAdapter itemsCustomAdapter; // custom adapter
+    // connect from ArrayList to ListView
+    private ArrayAdapter<TodoModel> itemsArrayAdapter;
+    private ItemAdapter itemsCustomAdapter;
 
-    private final int REQUEST_CODE = 5566; // Activity via Intent
-    private static final String TAG_CODE = "5566"; // DialogFragment Tag
+    // connect to MaterialDialog
+    private MaterialSimpleListAdapter materialDialogAdapter;
+
+    private SQLiteDatabase db;
+
+    private SimpleDateFormat sdf;
+
+    // Activity via Intent
+    private final int REQUEST_CODE = 5566;
+
+    // DialogFragment Tag for CalendarDatePickerDialogFragment.OnDateSetListener
+    private static final String TAG_CODE = "5566";
+
     private static final Random RANDOM = new Random();
-
-    SQLiteDatabase db;
-    SimpleDateFormat sdf;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,12 +145,12 @@ public class MainActivity extends AppCompatActivity
         }
 
         // need to use findViewById to get object from layout
-        lvItems = (ListView) findViewById(R.id.lvItems);
-        etNewItem = (EditText) findViewById(R.id.etNewItem);
+        itemsListView = (ListView) findViewById(R.id.lvItems);
+        newItemEditText = (EditText) findViewById(R.id.etNewItem);
 
         if (CoordinatorLayout == 2) {
             // scroll ListView in CoordinatorLayout
-            ViewCompat.setNestedScrollingEnabled(lvItems, true);
+            ViewCompat.setNestedScrollingEnabled(itemsListView, true);
         }
 
         sdf = new SimpleDateFormat("MM/dd/yyyy");
@@ -155,13 +164,13 @@ public class MainActivity extends AppCompatActivity
 
         //  connect ArrayList and ListView
         if (CustomAdapter == 1) {
-            itemsAdapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_list_item_1, items);
-            lvItems.setAdapter(itemsAdapter);
+            itemsArrayAdapter = new ArrayAdapter<>(this,
+                    android.R.layout.simple_list_item_1, itemsArrayList);
+            itemsListView.setAdapter(itemsArrayAdapter);
         }
         else if (CustomAdapter == 2) {
-            itemsCustomAdapter = new ItemAdapter(this, items);
-            lvItems.setAdapter(itemsCustomAdapter);
+            itemsCustomAdapter = new ItemAdapter(this, itemsArrayList);
+            itemsListView.setAdapter(itemsCustomAdapter);
         }
 
         setListener();
@@ -170,8 +179,111 @@ public class MainActivity extends AppCompatActivity
         // update this with DatabaseHelper.java and app/build.gradle
     }
 
-    public void setListener() {
-        lvItems.setOnItemLongClickListener(
+    // Activity via Intent
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            int position = data.getIntExtra("position", -1);
+            String content = data.getStringExtra("content");
+
+            if (position != -1) {
+                itemsArrayList.get(position).content = content; // need to notify
+                notifyItemsAdapter();
+
+                writeItems();
+            }
+        }
+    }
+
+    // onClick callback
+    public void onAddItem(View view) {
+        String itemText = newItemEditText.getText().toString();
+        TodoModel newItem = new TodoModel(itemText,
+                sdf.format(new Date()),
+                "Low Priority"
+        );
+        if (!itemText.isEmpty()) {
+            switch (AddItemMode) {
+                case 1:
+                    // 1: insert to the end via adapter plus scroll
+                    if (CustomAdapter == 1) {
+                        itemsArrayAdapter.add(newItem); // cannot add to the beginning
+                    }
+                    else if (CustomAdapter == 2) {
+                        itemsCustomAdapter.add(newItem); // cannot add to the beginning
+                    }
+                    itemsListView.smoothScrollToPosition(itemsListView.getCount() - 1);
+                    break;
+                case 2:
+                    // 2: insert to the end via data source plus no scroll
+                    itemsArrayList.add(newItem);
+                    break;
+                case 3:
+                    // 3: insert to the end via data source plus scroll
+                    itemsArrayList.add(newItem);
+                    notifyItemsAdapter();
+                    itemsListView.smoothScrollToPosition(itemsListView.getCount() - 1); // need to notify
+                    break;
+                case 4:
+                    // 4: insert to the beginning via data source plus scroll
+                    itemsArrayList.add(0, newItem); // need to notify
+                    notifyItemsAdapter();
+                    itemsListView.smoothScrollToPosition(0); // need to notify
+                    break;
+                default:
+                    break;
+            }
+
+            // hide keyboard
+            // View view = this.getCurrentFocus();
+            if (view != null) {
+                InputMethodManager imm =
+                        (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+
+            newItemEditText.setText("");
+            writeItems();
+        }
+    }
+
+    // EditItemFragment.EditItemListener
+    // This method is invoked in the activity when the listener is triggered
+    // Access the data result passed to the activity here
+    @Override
+    public void onFinishEditItemListener(int position, TodoModel theTodoModel) {
+        itemsArrayList.get(position).refresh(theTodoModel); // need to notify
+        notifyItemsAdapter();
+
+        writeItems();
+    }
+
+    // CalendarDatePickerDialogFragment.OnDateSetListener
+    @Override
+    public void onDateSet(CalendarDatePickerDialogFragment dialog,
+                          int year,
+                          int monthOfYear,
+                          int dayOfMonth) {
+        if (dialog.getTag() == TAG_CODE) {
+            int position = dialog.getArguments().getInt("position", -1);
+            if (position != -1) {
+                // TODO: try other libraries instead of android-betterpickers
+                // there is a month bug over here
+                itemsArrayList.get(position).date =
+                        String.format("%02d", monthOfYear + 1) + "/" +
+                                String.format("%02d", dayOfMonth) + "/" +
+                                String.format("%04d", year); // need to notify
+                notifyItemsAdapter();
+
+                writeItems();
+
+                notifyMaterialDialogAdapter(position);
+            }
+        }
+    }
+
+    private void setListener() {
+        itemsListView.setOnItemLongClickListener(
                 new AdapterView.OnItemLongClickListener() {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> adapter,
@@ -179,21 +291,18 @@ public class MainActivity extends AppCompatActivity
                                                    int position,
                                                    long id) {
                         if (UIMode == 1 || UIMode == 2) {
-                            items.remove(position); // need to notify
-                            notifyAdapter();
+                            itemsArrayList.remove(position); // need to notify
+                            notifyItemsAdapter();
 
                             writeItems();
                         }
                         else if (UIMode == 3) {
                             // TODO: find a better way instead of final int
                             final int position_tag = position;
-                            TodoModel theTodoModel = items.get(position);
+                            TodoModel theTodoModel = itemsArrayList.get(position);
                             new MaterialDialog.Builder(MainActivity.this)
                                     .title(getString(R.string.remove_item_title))
-                                    .content(theTodoModel.content + "\n\n" +
-                                             theTodoModel.date + "\n\n" +
-                                             theTodoModel.priority
-                                    )
+                                    .content(theTodoModel.content)
                                     .positiveText(getString(R.string.remove_item_pos))
                                     .negativeText(getString(R.string.remove_item_neg))
                                     .onAny(new MaterialDialog.SingleButtonCallback() {
@@ -202,8 +311,8 @@ public class MainActivity extends AppCompatActivity
                                                             @NonNull DialogAction which) {
                                             // which.name(); // enum > String
                                             if (which.equals(DialogAction.POSITIVE)) {
-                                                items.remove(position_tag); // need to notify
-                                                notifyAdapter();
+                                                itemsArrayList.remove(position_tag); // need to notify
+                                                notifyItemsAdapter();
 
                                                 writeItems();
                                             }
@@ -215,7 +324,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
         );
-        lvItems.setOnItemClickListener(
+        itemsListView.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapter,
@@ -234,10 +343,10 @@ public class MainActivity extends AppCompatActivity
                             startActivityForResult(data, REQUEST_CODE);
                         }
                         else if (UIMode == 2) {
-                            // LISTENER
+                            // EditItemFragment.EditItemListener
                             FragmentManager fm = getSupportFragmentManager();
                             EditItemFragment theFragment =
-                                    EditItemFragment.newInstance(position, items.get(position));
+                                    EditItemFragment.newInstance(position, itemsArrayList.get(position));
                             theFragment.show(fm, "fragment_edit_name");
                         }
                         else if (UIMode == 3) {
@@ -246,62 +355,28 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
         );
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            int position = data.getIntExtra("position", -1);
-            String content = data.getStringExtra("content");
-
-            if (position != -1) {
-                items.get(position).content = content; // need to notify
-                notifyAdapter();
-
-                writeItems();
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "TODO: will add an item", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
             }
-        }
+        });
     }
 
-    // LISTENER
-    // This method is invoked in the activity when the listener is triggered
-    // Access the data result passed to the activity here
-    @Override
-    public void onFinishEditItemListener(int position, TodoModel theTodoModel) {
-        items.get(position).refresh(theTodoModel); // need to notify
-        notifyAdapter();
-
-        writeItems();
-    }
-
-    public void showMaterialDialog(int position){
+    private void showMaterialDialog(int position){
         // TODO: find a better way instead of final int
         final int position_tag = position;
-        TodoModel theTodoModel = items.get(position);
-
-        final MaterialSimpleListAdapter adapter = new MaterialSimpleListAdapter(this);
-        adapter.add(new MaterialSimpleListItem.Builder(this)
-                .content(theTodoModel.content)
-                .icon(R.drawable.ic_bookmark_border_black_48dp)
-                .backgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimaryLight))
-                .build());
-        adapter.add(new MaterialSimpleListItem.Builder(this)
-                .content(theTodoModel.date)
-                .icon(R.drawable.ic_date_range_black_48dp)
-                .backgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorDateLight))
-                .build());
-        adapter.add(new MaterialSimpleListItem.Builder(this)
-                .content(theTodoModel.priority)
-                .icon(R.drawable.ic_priority_high_black_48dp)
-                .backgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorAccentLight))
-                .build());
+        materialDialogAdapter = new MaterialSimpleListAdapter(this);
+        materialDialogAdapter.addAll(createDataArrayList(itemsArrayList.get(position)));
 
         new MaterialDialog.Builder(this)
                 .title(getString(R.string.edit_item_title))
-                .adapter(adapter, new MaterialDialog.ListCallback() {
+                .adapter(materialDialogAdapter, new MaterialDialog.ListCallback() {
                     @Override
                     public void onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
-                        MaterialSimpleListItem item = adapter.getItem(which);
+                        MaterialSimpleListItem item = materialDialogAdapter.getItem(which);
                         String itemText = item.getContent().toString();
                         if (which == 0) {
                             MaterialDialog theDialog =
@@ -316,11 +391,13 @@ public class MainActivity extends AppCompatActivity
                                                     //         input.toString(),
                                                     //         Toast.LENGTH_SHORT).show();
 
-                                                    items.get(position_tag).content =
+                                                    itemsArrayList.get(position_tag).content =
                                                             input.toString(); // need to notify
-                                                    notifyAdapter();
+                                                    notifyItemsAdapter();
 
                                                     writeItems();
+
+                                                    notifyMaterialDialogAdapter(position_tag);
 
                                                     // showMaterialDialog(position_tag);
                                                 }
@@ -330,8 +407,9 @@ public class MainActivity extends AppCompatActivity
                         }
                         else if (which == 1) {
                             Calendar cal = Calendar.getInstance();
-                            cal.setTime(sdf.parse(items.get(position_tag).date,
+                            cal.setTime(sdf.parse(itemsArrayList.get(position_tag).date,
                                     new ParsePosition(0)));
+                            // CalendarDatePickerDialogFragment.OnDateSetListener
                             CalendarDatePickerDialogFragment cdp =
                                     new CalendarDatePickerDialogFragment()
                                             .setThemeCustom(R.style.DateTheme)
@@ -346,13 +424,13 @@ public class MainActivity extends AppCompatActivity
                         }
                         else if (which == 2) {
                             int preselectedIndex = -1;
-                            if (items.get(position_tag).priority.equals("Low Priority")) {
+                            if (itemsArrayList.get(position_tag).priority.equals("Low Priority")) {
                                 preselectedIndex = 2;
                             }
-                            else if (items.get(position_tag).priority.equals("Mid Priority")) {
+                            else if (itemsArrayList.get(position_tag).priority.equals("Mid Priority")) {
                                 preselectedIndex = 1;
                             }
-                            else if (items.get(position_tag).priority.equals("High Priority")) {
+                            else if (itemsArrayList.get(position_tag).priority.equals("High Priority")) {
                                 preselectedIndex = 0;
                             }
                             new MaterialDialog.Builder(MainActivity.this)
@@ -365,17 +443,19 @@ public class MainActivity extends AppCompatActivity
                                                                            int which,
                                                                            CharSequence text) {
                                                     if (which == 2) {
-                                                        items.get(position_tag).priority = "Low Priority";
+                                                        itemsArrayList.get(position_tag).priority = "Low Priority";
                                                     }
                                                     else if (which == 1) {
-                                                        items.get(position_tag).priority = "Mid Priority";
+                                                        itemsArrayList.get(position_tag).priority = "Mid Priority";
                                                     }
                                                     else if (which == 0) {
-                                                        items.get(position_tag).priority = "High Priority";
+                                                        itemsArrayList.get(position_tag).priority = "High Priority";
                                                     }
-                                                    notifyAdapter();
+                                                    notifyItemsAdapter();
 
                                                     writeItems();
+
+                                                    notifyMaterialDialogAdapter(position_tag);
 
                                                     return true; // allow selection
                                                 }
@@ -383,121 +463,70 @@ public class MainActivity extends AppCompatActivity
                                     .positiveText(getString(R.string.save_button))
                                     .show();
                         }
-                        dialog.dismiss();
+                        // dialog.dismiss();
                     }
                 })
-                .show();
+                .build().show();
     }
 
-    @Override
-    public void onDateSet(CalendarDatePickerDialogFragment dialog,
-                          int year,
-                          int monthOfYear,
-                          int dayOfMonth) {
-        int position = dialog.getArguments().getInt("position", -1);
-        if (position != -1) {
-            // TODO: try other libraries instead of android-betterpickers
-            // there is a month bug over here
-            items.get(position).date =
-                    String.format("%02d", monthOfYear + 1) + "/" +
-                    String.format("%02d", dayOfMonth) + "/" +
-                    String.format("%04d", year); // need to notify
-            notifyAdapter();
-
-            writeItems();
-        }
+    private ArrayList<MaterialSimpleListItem> createDataArrayList(TodoModel theTodoModel) {
+        ArrayList<MaterialSimpleListItem> dataArrayList = new ArrayList<>();
+        dataArrayList.add(new MaterialSimpleListItem.Builder(MainActivity.this)
+                .content(theTodoModel.content)
+                .icon(R.drawable.ic_bookmark_border_black_48dp)
+                .backgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimaryLight))
+                .build());
+        dataArrayList.add(new MaterialSimpleListItem.Builder(this)
+                .content(theTodoModel.date)
+                .icon(R.drawable.ic_date_range_black_48dp)
+                .backgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorDateLight))
+                .build());
+        dataArrayList.add(new MaterialSimpleListItem.Builder(this)
+                .content(theTodoModel.priority)
+                .icon(R.drawable.ic_priority_high_black_48dp)
+                .backgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorAccentLight))
+                .build());
+        return dataArrayList;
     }
 
-    public void onAddItem(View view) {
-        String itemText = etNewItem.getText().toString();
-        TodoModel newItem = new TodoModel(itemText,
-                sdf.format(new Date()),
-                "Low Priority"
-        );
-        if (!itemText.isEmpty()) {
-            switch (AddItemMode) {
-                case 1:
-                    // 1: insert to the end via adapter plus scroll
-                    if (CustomAdapter == 1) {
-                        itemsAdapter.add(newItem); // cannot add to the beginning
-                    }
-                    else if (CustomAdapter == 2) {
-                        itemsCustomAdapter.add(newItem); // cannot add to the beginning
-                    }
-                    lvItems.smoothScrollToPosition(lvItems.getCount() - 1);
-                    break;
-                case 2:
-                    // 2: insert to the end via data source plus no scroll
-                    items.add(newItem);
-                    break;
-                case 3:
-                    // 3: insert to the end via data source plus scroll
-                    items.add(newItem);
-                    notifyAdapter();
-                    lvItems.smoothScrollToPosition(lvItems.getCount() - 1); // need to notify
-                    break;
-                case 4:
-                    // 4: insert to the beginning via data source plus scroll
-                    items.add(0, newItem); // need to notify
-                    notifyAdapter();
-                    lvItems.smoothScrollToPosition(0); // need to notify
-                    break;
-                default:
-                    break;
-            }
-
-            // hide keyboard
-            // View view = this.getCurrentFocus();
-            if (view != null) {
-                InputMethodManager imm =
-                        (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-            }
-
-            etNewItem.setText("");
-            writeItems();
-        }
-    }
-
-    private void notifyAdapter() {
-        if (CustomAdapter == 1) {
-            itemsAdapter.notifyDataSetChanged();
-        }
-        else if (CustomAdapter == 2) {
-            itemsCustomAdapter.notifyDataSetChanged();
+    private void notifyMaterialDialogAdapter(int position_tag) {
+        if (materialDialogAdapter != null) {
+            materialDialogAdapter.clear();
+            materialDialogAdapter.addAll(createDataArrayList(itemsArrayList.get(position_tag)));
+            materialDialogAdapter.notifyDataSetChanged();
         }
     }
 
     private void defaultItems() {
-        items = new ArrayList<>();
+        itemsArrayList = new ArrayList<>();
         if (DefaultItemMode == 1) {
-            for (int index = DefaultItemCount; index >= 1; index--) {
-                items.add(new TodoModel("Item " + Integer.toString(index),
+            for (int index = DefaultDebugItemCount; index >= 1; index--) {
+                itemsArrayList.add(new TodoModel("Item " + Integer.toString(index),
                         sdf.format(new Date()),
                         "Low Priority"
                 ));
             }
         }
         else if (DefaultItemMode == 2) {
-            items.add(new TodoModel("My Birthday",
+            itemsArrayList.add(new TodoModel("My Birthday",
                     "08/08/2016",
                     "Low Priority"
             ));
-            items.add(new TodoModel("Google Keep\n" +
+            itemsArrayList.add(new TodoModel("Google Keep\n" +
                     "UI is awesome\n" +
                     "Try to implement it",
                     "07/31/2016",
                     "High Priority"
             ));
-            items.add(new TodoModel("Independence Day",
+            itemsArrayList.add(new TodoModel("Independence Day",
                     "07/04/2016",
                     "Low Priority"
             ));
-            items.add(new TodoModel("Game of Thrones",
+            itemsArrayList.add(new TodoModel("Game of Thrones",
                     "06/26/2016",
                     "Low Priority"
             ));
-            items.add(new TodoModel("CodePath Pre-work\n" +
+            itemsArrayList.add(new TodoModel("CodePath Pre-work\n" +
                     "Extend it : >",
                     "06/22/2016",
                     "High Priority"
@@ -513,7 +542,7 @@ public class MainActivity extends AppCompatActivity
                 ArrayList<String> inputs =
                         new ArrayList<String>(FileUtils.readLines(todoFile));
                 for (int index = 0; index < inputs.size(); index++) {
-                    items.add(new TodoModel(inputs.get(index),
+                    itemsArrayList.add(new TodoModel(inputs.get(index),
                             sdf.format(new Date()),
                             "Low Priority"
                     ));
@@ -549,11 +578,11 @@ public class MainActivity extends AppCompatActivity
                 QueryResultIterable<TodoModel> itr =
                         cupboard().withCursor(cursorTodoModel).iterate(TodoModel.class);
                 Iterator<TodoModel> it = itr.iterator();
-                items = new ArrayList<>();
+                itemsArrayList = new ArrayList<>();
                 while (it.hasNext()) {
                     TodoModel theTodoModel = it.next();
                     // do something with bunny
-                    items.add(0, theTodoModel);
+                    itemsArrayList.add(0, theTodoModel);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -569,7 +598,7 @@ public class MainActivity extends AppCompatActivity
             File filesDir = getFilesDir();
             File todoFile = new File(filesDir, "todo.txt");
             try {
-                FileUtils.writeLines(todoFile, items);
+                FileUtils.writeLines(todoFile, itemsArrayList);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -577,13 +606,22 @@ public class MainActivity extends AppCompatActivity
         else if (BackEndMode == 2) {
             // TODO: only update the necessary items instead of all
             cupboard().withDatabase(db).delete(TodoModel.class, null);
-            for (int index = 0; index < items.size(); index++) {
-                cupboard().withDatabase(db).put(items.get(index));
+            for (int index = 0; index < itemsArrayList.size(); index++) {
+                cupboard().withDatabase(db).put(itemsArrayList.get(index));
             }
         }
     }
 
-    public static int getRandomCheeseDrawable() {
+    private void notifyItemsAdapter() {
+        if (CustomAdapter == 1) {
+            itemsArrayAdapter.notifyDataSetChanged();
+        }
+        else if (CustomAdapter == 2) {
+            itemsCustomAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private static int getRandomCheeseDrawable() {
         switch (RANDOM.nextInt(3)) {
             default:
             case 0:
