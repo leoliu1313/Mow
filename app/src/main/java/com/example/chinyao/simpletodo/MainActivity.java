@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -106,6 +107,10 @@ public class MainActivity extends AppCompatActivity
         if (CoordinatorLayout == 2) {
             // http://guides.codepath.com/android/Design-Support-Library
             // http://guides.codepath.com/android/Handling-Scrolls-with-CoordinatorLayout
+            // https://inthecheesefactory.com/blog/android-design-support-library-codelab/en
+            // http://stackoverflow.com/questions/31738831/how-to-change-collapsingtoolbarlayout-typeface-and-size
+            // http://stackoverflow.com/questions/19691530/valid-values-for-androidfontfamily-and-what-they-map-to
+            // https://www.syntaxismyui.com/category/android/
             setContentView(R.layout.activity_detail);
             final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
@@ -113,6 +118,16 @@ public class MainActivity extends AppCompatActivity
             CollapsingToolbarLayout collapsingToolbar =
                     (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
             collapsingToolbar.setTitle(getString(R.string.app_name));
+
+            Typeface tf;
+            // tf = Typeface.createFromAsset(MainActivity.this.getAssets(), "fonts/FrutigerLTStd-Light.otf");
+            tf = collapsingToolbar.getExpandedTitleTypeface();
+            tf = Typeface.create(tf, Typeface.ITALIC); // BOLD_ITALIC
+            collapsingToolbar.setExpandedTitleTypeface(tf);
+            tf = collapsingToolbar.getCollapsedTitleTypeface();
+            tf = Typeface.create(tf, Typeface.ITALIC);
+            collapsingToolbar.setCollapsedTitleTypeface(tf);
+
             final ImageView imageView = (ImageView) findViewById(R.id.backdrop);
             Glide.with(this).load(getRandomCheeseDrawable()).centerCrop().into(imageView);
         }
@@ -125,7 +140,7 @@ public class MainActivity extends AppCompatActivity
         etNewItem = (EditText) findViewById(R.id.etNewItem);
 
         if (CoordinatorLayout == 2) {
-            // scroll ListView in CoordinatorLayout 
+            // scroll ListView in CoordinatorLayout
             ViewCompat.setNestedScrollingEnabled(lvItems, true);
         }
 
@@ -569,18 +584,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     public static int getRandomCheeseDrawable() {
-        switch (RANDOM.nextInt(5)) {
+        switch (RANDOM.nextInt(3)) {
             default:
             case 0:
-                return R.drawable.cheese_1;
+                return R.drawable.coffee_21;
             case 1:
-                return R.drawable.cheese_2;
+                return R.drawable.coffee_22;
             case 2:
-                return R.drawable.cheese_3;
-            case 3:
-                return R.drawable.cheese_4;
-            case 4:
-                return R.drawable.cheese_5;
+                return R.drawable.coffee_23;
         }
     }
 }

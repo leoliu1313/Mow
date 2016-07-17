@@ -25,4 +25,12 @@
         <item name="android:orientation">vertical</item>
     </style>
 
+    <style name="AppTheme.expandedTitle" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:fontFamily">"sans-serif-light"</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="AppTheme.collapsedTitle" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+    </style>
+
 </resources>
