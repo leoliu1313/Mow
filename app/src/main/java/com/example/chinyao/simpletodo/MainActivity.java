@@ -11,6 +11,9 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
@@ -53,7 +56,8 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 public class MainActivity extends AppCompatActivity
         implements EditItemFragment.EditItemListener,
         CalendarDatePickerDialogFragment.OnDateSetListener,
-        AppBarLayout.OnOffsetChangedListener {
+        AppBarLayout.OnOffsetChangedListener,
+        ItemPinnedMessageDialogFragment.EventListener {
 
     private final int DefaultItemMode = 2;
     // 1: debug first time
@@ -72,9 +76,10 @@ public class MainActivity extends AppCompatActivity
     // 1: file system
     // 2: Cupboard for SQLiteDatabase
 
-    private final int CustomAdapter = 2;
+    private final int CustomAdapter = 3;
     // 1: ArrayAdapter
     // 2: custom adapter for custom item view
+    // 3: android-advancedrecyclerview
 
     private final int UIMode = 3;
     // 1: Activity via Intent
@@ -120,6 +125,11 @@ public class MainActivity extends AppCompatActivity
     private Handler handler = null;
     private Runnable runnable = null;
 
+    // android-advancedrecyclerview
+    private static final String FRAGMENT_TAG_DATA_PROVIDER = "data provider";
+    private static final String FRAGMENT_LIST_VIEW = "list view";
+    private static final String FRAGMENT_TAG_ITEM_PINNED_DIALOG = "item pinned dialog";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -160,8 +170,10 @@ public class MainActivity extends AppCompatActivity
         newItemEditText = (EditText) findViewById(R.id.etNewItem);
 
         if (CoordinatorLayout == 2) {
-            // scroll ListView in CoordinatorLayout
-            ViewCompat.setNestedScrollingEnabled(itemsListView, true);
+            if (CustomAdapter != 3) {
+                // scroll ListView in CoordinatorLayout
+                ViewCompat.setNestedScrollingEnabled(itemsListView, true);
+            }
         }
 
         sdf = new SimpleDateFormat("MM/dd/yyyy");
@@ -173,15 +185,16 @@ public class MainActivity extends AppCompatActivity
         }
         readItems();
 
-        //  connect ArrayList and ListView
-        if (CustomAdapter == 1) {
-            itemsArrayAdapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_list_item_1, itemsArrayList);
-            itemsListView.setAdapter(itemsArrayAdapter);
-        }
-        else if (CustomAdapter == 2) {
-            itemsCustomAdapter = new ItemAdapter(this, itemsArrayList);
-            itemsListView.setAdapter(itemsCustomAdapter);
+        if (CustomAdapter != 3) {
+            //  connect ArrayList and ListView
+            if (CustomAdapter == 1) {
+                itemsArrayAdapter = new ArrayAdapter<>(this,
+                        android.R.layout.simple_list_item_1, itemsArrayList);
+                itemsListView.setAdapter(itemsArrayAdapter);
+            } else if (CustomAdapter == 2) {
+                itemsCustomAdapter = new ItemAdapter(this, itemsArrayList);
+                itemsListView.setAdapter(itemsCustomAdapter);
+            }
         }
 
         setListener();
@@ -240,35 +253,40 @@ public class MainActivity extends AppCompatActivity
                     sdf.format(new Date()),
                     "Low Priority"
             );
-            switch (AddItemMode) {
-                case 1:
-                    // 1: insert to the end via adapter plus scroll
-                    if (CustomAdapter == 1) {
-                        itemsArrayAdapter.add(newItem); // cannot add to the beginning
-                    }
-                    else if (CustomAdapter == 2) {
-                        itemsCustomAdapter.add(newItem); // cannot add to the beginning
-                    }
-                    itemsListView.smoothScrollToPosition(itemsListView.getCount() - 1);
-                    break;
-                case 2:
-                    // 2: insert to the end via data source plus no scroll
-                    itemsArrayList.add(newItem);
-                    break;
-                case 3:
-                    // 3: insert to the end via data source plus scroll
-                    itemsArrayList.add(newItem);
-                    notifyItemsAdapter();
-                    itemsListView.smoothScrollToPosition(itemsListView.getCount() - 1); // need to notify
-                    break;
-                case 4:
-                    // 4: insert to the beginning via data source plus scroll
-                    itemsArrayList.add(0, newItem); // need to notify
-                    notifyItemsAdapter();
-                    itemsListView.smoothScrollToPosition(0); // need to notify
-                    break;
-                default:
-                    break;
+            if (UIMode != 3) {
+                switch (AddItemMode) {
+                    case 1:
+                        // 1: insert to the end via adapter plus scroll
+                        if (CustomAdapter == 1) {
+                            itemsArrayAdapter.add(newItem); // cannot add to the beginning
+                        } else if (CustomAdapter == 2) {
+                            itemsCustomAdapter.add(newItem); // cannot add to the beginning
+                        }
+                        itemsListView.smoothScrollToPosition(itemsListView.getCount() - 1);
+                        break;
+                    case 2:
+                        // 2: insert to the end via data source plus no scroll
+                        itemsArrayList.add(newItem);
+                        break;
+                    case 3:
+                        // 3: insert to the end via data source plus scroll
+                        itemsArrayList.add(newItem);
+                        notifyItemsAdapter();
+                        itemsListView.smoothScrollToPosition(itemsListView.getCount() - 1); // need to notify
+                        break;
+                    case 4:
+                        // 4: insert to the beginning via data source plus scroll
+                        itemsArrayList.add(0, newItem); // need to notify
+                        notifyItemsAdapter();
+                        itemsListView.smoothScrollToPosition(0); // need to notify
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else if (UIMode == 3) {
+                itemsArrayList.add(0, newItem); // need to notify
+                getDataProvider().addItem(newItem);
             }
 
             writeItems();
@@ -311,78 +329,77 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setListener() {
-        itemsListView.setOnItemLongClickListener(
-                new AdapterView.OnItemLongClickListener() {
-                    @Override
-                    public boolean onItemLongClick(AdapterView<?> adapter,
-                                                   View item,
-                                                   int position,
-                                                   long id) {
-                        if (UIMode == 1 || UIMode == 2) {
-                            itemsArrayList.remove(position); // need to notify
-                            notifyItemsAdapter();
+        if (CustomAdapter != 3) {
+            itemsListView.setOnItemLongClickListener(
+                    new AdapterView.OnItemLongClickListener() {
+                        @Override
+                        public boolean onItemLongClick(AdapterView<?> adapter,
+                                                       View item,
+                                                       int position,
+                                                       long id) {
+                            if (UIMode == 1 || UIMode == 2) {
+                                itemsArrayList.remove(position); // need to notify
+                                notifyItemsAdapter();
 
-                            writeItems();
-                        }
-                        else if (UIMode == 3) {
-                            // TODO: find a better way instead of final int
-                            final int position_tag = position;
-                            TodoModel theTodoModel = itemsArrayList.get(position);
-                            new MaterialDialog.Builder(MainActivity.this)
-                                    .title(getString(R.string.remove_item_title))
-                                    .content(theTodoModel.content)
-                                    .positiveText(getString(R.string.remove_item_pos))
-                                    .negativeText(getString(R.string.remove_item_neg))
-                                    .onAny(new MaterialDialog.SingleButtonCallback() {
-                                        @Override
-                                        public void onClick(@NonNull MaterialDialog dialog,
-                                                            @NonNull DialogAction which) {
-                                            // which.name(); // enum > String
-                                            if (which.equals(DialogAction.POSITIVE)) {
-                                                itemsArrayList.remove(position_tag); // need to notify
-                                                notifyItemsAdapter();
+                                writeItems();
+                            } else if (UIMode == 3) {
+                                // TODO: find a better way instead of final int
+                                final int position_tag = position;
+                                TodoModel theTodoModel = itemsArrayList.get(position);
+                                new MaterialDialog.Builder(MainActivity.this)
+                                        .title(getString(R.string.remove_item_title))
+                                        .content(theTodoModel.content)
+                                        .positiveText(getString(R.string.remove_item_pos))
+                                        .negativeText(getString(R.string.remove_item_neg))
+                                        .onAny(new MaterialDialog.SingleButtonCallback() {
+                                            @Override
+                                            public void onClick(@NonNull MaterialDialog dialog,
+                                                                @NonNull DialogAction which) {
+                                                // which.name(); // enum > String
+                                                if (which.equals(DialogAction.POSITIVE)) {
+                                                    itemsArrayList.remove(position_tag); // need to notify
+                                                    notifyItemsAdapter();
 
-                                                writeItems();
+                                                    writeItems();
+                                                }
                                             }
-                                        }
-                                    })
-                                    .show();
-                        }
-                        return true;
-                    }
-                }
-        );
-        itemsListView.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapter,
-                                            View item,
-                                            int position,
-                                            long id) {
-                        if (UIMode == 1) {
-                            Intent data = new Intent(MainActivity.this, EditItemActivity.class);
-                            data.putExtra("position", position);
-                            if (CustomAdapter == 1) {
-                                data.putExtra("content", ((TextView) item).getText().toString());
-                            } else if (CustomAdapter == 2) {
-                                data.putExtra("content",
-                                        ((TextView) ((RelativeLayout) item).getChildAt(0)).getText().toString());
+                                        })
+                                        .show();
                             }
-                            startActivityForResult(data, REQUEST_CODE);
-                        }
-                        else if (UIMode == 2) {
-                            // EditItemFragment.EditItemListener
-                            FragmentManager fm = getSupportFragmentManager();
-                            EditItemFragment theFragment =
-                                    EditItemFragment.newInstance(position, itemsArrayList.get(position));
-                            theFragment.show(fm, "fragment_edit_name");
-                        }
-                        else if (UIMode == 3) {
-                            showMaterialDialog(position);
+                            return true;
                         }
                     }
-                }
-        );
+            );
+            itemsListView.setOnItemClickListener(
+                    new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapter,
+                                                View item,
+                                                int position,
+                                                long id) {
+                            if (UIMode == 1) {
+                                Intent data = new Intent(MainActivity.this, EditItemActivity.class);
+                                data.putExtra("position", position);
+                                if (CustomAdapter == 1) {
+                                    data.putExtra("content", ((TextView) item).getText().toString());
+                                } else if (CustomAdapter == 2) {
+                                    data.putExtra("content",
+                                            ((TextView) ((RelativeLayout) item).getChildAt(0)).getText().toString());
+                                }
+                                startActivityForResult(data, REQUEST_CODE);
+                            } else if (UIMode == 2) {
+                                // EditItemFragment.EditItemListener
+                                FragmentManager fm = getSupportFragmentManager();
+                                EditItemFragment theFragment =
+                                        EditItemFragment.newInstance(position, itemsArrayList.get(position));
+                                theFragment.show(fm, "fragment_edit_name");
+                            } else if (UIMode == 3) {
+                                showMaterialDialog(position);
+                            }
+                        }
+                    }
+            );
+        }
 
         if (CoordinatorLayout == 2) {
             FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -409,6 +426,15 @@ public class MainActivity extends AppCompatActivity
 
             final AppBarLayout appbar = (AppBarLayout) findViewById(R.id.appbar);
             appbar.addOnOffsetChangedListener(this);
+        }
+
+        if (CustomAdapter == 3) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(new ExampleDataProviderFragment().addItems(itemsArrayList), FRAGMENT_TAG_DATA_PROVIDER)
+                    .commit();
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, new SwipeableExampleFragment(), FRAGMENT_LIST_VIEW)
+                    .commit();
         }
     }
 
@@ -727,6 +753,69 @@ public class MainActivity extends AppCompatActivity
                 return R.drawable.coffee_22;
             case 2:
                 return R.drawable.coffee_23;
+        }
+    }
+
+    // android-advancedrecyclerview
+    // ItemPinnedMessageDialogFragment.EventListener
+    public void onNotifyItemPinnedDialogDismissed(int position, boolean ok) {
+        /*
+        final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_LIST_VIEW);
+        getDataProvider().getItem(position).setPinned(ok);
+        ((SwipeableExampleFragment) fragment).notifyItemChanged(position);
+        */
+    }
+
+    public ExampleDataProvider getDataProvider() {
+        final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_DATA_PROVIDER);
+        return ((ExampleDataProviderFragment) fragment).getDataProvider();
+    }
+
+    // android-advancedrecyclerview
+    public void onItemRemoved(int position) {
+        Snackbar snackbar = Snackbar.make(
+                findViewById(R.id.container),
+                R.string.snack_bar_text_item_removed,
+                Snackbar.LENGTH_LONG);
+
+        snackbar.setAction(R.string.snack_bar_action_undo, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemUndoActionClicked();
+            }
+        });
+        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.snackbar_action_color_done));
+        snackbar.show();
+    }
+
+    // android-advancedrecyclerview
+    private void onItemUndoActionClicked() {
+        int position = getDataProvider().undoLastRemoval();
+        if (position >= 0) {
+            final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_LIST_VIEW);
+            ((SwipeableExampleFragment) fragment).notifyItemInserted(position);
+        }
+    }
+
+    // android-advancedrecyclerview
+    public void onItemPinned(int position) {
+        final DialogFragment dialog = ItemPinnedMessageDialogFragment.newInstance(position);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(dialog, FRAGMENT_TAG_ITEM_PINNED_DIALOG)
+                .commit();
+    }
+
+    // android-advancedrecyclerview
+    public void onItemClicked(int position) {
+        final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_LIST_VIEW);
+        AbstractDataProvider.Data data = getDataProvider().getItem(position);
+
+        if (data.isPinned()) {
+            // unpin if tapped the pinned item
+            data.setPinned(false);
+            ((SwipeableExampleFragment) fragment).notifyItemChanged(position);
         }
     }
 }

@@ -23,7 +23,9 @@
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleMarginStart="48dp"
-            app:expandedTitleMarginEnd="64dp">
+            app:expandedTitleMarginEnd="64dp"
+            app:expandedTitleTextAppearance="@style/AppTheme.expandedTitle"
+            app:collapsedTitleTextAppearance="@style/AppTheme.collapsedTitle" >
 
             <ImageView
                 android:id="@+id/backdrop"
@@ -37,7 +39,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
                 app:layout_collapseMode="pin" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
@@ -45,11 +47,12 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         app:layout_anchor="@id/appbar"
         app:layout_anchorGravity="bottom|right|end"
-        android:src="@drawable/ic_discuss"
+        android:src="@drawable/ic_add_white_24dp"
         android:layout_margin="@dimen/fab_margin"
         android:clickable="true"/>
 
@@ -60,7 +63,7 @@
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingTop="@dimen/activity_vertical_margin_double"
         tools:context="com.example.chinyao.simpletodo.MainActivity"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
@@ -75,29 +78,6 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/etNewItem"
-            android:layout_alignBottom="@+id/btnAddItem"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_toLeftOf="@+id/btnAddItem"
-            android:layout_toStartOf="@+id/btnAddItem"
-            android:singleLine="true"
-            android:hint="@string/add_item_hint" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/add_button"
-            android:id="@+id/btnAddItem"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:onClick="onAddItem"
-            android:backgroundTint="@color/colorAccent" />
 
     </LinearLayout>
 

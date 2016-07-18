@@ -35,4 +35,7 @@ dependencies {
     compile 'com.afollestad.material-dialogs:commons:0.8.6.0'
     compile 'com.code-troopers.betterpickers:library:2.5.6'
     compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile ('com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.9.2@aar'){
+        transitive=true
+    }
 }
