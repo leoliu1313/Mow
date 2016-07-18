@@ -319,6 +319,7 @@ public class MainActivity extends AppCompatActivity
                                 String.format("%02d", dayOfMonth) + "/" +
                                 String.format("%04d", year); // need to notify
                 notifyDataSetChanged();
+                notifyItemChanged(position);
 
                 writeItems();
 
@@ -521,11 +522,7 @@ public class MainActivity extends AppCompatActivity
                                                     itemsArrayList.get(position_tag).content =
                                                             input.toString(); // need to notify
                                                     notifyDataSetChanged();
-
-                                                    if (CustomAdapter == 3) {
-                                                        getDataProvider().editItem(position_tag, input.toString());
-                                                        notifyItemChanged(position_tag);
-                                                    }
+                                                    notifyItemChanged(position_tag);
 
                                                     writeItems();
 
@@ -584,6 +581,7 @@ public class MainActivity extends AppCompatActivity
                                                         itemsArrayList.get(position_tag).priority = "High Priority";
                                                     }
                                                     notifyDataSetChanged();
+                                                    notifyItemChanged(position_tag);
 
                                                     writeItems();
 
