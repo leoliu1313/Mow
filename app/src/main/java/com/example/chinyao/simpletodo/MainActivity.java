@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity
         }
         else if (CoordinatorLayout == 2) {
             Snackbar.make(findViewById(R.id.fab),
-                          "Version 1607181451",
+                          "Version 1607181526",
                           Snackbar.LENGTH_LONG)
                     .setAction("Action", null)
                     .show();
