@@ -802,10 +802,12 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 onItemUndoActionClicked();
+                writeItems();
             }
         });
         snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.snackbar_action_color_done));
         snackbar.show();
+        writeItems();
     }
 
     // android-advancedrecyclerview
