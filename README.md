@@ -29,9 +29,17 @@ The following **additional** features are implemented:
 * [x] Avoid showing keyboard when app switches from another app with keyboard open
 * [x] Hide keyboard after adding an item
 * [x] Improve performance of custom ArrayAdapter with ViewHolder pattern
-* [x] Support other Dialog libraries such as material-dialogs and android-betterpickers
+* [x] Use other Dialog libraries such as afollestad/material-dialogs and code-troopers/android-betterpickers
 * [x] Support Yes/No Dialog when removing an item
 * [x] Scroll to top after adding an item to the top of the list
+* [x] Use CoordinatorLayout, CollapsingToolbarLayout
+* [x] Use parallax ImageView with bumptech/glide
+* [x] Change random image when CollapsingToolbarLayout is collapsed
+* [x] Support DialogFragment stack by updating the data in the previous DialogFragment
+* [x] Use RecyclerView with h6ah4i/android-advancedrecyclerview
+* [x] Swipe right to delete an item
+* [x] Undo a delete
+* [ ] Use CardView
 * [ ] Flash on the new added item
 * [ ] Scroll the new edited item to top after editing an item
 * [ ] Flash on the new edited item

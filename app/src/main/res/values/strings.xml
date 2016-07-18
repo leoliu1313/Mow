@@ -48,7 +48,7 @@
     <string name="activity_title_demo_e_already_expanded">Expandable (Groups already expanded)</string>
     <string name="activity_title_demo_s_vertical">Swipeable (Vertical)</string>
     <string name="activity_title_demo_s_viewpager">Swipeable with ViewPager</string>
-    <string name="snack_bar_text_item_removed">1 item removed</string>
+    <string name="snack_bar_text_item_removed">Item was removed!</string>
     <string name="snack_bar_text_group_item_removed">1 group item removed</string>
     <string name="snack_bar_text_child_item_removed">1 child item removed</string>
     <string name="snack_bar_text_button_clicked">Button clicked! (position = %1$d)</string>
