@@ -9,7 +9,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 24
         versionCode 1
-        versionName "2.16.07181348"
+        versionName "16.0718.1451"
         // 1607170156
         // update this with MainActivity.java and DatabaseHelper.java and app/build.gradle
     }

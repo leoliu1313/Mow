@@ -203,13 +203,13 @@ public class MainActivity extends AppCompatActivity
         // update this with DatabaseHelper.java and app/build.gradle
         if (CoordinatorLayout == 1) {
             Toast.makeText(this,
-                           "Version 1607181348",
+                           "Version 1607181451",
                            Toast.LENGTH_SHORT)
                  .show();
         }
         else if (CoordinatorLayout == 2) {
             Snackbar.make(findViewById(R.id.fab),
-                          "Version 1607181348",
+                          "Version 1607181451",
                           Snackbar.LENGTH_LONG)
                     .setAction("Action", null)
                     .show();
