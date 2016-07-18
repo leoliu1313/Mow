@@ -58,7 +58,7 @@ public class ExampleDataProvider extends AbstractDataProvider {
     }
 
     @Override
-    public Data getItem(int index) {
+    public TodoModel getItem(int index) {
         if (index < 0 || index >= getCount()) {
             throw new IndexOutOfBoundsException("index = " + index);
         }

@@ -180,7 +180,7 @@ public class SwipeableExampleFragment extends Fragment {
         return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
     }
 
-    public AbstractDataProvider getDataProvider() {
+    public ExampleDataProvider getDataProvider() {
         return ((MainActivity) getActivity()).getDataProvider();
     }
 

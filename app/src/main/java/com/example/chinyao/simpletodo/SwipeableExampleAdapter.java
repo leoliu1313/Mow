@@ -42,7 +42,7 @@ class SwipeableExampleAdapter
     private interface Swipeable extends SwipeableItemConstants {
     }
 
-    private AbstractDataProvider mProvider;
+    private ExampleDataProvider mProvider;
     private EventListener mEventListener;
     private View.OnClickListener mItemViewOnClickListener;
     private View.OnClickListener mSwipeableViewContainerOnClickListener;
@@ -60,12 +60,16 @@ class SwipeableExampleAdapter
 
     public static class MyViewHolder extends AbstractSwipeableItemViewHolder {
         public RelativeLayout mContainer;
-        public TextView mTextView;
+        public TextView mContent;
+        public TextView mDate;
+        public TextView mPriority;
 
         public MyViewHolder(View v) {
             super(v);
             mContainer = (RelativeLayout) v.findViewById(R.id.container);
-            mTextView = (TextView) v.findViewById(R.id.itemContent);
+            mContent = (TextView) v.findViewById(R.id.itemContent);
+            mDate = (TextView) v.findViewById(R.id.itemDate);
+            mPriority = (TextView) v.findViewById(R.id.itemPriority);
         }
 
         @Override
@@ -74,7 +78,7 @@ class SwipeableExampleAdapter
         }
     }
 
-    public SwipeableExampleAdapter(AbstractDataProvider dataProvider) {
+    public SwipeableExampleAdapter(ExampleDataProvider dataProvider) {
         mProvider = dataProvider;
         mItemViewOnClickListener = new View.OnClickListener() {
             @Override
@@ -140,7 +144,7 @@ class SwipeableExampleAdapter
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        final AbstractDataProvider.Data item = mProvider.getItem(position);
+        final TodoModel item = mProvider.getItem(position);
 
         // set listeners
         // (if the item is *pinned*, click event comes to the itemView)
@@ -150,7 +154,9 @@ class SwipeableExampleAdapter
         holder.mContainer.setOnLongClickListener(mSwipeableViewContainerOnLongClickListener);
 
         // set text
-        holder.mTextView.setText(item.getText());
+        holder.mContent.setText(item.content);
+        holder.mDate.setText(item.date);
+        holder.mPriority.setText(item.priority);
 
         // set background resource (target view ID: container)
         final int swipeState = holder.getSwipeStateFlags();
