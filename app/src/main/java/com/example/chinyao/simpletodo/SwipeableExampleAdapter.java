@@ -21,7 +21,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.SwipeableItemAdapter;
@@ -59,13 +59,13 @@ class SwipeableExampleAdapter
     }
 
     public static class MyViewHolder extends AbstractSwipeableItemViewHolder {
-        public FrameLayout mContainer;
+        public RelativeLayout mContainer;
         public TextView mTextView;
 
         public MyViewHolder(View v) {
             super(v);
-            mContainer = (FrameLayout) v.findViewById(R.id.container);
-            mTextView = (TextView) v.findViewById(android.R.id.text1);
+            mContainer = (RelativeLayout) v.findViewById(R.id.container);
+            mTextView = (TextView) v.findViewById(R.id.itemContent);
         }
 
         @Override
