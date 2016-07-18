@@ -137,8 +137,10 @@ class SwipeableExampleAdapter
         final int swipeState = holder.getSwipeStateFlags();
 
         if ((swipeState & Swipeable.STATE_FLAG_IS_UPDATED) != 0) {
-            int bgResId;
+            int bgResId = R.drawable.bg_item_normal_state;
 
+            // FIX: avoid changing background color when swiping
+            /*
             if ((swipeState & Swipeable.STATE_FLAG_IS_ACTIVE) != 0) {
                 bgResId = R.drawable.bg_item_swiping_active_state;
             } else if ((swipeState & Swipeable.STATE_FLAG_SWIPING) != 0) {
@@ -146,6 +148,7 @@ class SwipeableExampleAdapter
             } else {
                 bgResId = R.drawable.bg_item_normal_state;
             }
+            */
 
             holder.mContainer.setBackgroundResource(bgResId);
         }
@@ -162,7 +165,9 @@ class SwipeableExampleAdapter
 
     @Override
     public int onGetSwipeReactionType(MyViewHolder holder, int position, int x, int y) {
-        return Swipeable.REACTION_CAN_SWIPE_BOTH_H;
+        // FIX: swipe right instead of both
+        return Swipeable.REACTION_CAN_SWIPE_RIGHT;
+        // return Swipeable.REACTION_CAN_SWIPE_BOTH_H;
     }
 
     @Override

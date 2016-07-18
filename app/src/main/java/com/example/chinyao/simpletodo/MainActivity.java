@@ -377,25 +377,7 @@ public class MainActivity extends AppCompatActivity
                                                 View item,
                                                 int position,
                                                 long id) {
-                            if (UIMode == 1) {
-                                Intent data = new Intent(MainActivity.this, EditItemActivity.class);
-                                data.putExtra("position", position);
-                                if (CustomAdapter == 1) {
-                                    data.putExtra("content", ((TextView) item).getText().toString());
-                                } else if (CustomAdapter == 2) {
-                                    data.putExtra("content",
-                                            ((TextView) ((RelativeLayout) item).getChildAt(0)).getText().toString());
-                                }
-                                startActivityForResult(data, REQUEST_CODE);
-                            } else if (UIMode == 2) {
-                                // EditItemFragment.EditItemListener
-                                FragmentManager fm = getSupportFragmentManager();
-                                EditItemFragment theFragment =
-                                        EditItemFragment.newInstance(position, itemsArrayList.get(position));
-                                theFragment.show(fm, "fragment_edit_name");
-                            } else if (UIMode == 3) {
-                                showMaterialDialog(position);
-                            }
+                            editItem(item, position);
                         }
                     }
             );
@@ -435,6 +417,28 @@ public class MainActivity extends AppCompatActivity
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new SwipeableExampleFragment(), FRAGMENT_LIST_VIEW)
                     .commit();
+        }
+    }
+
+    void editItem(View item, int position) {
+        if (UIMode == 1) {
+            Intent data = new Intent(MainActivity.this, EditItemActivity.class);
+            data.putExtra("position", position);
+            if (CustomAdapter == 1) {
+                data.putExtra("content", ((TextView) item).getText().toString());
+            } else if (CustomAdapter == 2) {
+                data.putExtra("content",
+                        ((TextView) ((RelativeLayout) item).getChildAt(0)).getText().toString());
+            }
+            startActivityForResult(data, REQUEST_CODE);
+        } else if (UIMode == 2) {
+            // EditItemFragment.EditItemListener
+            FragmentManager fm = getSupportFragmentManager();
+            EditItemFragment theFragment =
+                    EditItemFragment.newInstance(position, itemsArrayList.get(position));
+            theFragment.show(fm, "fragment_edit_name");
+        } else if (UIMode == 3) {
+            showMaterialDialog(position);
         }
     }
 
@@ -507,6 +511,12 @@ public class MainActivity extends AppCompatActivity
                                                     itemsArrayList.get(position_tag).content =
                                                             input.toString(); // need to notify
                                                     notifyItemsAdapter();
+
+                                                    if (UIMode == 3) {
+                                                        getDataProvider().editItem(position_tag, input.toString());
+                                                        final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_LIST_VIEW);
+                                                        ((SwipeableExampleFragment) fragment).notifyItemChanged(position_tag);
+                                                    }
 
                                                     writeItems();
 
@@ -817,5 +827,7 @@ public class MainActivity extends AppCompatActivity
             data.setPinned(false);
             ((SwipeableExampleFragment) fragment).notifyItemChanged(position);
         }
+
+        editItem(null, position);
     }
 }

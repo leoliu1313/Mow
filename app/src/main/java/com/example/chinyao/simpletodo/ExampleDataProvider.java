@@ -62,6 +62,10 @@ public class ExampleDataProvider extends AbstractDataProvider {
         mData.add(0, new ConcreteData(id, viewType, text, swipeReaction));
     }
 
+    public void editItem(int position, String content) {
+        mData.get(position).mText = content;
+    }
+
     @Override
     public int getCount() {
         return mData.size();
@@ -130,9 +134,9 @@ public class ExampleDataProvider extends AbstractDataProvider {
 
     public static final class ConcreteData extends Data {
 
-        private final long mId;
-        private final String mText;
-        private final int mViewType;
+        private long mId;
+        private String mText;
+        private int mViewType;
         private boolean mPinned;
 
         ConcreteData(long id, int viewType, String text, int swipeReaction) {
