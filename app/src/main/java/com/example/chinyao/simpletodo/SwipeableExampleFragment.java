@@ -192,4 +192,8 @@ public class SwipeableExampleFragment extends Fragment {
         mAdapter.notifyItemInserted(position);
         mRecyclerView.scrollToPosition(position);
     }
+
+    public void notifyItemRemoved(int position) {
+        mAdapter.notifyItemRemoved(position);
+    }
 }

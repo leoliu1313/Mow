@@ -130,6 +130,7 @@ public class MainActivity extends AppCompatActivity
     private static final String FRAGMENT_TAG_DATA_PROVIDER = "data provider";
     private static final String FRAGMENT_LIST_VIEW = "list view";
     private static final String FRAGMENT_TAG_ITEM_PINNED_DIALOG = "item pinned dialog";
+    private SwipeableExampleFragment theSwipeableExampleFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -224,7 +225,7 @@ public class MainActivity extends AppCompatActivity
 
             if (position != -1) {
                 itemsArrayList.get(position).content = content; // need to notify
-                notifyItemsAdapter();
+                notifyDataSetChanged();
 
                 writeItems();
             }
@@ -269,13 +270,13 @@ public class MainActivity extends AppCompatActivity
                     case 3:
                         // 3: insert to the end via data source plus scroll
                         itemsArrayList.add(newItem);
-                        notifyItemsAdapter();
+                        notifyDataSetChanged();
                         itemsListView.smoothScrollToPosition(itemsListView.getCount() - 1); // need to notify
                         break;
                     case 4:
                         // 4: insert to the beginning via data source plus scroll
                         itemsArrayList.add(0, newItem); // need to notify
-                        notifyItemsAdapter();
+                        notifyDataSetChanged();
                         itemsListView.smoothScrollToPosition(0); // need to notify
                         break;
                     default:
@@ -284,7 +285,7 @@ public class MainActivity extends AppCompatActivity
             }
             else if (CustomAdapter == 3) {
                 itemsArrayList.add(0, newItem); // need to notify
-                getDataProvider().addItem(newItem);
+                // getDataProvider().addItem(newItem);
             }
 
             writeItems();
@@ -297,7 +298,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFinishEditItemListener(int position, TodoModel theTodoModel) {
         itemsArrayList.get(position).refresh(theTodoModel); // need to notify
-        notifyItemsAdapter();
+        notifyDataSetChanged();
 
         writeItems();
     }
@@ -317,7 +318,7 @@ public class MainActivity extends AppCompatActivity
                         String.format("%02d", monthOfYear + 1) + "/" +
                                 String.format("%02d", dayOfMonth) + "/" +
                                 String.format("%04d", year); // need to notify
-                notifyItemsAdapter();
+                notifyDataSetChanged();
 
                 writeItems();
 
@@ -383,6 +384,7 @@ public class MainActivity extends AppCompatActivity
             getSupportFragmentManager().beginTransaction()
                     .add(new ExampleDataProviderFragment().addItems(itemsArrayList), FRAGMENT_TAG_DATA_PROVIDER)
                     .commit();
+            theSwipeableExampleFragment = new SwipeableExampleFragment();
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new SwipeableExampleFragment(), FRAGMENT_LIST_VIEW)
                     .commit();
@@ -414,7 +416,7 @@ public class MainActivity extends AppCompatActivity
     boolean removeItem(int position) {
         if (UIMode == 1 || UIMode == 2) {
             itemsArrayList.remove(position); // need to notify
-            notifyItemsAdapter();
+            notifyDataSetChanged();
 
             writeItems();
         } else if (UIMode == 3) {
@@ -433,11 +435,12 @@ public class MainActivity extends AppCompatActivity
                             // which.name(); // enum > String
                             if (which.equals(DialogAction.POSITIVE)) {
                                 itemsArrayList.remove(position_tag); // need to notify
-                                notifyItemsAdapter();
+                                notifyDataSetChanged();
 
                                 if (CustomAdapter == 3) {
-                                    getDataProvider().removeItem(position_tag);
-                                    notifyItemsAdapter(position_tag);
+                                    // getDataProvider().removeItem(position_tag);
+                                    final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_LIST_VIEW);
+                                    ((SwipeableExampleFragment) fragment).notifyItemRemoved(position_tag);
                                 }
 
                                 writeItems();
@@ -517,11 +520,11 @@ public class MainActivity extends AppCompatActivity
 
                                                     itemsArrayList.get(position_tag).content =
                                                             input.toString(); // need to notify
-                                                    notifyItemsAdapter();
+                                                    notifyDataSetChanged();
 
                                                     if (CustomAdapter == 3) {
                                                         getDataProvider().editItem(position_tag, input.toString());
-                                                        notifyItemsAdapter(position_tag);
+                                                        notifyItemChanged(position_tag);
                                                     }
 
                                                     writeItems();
@@ -580,7 +583,7 @@ public class MainActivity extends AppCompatActivity
                                                     else if (which == 0) {
                                                         itemsArrayList.get(position_tag).priority = "High Priority";
                                                     }
-                                                    notifyItemsAdapter();
+                                                    notifyDataSetChanged();
 
                                                     writeItems();
 
@@ -741,7 +744,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void notifyItemsAdapter() {
+    private void notifyDataSetChanged() {
         if (CustomAdapter == 1) {
             itemsArrayAdapter.notifyDataSetChanged();
         }
@@ -750,7 +753,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void notifyItemsAdapter(int position) {
+    private void notifyItemChanged(int position) {
         if (CustomAdapter == 3) {
             final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_LIST_VIEW);
             ((SwipeableExampleFragment) fragment).notifyItemChanged(position);
@@ -783,7 +786,7 @@ public class MainActivity extends AppCompatActivity
     // ItemPinnedMessageDialogFragment.EventListener
     public void onNotifyItemPinnedDialogDismissed(int position, boolean ok) {
         getDataProvider().getItem(position).setPinned(ok);
-        notifyItemsAdapter(position);
+        notifyItemChanged(position);
     }
 
     public ExampleDataProvider getDataProvider() {
@@ -836,7 +839,7 @@ public class MainActivity extends AppCompatActivity
         if (data.isPinned()) {
             // unpin if tapped the pinned item
             data.setPinned(false);
-            notifyItemsAdapter(position);
+            notifyItemChanged(position);
         }
         else {
             editItem(null, position);
@@ -850,7 +853,7 @@ public class MainActivity extends AppCompatActivity
         if (data.isPinned()) {
             // unpin if tapped the pinned item
             data.setPinned(false);
-            notifyItemsAdapter(position);
+            notifyItemChanged(position);
             return false;
         }
         else {
