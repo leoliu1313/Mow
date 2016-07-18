@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity
         newItemEditText = (EditText) findViewById(R.id.etNewItem);
 
         if (CoordinatorLayout == 2) {
-            if (CustomAdapter != 3) {
+            if (CustomAdapter == 1 || CustomAdapter == 2) {
                 // scroll ListView in CoordinatorLayout
                 ViewCompat.setNestedScrollingEnabled(itemsListView, true);
             }
@@ -185,16 +185,14 @@ public class MainActivity extends AppCompatActivity
         }
         readItems();
 
-        if (CustomAdapter != 3) {
-            //  connect ArrayList and ListView
-            if (CustomAdapter == 1) {
-                itemsArrayAdapter = new ArrayAdapter<>(this,
-                        android.R.layout.simple_list_item_1, itemsArrayList);
-                itemsListView.setAdapter(itemsArrayAdapter);
-            } else if (CustomAdapter == 2) {
-                itemsCustomAdapter = new ItemAdapter(this, itemsArrayList);
-                itemsListView.setAdapter(itemsCustomAdapter);
-            }
+        //  connect ArrayList and ListView
+        if (CustomAdapter == 1) {
+            itemsArrayAdapter = new ArrayAdapter<>(this,
+                    android.R.layout.simple_list_item_1, itemsArrayList);
+            itemsListView.setAdapter(itemsArrayAdapter);
+        } else if (CustomAdapter == 2) {
+            itemsCustomAdapter = new ItemAdapter(this, itemsArrayList);
+            itemsListView.setAdapter(itemsCustomAdapter);
         }
 
         setListener();
@@ -253,7 +251,7 @@ public class MainActivity extends AppCompatActivity
                     sdf.format(new Date()),
                     "Low Priority"
             );
-            if (UIMode != 3) {
+            if (CustomAdapter != 3) {
                 switch (AddItemMode) {
                     case 1:
                         // 1: insert to the end via adapter plus scroll
@@ -284,7 +282,7 @@ public class MainActivity extends AppCompatActivity
                         break;
                 }
             }
-            else if (UIMode == 3) {
+            else if (CustomAdapter == 3) {
                 itemsArrayList.add(0, newItem); // need to notify
                 getDataProvider().addItem(newItem);
             }
@@ -337,36 +335,7 @@ public class MainActivity extends AppCompatActivity
                                                        View item,
                                                        int position,
                                                        long id) {
-                            if (UIMode == 1 || UIMode == 2) {
-                                itemsArrayList.remove(position); // need to notify
-                                notifyItemsAdapter();
-
-                                writeItems();
-                            } else if (UIMode == 3) {
-                                // TODO: find a better way instead of final int
-                                final int position_tag = position;
-                                TodoModel theTodoModel = itemsArrayList.get(position);
-                                new MaterialDialog.Builder(MainActivity.this)
-                                        .title(getString(R.string.remove_item_title))
-                                        .content(theTodoModel.content)
-                                        .positiveText(getString(R.string.remove_item_pos))
-                                        .negativeText(getString(R.string.remove_item_neg))
-                                        .onAny(new MaterialDialog.SingleButtonCallback() {
-                                            @Override
-                                            public void onClick(@NonNull MaterialDialog dialog,
-                                                                @NonNull DialogAction which) {
-                                                // which.name(); // enum > String
-                                                if (which.equals(DialogAction.POSITIVE)) {
-                                                    itemsArrayList.remove(position_tag); // need to notify
-                                                    notifyItemsAdapter();
-
-                                                    writeItems();
-                                                }
-                                            }
-                                        })
-                                        .show();
-                            }
-                            return true;
+                            return removeItem(position);
                         }
                     }
             );
@@ -442,6 +411,44 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    boolean removeItem(int position) {
+        if (UIMode == 1 || UIMode == 2) {
+            itemsArrayList.remove(position); // need to notify
+            notifyItemsAdapter();
+
+            writeItems();
+        } else if (UIMode == 3) {
+            // TODO: find a better way instead of final int
+            final int position_tag = position;
+            TodoModel theTodoModel = itemsArrayList.get(position);
+            new MaterialDialog.Builder(MainActivity.this)
+                    .title(getString(R.string.remove_item_title))
+                    .content(theTodoModel.content)
+                    .positiveText(getString(R.string.remove_item_pos))
+                    .negativeText(getString(R.string.remove_item_neg))
+                    .onAny(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog,
+                                            @NonNull DialogAction which) {
+                            // which.name(); // enum > String
+                            if (which.equals(DialogAction.POSITIVE)) {
+                                itemsArrayList.remove(position_tag); // need to notify
+                                notifyItemsAdapter();
+
+                                if (CustomAdapter == 3) {
+                                    getDataProvider().removeItem(position_tag);
+                                    notifyItemsAdapter(position_tag);
+                                }
+
+                                writeItems();
+                            }
+                        }
+                    })
+                    .show();
+        }
+        return true;
+    }
+
     // AppBarLayout.OnOffsetChangedListener
     // http://stackoverflow.com/questions/32213783/detecting-when-appbarlayout-collapsingtoolbarlayout-is-completely-expanded
     // http://stackoverflow.com/questions/31872653/how-can-i-determine-that-collapsingtoolbar-is-collapsed
@@ -512,10 +519,9 @@ public class MainActivity extends AppCompatActivity
                                                             input.toString(); // need to notify
                                                     notifyItemsAdapter();
 
-                                                    if (UIMode == 3) {
+                                                    if (CustomAdapter == 3) {
                                                         getDataProvider().editItem(position_tag, input.toString());
-                                                        final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_LIST_VIEW);
-                                                        ((SwipeableExampleFragment) fragment).notifyItemChanged(position_tag);
+                                                        notifyItemsAdapter(position_tag);
                                                     }
 
                                                     writeItems();
@@ -744,6 +750,13 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    private void notifyItemsAdapter(int position) {
+        if (CustomAdapter == 3) {
+            final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_LIST_VIEW);
+            ((SwipeableExampleFragment) fragment).notifyItemChanged(position);
+        }
+    }
+
     private void glideRandomDrawable() {
         Glide.with(MainActivity.this).load(getRandomDrawable()).centerCrop().into(imageView);
     }
@@ -769,11 +782,8 @@ public class MainActivity extends AppCompatActivity
     // android-advancedrecyclerview
     // ItemPinnedMessageDialogFragment.EventListener
     public void onNotifyItemPinnedDialogDismissed(int position, boolean ok) {
-        /*
-        final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_LIST_VIEW);
         getDataProvider().getItem(position).setPinned(ok);
-        ((SwipeableExampleFragment) fragment).notifyItemChanged(position);
-        */
+        notifyItemsAdapter(position);
     }
 
     public ExampleDataProvider getDataProvider() {
@@ -819,15 +829,30 @@ public class MainActivity extends AppCompatActivity
 
     // android-advancedrecyclerview
     public void onItemClicked(int position) {
-        final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_LIST_VIEW);
         AbstractDataProvider.Data data = getDataProvider().getItem(position);
 
         if (data.isPinned()) {
             // unpin if tapped the pinned item
             data.setPinned(false);
-            ((SwipeableExampleFragment) fragment).notifyItemChanged(position);
+            notifyItemsAdapter(position);
         }
+        else {
+            editItem(null, position);
+        }
+    }
 
-        editItem(null, position);
+    // android-advancedrecyclerview
+    public boolean onItemLongClicked(int position) {
+        AbstractDataProvider.Data data = getDataProvider().getItem(position);
+
+        if (data.isPinned()) {
+            // unpin if tapped the pinned item
+            data.setPinned(false);
+            notifyItemsAdapter(position);
+            return false;
+        }
+        else {
+            return removeItem(position);
+        }
     }
 }

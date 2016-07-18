@@ -46,6 +46,7 @@ class SwipeableExampleAdapter
     private EventListener mEventListener;
     private View.OnClickListener mItemViewOnClickListener;
     private View.OnClickListener mSwipeableViewContainerOnClickListener;
+    private View.OnLongClickListener mSwipeableViewContainerOnLongClickListener;
 
     public interface EventListener {
         void onItemRemoved(int position);
@@ -53,6 +54,8 @@ class SwipeableExampleAdapter
         void onItemPinned(int position);
 
         void onItemViewClicked(View v, boolean pinned);
+
+        boolean onItemViewLongClicked(View v, boolean pinned);
     }
 
     public static class MyViewHolder extends AbstractSwipeableItemViewHolder {
@@ -85,6 +88,12 @@ class SwipeableExampleAdapter
                 onSwipeableViewContainerClick(v);
             }
         };
+        mSwipeableViewContainerOnLongClickListener = new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return onSwipeableViewContainerLongClick(v);
+            }
+        };
 
         // SwipeableItemAdapter requires stable ID, and also
         // have to implement the getItemId() method appropriately.
@@ -100,6 +109,15 @@ class SwipeableExampleAdapter
     private void onSwipeableViewContainerClick(View v) {
         if (mEventListener != null) {
             mEventListener.onItemViewClicked(RecyclerViewAdapterUtils.getParentViewHolderItemView(v), false);  // false --- not pinned
+        }
+    }
+
+    private boolean onSwipeableViewContainerLongClick(View v) {
+        if (mEventListener != null) {
+            return mEventListener.onItemViewLongClicked(RecyclerViewAdapterUtils.getParentViewHolderItemView(v), false);  // false --- not pinned
+        }
+        else {
+            return false;
         }
     }
 
@@ -129,6 +147,7 @@ class SwipeableExampleAdapter
         holder.itemView.setOnClickListener(mItemViewOnClickListener);
         // (if the item is *not pinned*, click event comes to the mContainer)
         holder.mContainer.setOnClickListener(mSwipeableViewContainerOnClickListener);
+        holder.mContainer.setOnLongClickListener(mSwipeableViewContainerOnLongClickListener);
 
         // set text
         holder.mTextView.setText(item.getText());

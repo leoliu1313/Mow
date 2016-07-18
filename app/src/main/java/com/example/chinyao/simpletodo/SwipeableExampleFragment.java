@@ -86,6 +86,11 @@ public class SwipeableExampleFragment extends Fragment {
             public void onItemViewClicked(View v, boolean pinned) {
                 onItemViewClick(v, pinned);
             }
+
+            @Override
+            public boolean onItemViewLongClicked(View v, boolean pinned) {
+                return onItemViewLongClick(v, pinned);
+            }
         });
 
         mAdapter = myItemAdapter;
@@ -158,6 +163,16 @@ public class SwipeableExampleFragment extends Fragment {
         int position = mRecyclerView.getChildAdapterPosition(v);
         if (position != RecyclerView.NO_POSITION) {
             ((MainActivity) getActivity()).onItemClicked(position);
+        }
+    }
+
+    private boolean onItemViewLongClick(View v, boolean pinned) {
+        int position = mRecyclerView.getChildAdapterPosition(v);
+        if (position != RecyclerView.NO_POSITION) {
+            return ((MainActivity) getActivity()).onItemLongClicked(position);
+        }
+        else {
+            return false;
         }
     }
 
