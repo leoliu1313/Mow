@@ -16,21 +16,17 @@
 
 package com.example.chinyao.simpletodo;
 
-import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
-
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 public class ExampleDataProvider extends AbstractDataProvider {
-    private List<ConcreteData> mData;
-    private ConcreteData mLastRemovedData;
+    private ArrayList<TodoModel> mData;
+    private TodoModel mLastRemovedData;
     private int mLastRemovedPosition = -1;
 
     public ExampleDataProvider() {
-        mData = new LinkedList<>();
         /*
+        mData = new LinkedList<>();
         final String atoz = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < atoz.length(); j++) {
@@ -38,32 +34,22 @@ public class ExampleDataProvider extends AbstractDataProvider {
                 final int viewType = 0;
                 final String text = Character.toString(atoz.charAt(j));
                 final int swipeReaction = RecyclerViewSwipeManager.REACTION_CAN_SWIPE_UP | RecyclerViewSwipeManager.REACTION_CAN_SWIPE_DOWN;
-                mData.add(new ConcreteData(id, viewType, text, swipeReaction));
+                mData.add(new TodoModel(id, viewType, text, swipeReaction));
             }
         }
         */
     }
 
-    public void addItems(ArrayList<TodoModel> itemsArrayList) {
-        for (TodoModel theTodoModel : itemsArrayList) {
-            final long id = mData.size();
-            final int viewType = 0;
-            final String text = theTodoModel.content;
-            final int swipeReaction = RecyclerViewSwipeManager.REACTION_CAN_SWIPE_UP | RecyclerViewSwipeManager.REACTION_CAN_SWIPE_DOWN;
-            mData.add(new ConcreteData(id, viewType, text, swipeReaction));
-        }
+    public void addItems(ArrayList<com.example.chinyao.simpletodo.TodoModel> itemsArrayList) {
+        this.mData = itemsArrayList;
     }
 
-    public void addItem(TodoModel theTodoModel) {
-        final long id = mData.size();
-        final int viewType = 0;
-        final String text = theTodoModel.content;
-        final int swipeReaction = RecyclerViewSwipeManager.REACTION_CAN_SWIPE_UP | RecyclerViewSwipeManager.REACTION_CAN_SWIPE_DOWN;
-        mData.add(0, new ConcreteData(id, viewType, text, swipeReaction));
+    public void addItem(com.example.chinyao.simpletodo.TodoModel theTodoModel) {
+        mData.add(theTodoModel);
     }
 
     public void editItem(int position, String content) {
-        mData.get(position).mText = content;
+        mData.get(position).content = content;
     }
 
     @Override
@@ -107,7 +93,7 @@ public class ExampleDataProvider extends AbstractDataProvider {
             return;
         }
 
-        final ConcreteData item = mData.remove(fromPosition);
+        final TodoModel item = mData.remove(fromPosition);
 
         mData.add(toPosition, item);
         mLastRemovedPosition = -1;
@@ -126,68 +112,9 @@ public class ExampleDataProvider extends AbstractDataProvider {
     @Override
     public void removeItem(int position) {
         //noinspection UnnecessaryLocalVariable
-        final ConcreteData removedItem = mData.remove(position);
+        final TodoModel removedItem = mData.remove(position);
 
         mLastRemovedData = removedItem;
         mLastRemovedPosition = position;
-    }
-
-    public static final class ConcreteData extends Data {
-
-        private long mId;
-        private String mText;
-        private int mViewType;
-        private boolean mPinned;
-
-        ConcreteData(long id, int viewType, String text, int swipeReaction) {
-            mId = id;
-            mViewType = viewType;
-            mText = makeText(id, text, swipeReaction);
-        }
-
-        private static String makeText(long id, String text, int swipeReaction) {
-            final StringBuilder sb = new StringBuilder();
-
-            sb.append(id);
-            sb.append(" - ");
-            sb.append(text);
-
-            return sb.toString();
-        }
-
-        @Override
-        public boolean isSectionHeader() {
-            return false;
-        }
-
-        @Override
-        public int getViewType() {
-            return mViewType;
-        }
-
-        @Override
-        public long getId() {
-            return mId;
-        }
-
-        @Override
-        public String toString() {
-            return mText;
-        }
-
-        @Override
-        public String getText() {
-            return mText;
-        }
-
-        @Override
-        public boolean isPinned() {
-            return mPinned;
-        }
-
-        @Override
-        public void setPinned(boolean pinned) {
-            mPinned = pinned;
-        }
     }
 }

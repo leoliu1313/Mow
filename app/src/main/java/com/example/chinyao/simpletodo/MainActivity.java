@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -197,22 +198,21 @@ public class MainActivity extends AppCompatActivity
 
         setListener();
 
-        /*
+
         // update this with DatabaseHelper.java and app/build.gradle
-        if (CustomAdapter == 1) {
+        if (CoordinatorLayout == 1) {
             Toast.makeText(this,
-                           "Version 1607170156",
+                           "Version 1607181348",
                            Toast.LENGTH_SHORT)
                  .show();
         }
-        else if (CustomAdapter == 2) {
+        else if (CoordinatorLayout == 2) {
             Snackbar.make(findViewById(R.id.fab),
-                          "Version 1607170156",
+                          "Version 1607181348",
                           Snackbar.LENGTH_LONG)
                     .setAction("Action", null)
                     .show();
         }
-        */
     }
 
     // Activity via Intent
