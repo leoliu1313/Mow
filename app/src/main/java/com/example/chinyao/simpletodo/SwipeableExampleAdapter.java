@@ -16,6 +16,7 @@
 
 package com.example.chinyao.simpletodo;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -157,6 +158,19 @@ class SwipeableExampleAdapter
         holder.mContent.setText(item.content);
         holder.mDate.setText(item.date);
         holder.mPriority.setText(item.priority);
+
+        if (item.priority.equals("High Priority")) {
+            holder.mPriority.setTextColor(
+                    ContextCompat.getColor(holder.mPriority.getContext(), R.color.colorAccent));
+        }
+        else if (item.priority.equals("Mid Priority")) {
+            holder.mPriority.setTextColor(
+                    ContextCompat.getColor(holder.mPriority.getContext(), R.color.colorPrimaryDark));
+        }
+        else if (item.priority.equals("Low Priority")) {
+            holder.mPriority.setTextColor(
+                    ContextCompat.getColor(holder.mPriority.getContext(), R.color.colorPrimary));
+        }
 
         // set background resource (target view ID: container)
         final int swipeState = holder.getSwipeStateFlags();
