@@ -8,8 +8,8 @@ Time spent: **X** hours spent in total
 
 The following **required** functionality is completed:
 
-* [ ] User can **scroll through current movies** from the Movie Database API
-* [ ] Layout is optimized with the [ViewHolder](http://guides.codepath.com/android/Using-an-ArrayAdapter-with-ListView#improving-performance-with-the-viewholder-pattern) pattern.
+* [x] User can **scroll through current movies** from the Movie Database API
+* [x] Layout is optimized with the [ViewHolder](http://guides.codepath.com/android/Using-an-ArrayAdapter-with-ListView#improving-performance-with-the-viewholder-pattern) pattern.
 * [ ] For each movie displayed, user can see the following details:
   * [ ] Title, Poster Image, Overview (Portrait mode)
   * [ ] Title, Backdrop Image, Overview (Landscape mode)
@@ -34,7 +34,9 @@ The following **bonus** features are implemented:
 
 The following **additional** features are implemented:
 
-* [ ] List anything else that you can get done to improve the app functionality!
+* [x] If waiting more than one second for JsonHttpResponseHandler, then show a ProgressDialog.
+* [x] Use CoordinatorLayout to collapse/extend AppBarLayout
+* [x] Use ViewPager to show Home, Trending, Favorite 
 
 ## Video Walkthrough
 
@@ -55,7 +57,7 @@ Describe any challenges encountered while building the app.
 
 ## License
 
-    Copyright [yyyy] [name of copyright owner]
+    Copyright [Ching-yao Liu] [name of copyright owner]
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
