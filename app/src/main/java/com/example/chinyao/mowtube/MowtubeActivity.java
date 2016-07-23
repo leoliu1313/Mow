@@ -39,9 +39,10 @@ public class MowtubeActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         MowtubeViewPagerAdapter mowtubeViewPagerAdapter = new MowtubeViewPagerAdapter(getSupportFragmentManager());
-        mowtubeViewPagerAdapter.addFragment(new MowtubeListFragment(), getString(R.string.home));
-        mowtubeViewPagerAdapter.addFragment(new MowtubeListFragment(), getString(R.string.trending));
-        mowtubeViewPagerAdapter.addFragment(new MowtubeListFragment(), getString(R.string.favorite));
+        mowtubeViewPagerAdapter.addFragment(MowtubeListFragment.newInstance(1), getString(R.string.home));
+        mowtubeViewPagerAdapter.addFragment(MowtubeListFragment.newInstance(2), getString(R.string.upcoming));
+        mowtubeViewPagerAdapter.addFragment(MowtubeListFragment.newInstance(3), getString(R.string.trending));
+        mowtubeViewPagerAdapter.addFragment(MowtubeListFragment.newInstance(4), getString(R.string.favorite));
         viewPager.setAdapter(mowtubeViewPagerAdapter);
     }
 

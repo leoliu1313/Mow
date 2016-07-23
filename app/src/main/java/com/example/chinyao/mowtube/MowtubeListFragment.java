@@ -41,6 +41,13 @@ public class MowtubeListFragment extends Fragment {
 
     private Handler handler = null;
     private Runnable runnable = null;
+    private int mode;
+
+    public static MowtubeListFragment newInstance(int mode) {
+        MowtubeListFragment theFragment = new MowtubeListFragment();
+        theFragment.mode = mode;
+        return theFragment;
+    }
 
     @Nullable
     @Override
@@ -57,7 +64,7 @@ public class MowtubeListFragment extends Fragment {
 
         // Show progress dialog
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
-        progressDialog.setCancelable(false);
+        progressDialog.setCancelable(true);
         progressDialog.setMessage(getString(R.string.loading_msg));
 
         if (handler == null) {
@@ -91,7 +98,20 @@ public class MowtubeListFragment extends Fragment {
         }
         else if (ContentMode == 2) {
             AsyncHttpClient client = new AsyncHttpClient();
-            String url = "https://api.themoviedb.org/3/movie/now_playing";
+            String url = "";
+            if (mode == 1) {
+                url = "https://api.themoviedb.org/3/movie/now_playing";
+            }
+            else if (mode == 2) {
+                url = "https://api.themoviedb.org/3/movie/upcoming";
+            }
+            else if (mode == 3) {
+                url = "https://api.themoviedb.org/3/movie/popular";
+            }
+            else if (mode == 4) {
+                // TODO: actually this is favorite
+                url = "https://api.themoviedb.org/3/movie/top_rated";
+            }
             RequestParams params = new RequestParams();
             params.put("api_key", "a07e22bc18f5cb106bfe4cc1f83ad8ed");
             client.get(url, params, new JsonHttpResponseHandler() {

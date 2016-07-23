@@ -37,6 +37,7 @@ The following **additional** features are implemented:
 * [x] If waiting more than one second for JsonHttpResponseHandler, then show a ProgressDialog.
 * [x] Use CoordinatorLayout to collapse/extend AppBarLayout
 * [x] Use ViewPager to show Home, Trending, Favorite 
+* [ ] Show loading screen in the beginning
 
 ## Video Walkthrough
 
