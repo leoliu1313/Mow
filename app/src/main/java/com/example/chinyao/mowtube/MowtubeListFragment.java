@@ -7,14 +7,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.github.pedrovgs.DraggableListener;
-import com.github.pedrovgs.DraggablePanel;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
@@ -27,8 +25,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -49,19 +45,9 @@ public class MowtubeListFragment extends Fragment {
     private Runnable runnable = null;
     private int mode;
 
-    private ImageView thumbnailImageView;
-    private DraggablePanel draggablePanel;
-    private YouTubePlayer youtubePlayer;
-    private YouTubePlayerSupportFragment youtubeFragment;
-    private static final String YOUTUBE_API_KEY = "AIzaSyC1rMU-mkhoyTvBIdTnYU0dss0tU9vtK48";
-    private static final String VIDEO_KEY = "gsjtg7m1MMM";
-    private static final String VIDEO_POSTER_THUMBNAIL =
-            "http://4.bp.blogspot.com/-BT6IshdVsoA/UjfnTo_TkBI/AAAAAAAAMWk/JvDCYCoFRlQ/s1600/"
-                    + "xmenDOFP.wobbly.1.jpg";
-    private static final String VIDEO_POSTER_TITLE = "X-Men: Days of Future Past";
-    private static final String SECOND_VIDEO_POSTER_THUMBNAIL =
-            "http://media.comicbook.com/wp-content/uploads/2013/07/x-men-days-of-future-past"
-                    + "-wolverine-poster.jpg";
+    public static final String TAG						= "YoutubePlayer";
+    public static final String YOUTUBE_API_KEY			="AIzaSyD0INVrE2YHbGJqhU3iTjzLSPOFDAuactE";
+    private YouTubePlayer					mYouTubePlayer;
 
     public static MowtubeListFragment newInstance(int mode) {
         MowtubeListFragment theFragment = new MowtubeListFragment();
@@ -82,14 +68,7 @@ public class MowtubeListFragment extends Fragment {
         RecyclerView rv = (RecyclerView) view.findViewById(R.id.f1_recyclerview);
         setupRecyclerView(rv);
 
-        thumbnailImageView = (ImageView) view.findViewById(R.id.f1_thumbnail);
-        draggablePanel = (DraggablePanel) view.findViewById(R.id.f1_draggable_panel);
-
-        initializeYoutubeFragment();
-        initializeDraggablePanel();
-        /*
-        hookDraggablePanelListeners();
-        */
+        initiliazeYoutubeFragment();
     }
 
     private void setupRecyclerView(final RecyclerView recyclerView) {
@@ -202,103 +181,69 @@ public class MowtubeListFragment extends Fragment {
         }
     }
 
-    private List<String> getRandomSublist(String[] array, int amount) {
-        ArrayList<String> list = new ArrayList<>(amount);
-        Random random = new Random();
-        while (list.size() < amount) {
-            list.add(array[random.nextInt(array.length)]);
-        }
-        return list;
-    }
+    private void initiliazeYoutubeFragment()
+    {
 
-    /**
-     * Initialize the YouTubeSupportFrament attached as top fragment to the DraggablePanel widget and
-     * reproduce the YouTube video represented with a YouTube url.
-     */
-    private void initializeYoutubeFragment() {
-        youtubeFragment = new YouTubePlayerSupportFragment();
-        // AIzaSyDclFRxzBdoqRGHVftdG1WFqBX2C2mVe04
-        // YOUTUBE_API_KEY
-        youtubeFragment.initialize("AIzaSyDclFRxzBdoqRGHVftdG1WFqBX2C2mVe04", new YouTubePlayer.OnInitializedListener() {
+        YouTubePlayerSupportFragment mYouTubeContainer = YouTubePlayerSupportFragment.newInstance();
+        mYouTubeContainer.initialize(YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener()
+        {
+            @Override
+            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored)
+            {
+                if (!wasRestored)
+                {
+                    mYouTubePlayer	= youTubePlayer;
+                    //mYouTubePlayer.cueVideo("nCgQDjiotG0");
+                    mYouTubePlayer.loadVideo("nCgQDjiotG0");
+                    mYouTubePlayer.play();
+                    mYouTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener()
+                    {
+                        @Override
+                        public void onLoading()
+                        {
 
-            @Override public void onInitializationSuccess(YouTubePlayer.Provider provider,
-                                                          YouTubePlayer player, boolean wasRestored) {
-                if (!wasRestored) {
-                    youtubePlayer = player;
-                    // 0WWzgGyAH6Y
-                    youtubePlayer.loadVideo(VIDEO_KEY);
-                    youtubePlayer.setShowFullscreenButton(true);
+                        }
+
+                        @Override
+                        public void onLoaded(String s)
+                        {
+
+                        }
+
+                        @Override
+                        public void onAdStarted()
+                        {
+
+                        }
+
+                        @Override
+                        public void onVideoStarted()
+                        {
+
+                        }
+
+                        @Override
+                        public void onVideoEnded()
+                        {
+
+                        }
+
+                        @Override
+                        public void onError(YouTubePlayer.ErrorReason errorReason)
+                        {
+                            Log.d(TAG,errorReason.toString());
+                        }
+                    });
                 }
             }
 
-            @Override public void onInitializationFailure(YouTubePlayer.Provider provider,
-                                                          YouTubeInitializationResult error) {
+            @Override
+            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult)
+            {
+
             }
         });
-    }
+        getChildFragmentManager().beginTransaction().replace(R.id.fragment_youtube_player, mYouTubeContainer).commit();
 
-    /**
-     * Initialize and configure the DraggablePanel widget with two fragments and some attributes.
-     */
-    private void initializeDraggablePanel() {
-        // getSupportFragmentManager
-        draggablePanel.setFragmentManager(getActivity().getSupportFragmentManager());
-        MowtubeMoviePosterFragment moviePosterFragment = new MowtubeMoviePosterFragment();
-        moviePosterFragment.setPoster(VIDEO_POSTER_THUMBNAIL);
-        moviePosterFragment.setPosterTitle(VIDEO_POSTER_TITLE);
-        MowtubeMoviePosterFragment moviePosterFragment2 = new MowtubeMoviePosterFragment();
-        moviePosterFragment.setPoster(VIDEO_POSTER_THUMBNAIL);
-        moviePosterFragment.setPosterTitle(VIDEO_POSTER_TITLE);
-        draggablePanel.setTopFragment(moviePosterFragment2);
-        draggablePanel.setBottomFragment(moviePosterFragment);
-        draggablePanel.initializeView();
-        /*
-        Picasso.with(getContext())
-                .load(SECOND_VIDEO_POSTER_THUMBNAIL)
-                .placeholder(R.drawable.blobb)
-                .into(thumbnailImageView);
-                */
-    }
-
-    /**
-     * Hook the DraggableListener to DraggablePanel to pause or resume the video when the
-     * DragglabePanel is maximized or closed.
-     */
-    private void hookDraggablePanelListeners() {
-        draggablePanel.setDraggableListener(new DraggableListener() {
-            @Override public void onMaximized() {
-                playVideo();
-            }
-
-            @Override public void onMinimized() {
-                //Empty
-            }
-
-            @Override public void onClosedToLeft() {
-                pauseVideo();
-            }
-
-            @Override public void onClosedToRight() {
-                pauseVideo();
-            }
-        });
-    }
-
-    /**
-     * Pause the video reproduced in the YouTubePlayer.
-     */
-    private void pauseVideo() {
-        if (youtubePlayer.isPlaying()) {
-            youtubePlayer.pause();
-        }
-    }
-
-    /**
-     * Resume the video reproduced in the YouTubePlayer.
-     */
-    private void playVideo() {
-        if (!youtubePlayer.isPlaying()) {
-            youtubePlayer.play();
-        }
     }
 }

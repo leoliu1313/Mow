@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fl_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     >
 
     <android.support.v7.widget.RecyclerView
@@ -13,25 +15,66 @@
         android:layout_height="match_parent"
         />
 
-    <ImageView
-    android:id="@+id/f1_thumbnail"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:scaleType = "centerCrop"
-        />
-
-    <com.github.pedrovgs.DraggablePanel
+    <com.github.pedrovgs.DraggableView
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:draggable_panel="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/f1_draggable_panel"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        draggable_panel:x_scale_factor="2.3"
-        draggable_panel:y_scale_factor="2.3"
-        draggable_panel:top_fragment_height="200dip"
-        draggable_panel:top_fragment_margin_right="10dip"
-        draggable_panel:top_fragment_margin_bottom="10dip"
-        draggable_panel:enable_horizontal_alpha_effect="false"
-        />
+        xmlns:draggable_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/draggable_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        draggable_view:top_view_id="@+id/top_panel"
+        draggable_view:bottom_view_id="@+id/bottom_panel"
+        draggable_view:top_view_x_scale_factor="2"
+        draggable_view:top_view_y_scale_factor="2"
+        draggable_view:top_view_margin_right="4dp"
+        draggable_view:top_view_margin_bottom="4dp"
+        draggable_view:top_view_resize="true"
+        draggable_view:enable_minimized_horizontal_alpha_effect="false"
 
-</FrameLayout>
+        >
+
+        <!-- ListView Episodes -->
+        <RelativeLayout
+            android:id="@+id/bottom_panel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/top_panel"
+            android:background="#ff9461c7"
+            >
+            <ListView
+                android:id="@+id/lv_episodes"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_alignParentTop="true"
+                />
+        </RelativeLayout>
+
+        <!-- TvShow Fan Art -->
+        <RelativeLayout
+            android:id="@+id/top_panel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_alignParentTop="true"
+
+                android:background="#000000"
+                >
+                <FrameLayout
+                    android:id="@+id/fragment_youtube_player"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:padding="0dp"
+                    android:layout_margin="1dp"
+                    />
+            </LinearLayout>
+        </RelativeLayout>
+
+    </com.github.pedrovgs.DraggableView>
+
+</RelativeLayout>
