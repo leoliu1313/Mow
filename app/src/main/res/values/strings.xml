@@ -1,0 +1,60 @@
+<resources>
+    <string name="app_name">Mowtube</string>
+    <string name="add_item_hint">Add a new item...</string>
+    <string name="add_button">Add</string>
+    <string name="edit_item_title">Edit Item</string>
+    <string name="edit_item">Edit Item Below:</string>
+    <string name="edit_item_content">TODO</string>
+    <string name="edit_item_priority">Priority</string>
+    <string name="edit_item_date">Date</string>
+    <string name="save_button">Save</string>
+    <string name="remove_item_title">Remove Item?</string>
+    <string name="remove_item_pos">Yes</string>
+    <string name="remove_item_neg">No</string>
+    <string name="back_button">Back</string>
+
+    <string name="cheese_ipsum">Jarlsberg lancashire edam. Dolcelatte hard cheese brie st. agur blue
+    cheese caerphilly bavarian bergkase cheese and biscuits mascarpone. Cheeseburger swiss bavarian
+    bergkase cream cheese fromage frais cheesy feet port-salut airedale. St. agur blue cheese rubber
+    cheese caerphilly cheddar cheesecake cream cheese manchego lancashire. Roquefort squirty cheese
+    the big cheese.</string>
+
+    <string name="checkin">Checkin</string>
+    <string name="menu_night_mode">Night mode</string>
+    <string name="menu_night_mode_system">Follow system</string>
+    <string name="menu_night_mode_day">Day (always)</string>
+    <string name="menu_night_mode_night">Night (always)</string>
+    <string name="menu_night_mode_auto">Auto</string>
+
+    <string name="activity_title_launcher">Advanced RecyclerView Examples</string>
+    <string name="activity_title_about">Advanced RecyclerView About</string>
+    <string name="activity_title_demo_d_minimal">Draggable (Minimal)</string>
+    <string name="activity_title_demo_d_basic">Draggable (Basic)</string>
+    <string name="activity_title_demo_d_grid">Draggable (Grid Layout)</string>
+    <string name="activity_title_demo_d_staggered_grid">Draggable (Staggered Grid Layout)</string>
+    <string name="activity_title_demo_d_on_longpress">Drag on Long Press</string>
+    <string name="activity_title_demo_d_check_can_drop">Draggable (uses onCheckCanDrop)</string>
+    <string name="activity_title_demo_s_minimal">Swipeable (Minimal)</string>
+    <string name="activity_title_demo_s_basic">Swipeable (Basic)</string>
+    <string name="activity_title_demo_s_on_longpress">Swipe on Long Press</string>
+    <string name="activity_title_demo_us">Button under swipeable item</string>
+    <string name="activity_title_demo_e_minimal">Expandable (Minimal)</string>
+    <string name="activity_title_demo_e_basic">Expandable (Basic)</string>
+    <string name="activity_title_demo_ds">Draggable + Swipeable</string>
+    <string name="activity_title_demo_eds">Expandable + Draggable + Swipeable</string>
+    <string name="activity_title_demo_d_with_section">Draggable with Section</string>
+    <string name="activity_title_demo_ed_with_section">Expandable + Draggable with Section</string>
+    <string name="activity_title_demo_e_add_remove">Expandable (Add/Remove items)</string>
+    <string name="activity_title_demo_e_already_expanded">Expandable (Groups already expanded)</string>
+    <string name="activity_title_demo_s_vertical">Swipeable (Vertical)</string>
+    <string name="activity_title_demo_s_viewpager">Swipeable with ViewPager</string>
+    <string name="snack_bar_text_item_removed">Item was removed!</string>
+    <string name="snack_bar_text_group_item_removed">1 group item removed</string>
+    <string name="snack_bar_text_child_item_removed">1 child item removed</string>
+    <string name="snack_bar_text_button_clicked">Button clicked! (position = %1$d)</string>
+    <string name="snack_bar_action_undo">UNDO</string>
+    <string name="dialog_message_item_pinned">Item pinned! (position = %1$d)</string>
+    <string name="dialog_message_group_item_pinned">Group item pinned! (group = %1$d)</string>
+    <string name="dialog_message_child_item_pinned">Child item pinned! (group = %1$d, child = %2$d)</string>
+    <string name="menu_item_about">About</string>
+</resources>
