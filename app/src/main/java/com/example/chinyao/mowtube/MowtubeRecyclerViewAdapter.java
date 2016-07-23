@@ -6,7 +6,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -33,13 +38,13 @@ public class MowtubeRecyclerViewAdapter
         // public String mBoundString;
 
         public final View mView;
-        // public final ImageView mImageView;
+        public final ImageView mImageView;
         public final TextView mTextView;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            // mImageView = (ImageView) view.findViewById(R.id.avatar);
+            mImageView = (ImageView) view.findViewById(R.id.movieImage);
             mTextView = (TextView) view.findViewById(android.R.id.title);
         }
 
@@ -57,20 +62,41 @@ public class MowtubeRecyclerViewAdapter
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        MowtubeMovie theMowtubeMovie = mValues.get(position);
         if (MowtubeListFragment.ContentMode == 1) {
             // holder.mBoundString = mValues.get(position).title;
-            holder.mTextView.setText(mValues.get(position).title);
+            holder.mTextView.setText(theMowtubeMovie.title);
+            Glide.with(holder.mImageView.getContext())
+                    .load(MowActivity.getRandomDrawable())
+                    .fitCenter()
+                    .into(holder.mImageView);
         }
         else if (MowtubeListFragment.ContentMode == 2) {
-            holder.mTextView.setText(mValues.get(position).title);
-        }
+            holder.mTextView.setText(theMowtubeMovie.title);
+            if (MowtubeListFragment.ImageLoadingMode == 1) {
+                // Glide supports gif only in load()
+                // speed up gif by diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                Glide.with(holder.mImageView.getContext())
+                        .load("http://image.tmdb.org/t/p/w500" + theMowtubeMovie.backdrop_path)
+                        .centerCrop()
+                        .placeholder(R.drawable.blobb)
+                        .error(R.drawable.tmdb)
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .into(holder.mImageView);
 
-        /*
-        Glide.with(holder.mImageView.getContext())
-                .load(MowActivity.getRandomDrawable())
-                .fitCenter()
-                .into(holder.mImageView);
-                */
+            }
+            else if (MowtubeListFragment.ImageLoadingMode == 2) {
+                // Picasso does not support gif
+                Picasso.with(holder.mImageView.getContext())
+                        .load("http://image.tmdb.org/t/p/w500" + theMowtubeMovie.backdrop_path)
+                        .fit().centerCrop()
+                        .placeholder(R.drawable.blobb)
+                        .error(R.drawable.tmdb)
+                        .into(holder.mImageView);
+            }
+            // https://github.com/rtheunissen/md-preloader
+            // https://thomas.vanhoutte.be/miniblog/android-lollipop-animated-loading-gif/
+        }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

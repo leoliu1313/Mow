@@ -95,17 +95,20 @@ public class MowtubeMovie {
 
     public static ArrayList<MowtubeMovie> generateDebugArrayList() {
         return MowtubeMovie.fromArrayList(
-                (ArrayList<String>) Arrays.asList(
-                        "The Legend of Tarzan",
-                        "Independence Day: Resurgence",
-                        "Finding Dory",
-                        "Ice Age: Collision Course",
-                        "Ghostbusters",
-                        "The Purge: Election Year",
-                        "The Secret Life of Pets",
-                        "Star Trek Beyond",
-                        "Central Intelligence",
-                        "Now You See Me 2")
+                new ArrayList<String>(
+                        Arrays.asList(
+                            "The Legend of Tarzan",
+                            "Independence Day: Resurgence",
+                            "Finding Dory",
+                            "Ice Age: Collision Course",
+                            "Ghostbusters",
+                            "The Purge: Election Year",
+                            "The Secret Life of Pets",
+                            "Star Trek Beyond",
+                            "Central Intelligence",
+                            "Now You See Me 2"
+                        )
+                )
         );
     }
 }

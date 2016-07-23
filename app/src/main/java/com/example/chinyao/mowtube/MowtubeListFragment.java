@@ -35,6 +35,10 @@ public class MowtubeListFragment extends Fragment {
     // 1: debug
     // 2: android-async-http
 
+    public static final int ImageLoadingMode = 2;
+    // 1: Glide
+    // 2: Picasso
+
     private Handler handler = null;
     private Runnable runnable = null;
 
