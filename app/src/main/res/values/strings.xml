@@ -62,4 +62,7 @@
     <string name="home">Home</string>
     <string name="trending">Trending</string>
     <string name="favorite">Favorite</string>
+    <string name="autoplay">Auto-play</string>
+    <string name="on_wifi_only">on Wi-Fi only</string>
+    <string name="autoplay_always">always</string>
 </resources>

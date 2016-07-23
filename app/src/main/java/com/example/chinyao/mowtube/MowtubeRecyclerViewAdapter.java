@@ -40,7 +40,7 @@ public class MowtubeRecyclerViewAdapter
             super(view);
             mView = view;
             // mImageView = (ImageView) view.findViewById(R.id.avatar);
-            mTextView = (TextView) view.findViewById(android.R.id.text1);
+            mTextView = (TextView) view.findViewById(android.R.id.title);
         }
 
         @Override
