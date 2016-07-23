@@ -1,70 +1,70 @@
-# Pre-work - *Simple Todo*
+# Project 1 - *Mowtube*
 
-**Simple Todo** is an android app that allows building a todo list and basic todo items management functionality including adding new items, editing and deleting an existing item.
+**Mowtube** shows the latest movies currently playing in theaters. The app utilizes the Movie Database API to display images and basic information about these movies to the user.
 
-Submitted by: **Ching-yao Liu**
-
-Time spent: **56** hours spent in total
+Time spent: **X** hours spent in total
 
 ## User Stories
 
 The following **required** functionality is completed:
 
-* [x] User can **successfully add and remove items** from the todo list
-* [x] User can **tap a todo item in the list and bring up an edit screen for the todo item** and then have any changes to the text reflected in the todo list.
-* [x] User can **persist todo items** and retrieve them properly on app restart
+* [ ] User can **scroll through current movies** from the Movie Database API
+* [ ] Layout is optimized with the [ViewHolder](http://guides.codepath.com/android/Using-an-ArrayAdapter-with-ListView#improving-performance-with-the-viewholder-pattern) pattern.
+* [ ] For each movie displayed, user can see the following details:
+  * [ ] Title, Poster Image, Overview (Portrait mode)
+  * [ ] Title, Backdrop Image, Overview (Landscape mode)
 
 The following **optional** features are implemented:
 
-* [x] Persist the todo items [into SQLite](http://guides.codepath.com/android/Persisting-Data-to-the-Device#sqlite) instead of a text file
-* [x] Improve style of the todo items in the list [using a custom adapter](http://guides.codepath.com/android/Using-an-ArrayAdapter-with-ListView)
-* [x] Add support for completion due dates for todo items (and display within listview item)
-* [x] Use a [DialogFragment](http://guides.codepath.com/android/Using-DialogFragment) instead of new Activity for editing items
-* [x] Add support for selecting the priority of each todo item (and display in listview item)
-* [x] Tweak the style improving the UI / UX, play with colors, images or backgrounds
+* [ ] User can **pull-to-refresh** popular stream to get the latest movies.
+* [ ] Display a nice default [placeholder graphic](http://guides.codepath.com/android/Displaying-Images-with-the-Picasso-Library#configuring-picasso) for each image during loading.
+* [ ] Improved the user interface through styling and coloring.
+
+The following **bonus** features are implemented:
+
+* [ ] Allow user to view details of the movie including ratings and popularity within a separate activity or dialog fragment.
+* [ ] When viewing a popular movie (i.e. a movie voted for more than 5 stars) the video should show the full backdrop image as the layout.  Uses [Heterogenous ListViews](http://guides.codepath.com/android/Implementing-a-Heterogenous-ListView) or [Heterogenous RecyclerView](http://guides.codepath.com/android/Heterogenous-Layouts-inside-RecyclerView) to show different layouts.
+* [ ] Allow video trailers to be played in full-screen using the YouTubePlayerView.
+    * [ ] Overlay a play icon for videos that can be played.
+    * [ ] More popular movies should start a separate activity that plays the video immediately.
+    * [ ] Less popular videos rely on the detail page should show ratings and a YouTube preview.
+* [ ] Leverages the [data binding support module](http://guides.codepath.com/android/Applying-Data-Binding-for-Views) to bind data into layout templates.
+* [ ] Apply the popular [Butterknife annotation library](http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife) to reduce boilerplate code.
+* [ ] Apply rounded corners for the poster or background images using [Picasso transformations](https://guides.codepath.com/android/Displaying-Images-with-the-Picasso-Library#other-transformations)
 
 The following **additional** features are implemented:
 
-* [x] Avoid showing keyboard when app starts
-* [x] Avoid showing keyboard when app switches from another app with keyboard open
-* [x] Hide keyboard after adding an item
-* [x] Improve performance of custom ArrayAdapter with ViewHolder pattern
-* [x] Use other Dialog libraries such as afollestad/material-dialogs and code-troopers/android-betterpickers
-* [x] Support Yes/No Dialog when removing an item
-* [x] Scroll to top after adding an item to the top of the list
-* [x] Use CoordinatorLayout, CollapsingToolbarLayout
-* [x] Use parallax ImageView with bumptech/glide
-* [x] Change random image when CollapsingToolbarLayout is collapsed
-* [x] Support DialogFragment stack by updating the data in the previous DialogFragment
-* [x] Use RecyclerView with h6ah4i/android-advancedrecyclerview
-* [x] Swipe right to delete an item
-* [x] Undo a delete
-* [ ] Use CardView
-* [ ] Flash on the new added item
-* [ ] Scroll the new edited item to top after editing an item
-* [ ] Flash on the new edited item
-* [ ] Use Shared Preferences instead of SQL
-* [ ] Try other libraries instead of android-betterpickers
-* [ ] Press enter to add an item
-* [ ] Support search function
-* [ ] Support manual order change
-* [ ] Support sorting function
-* [ ] Only update the necessary items instead of all
-* [ ] Sync up with online server
-* [ ] Sync up with Google Calendar
-* [ ] Support images
-* [ ] Support camera
-* [ ] Support categories like hash tag
-* [ ] Try to implement Google Keep (UI is so beautiful)
+* [ ] List anything else that you can get done to improve the app functionality!
 
-## Video Walkthrough 
+## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-http://imgur.com/aglbqeg.gif
+<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
-GIF created with [ScreenToGif 2](https://screentogif.codeplex.com/).
+GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
 Describe any challenges encountered while building the app.
+
+## Open-source libraries used
+
+- [Android Async HTTP](https://github.com/loopj/android-async-http) - Simple asynchronous HTTP requests with JSON parsing
+- [Picasso](http://square.github.io/picasso/) - Image loading and caching library for Android
+
+## License
+
+    Copyright [yyyy] [name of copyright owner]
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.

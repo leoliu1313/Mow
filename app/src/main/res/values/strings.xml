@@ -57,4 +57,9 @@
     <string name="dialog_message_group_item_pinned">Group item pinned! (group = %1$d)</string>
     <string name="dialog_message_child_item_pinned">Child item pinned! (group = %1$d, child = %2$d)</string>
     <string name="menu_item_about">About</string>
+
+    <string name="loading_msg">Loading...</string>
+    <string name="home">Home</string>
+    <string name="trending">Trending</string>
+    <string name="favorite">Favorite</string>
 </resources>

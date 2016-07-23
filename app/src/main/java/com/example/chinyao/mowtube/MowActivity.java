@@ -762,7 +762,7 @@ public class MowActivity extends AppCompatActivity
         Glide.with(MowActivity.this).load(getRandomDrawable()).centerCrop().into(imageView);
     }
 
-    private static int getRandomDrawable() {
+    public static int getRandomDrawable() {
         final int totalDrawable = 3;
         int nextDrawable = RANDOM.nextInt(totalDrawable);
         while (currentDrawable == nextDrawable) {
