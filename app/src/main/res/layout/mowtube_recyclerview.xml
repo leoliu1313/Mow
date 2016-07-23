@@ -1,6 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/recyclerview"
+    android:id="@+id/fl_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent"
+    >
+
+    <android.support.v7.widget.RecyclerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/f1_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+    <ImageView
+    android:id="@+id/f1_thumbnail"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:scaleType = "centerCrop"
+        />
+
+    <com.github.pedrovgs.DraggablePanel
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:draggable_panel="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/f1_draggable_panel"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        draggable_panel:x_scale_factor="2.3"
+        draggable_panel:y_scale_factor="2.3"
+        draggable_panel:top_fragment_height="200dip"
+        draggable_panel:top_fragment_margin_right="10dip"
+        draggable_panel:top_fragment_margin_bottom="10dip"
+        draggable_panel:enable_horizontal_alpha_effect="false"
+        />
+
+</FrameLayout>
