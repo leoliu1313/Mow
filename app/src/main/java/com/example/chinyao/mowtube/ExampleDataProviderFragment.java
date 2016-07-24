@@ -30,7 +30,9 @@ public class ExampleDataProviderFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // orientation issue
         setRetainInstance(true);  // keep the mDataProvider instance
+
         mDataProvider = new ExampleDataProvider();
         mDataProvider.addItems(itemsArrayList);
     }

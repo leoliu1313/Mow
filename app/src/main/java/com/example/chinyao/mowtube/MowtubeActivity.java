@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.github.pedrovgs.DraggableListener;
 import com.github.pedrovgs.DraggableView;
@@ -60,7 +61,7 @@ public class MowtubeActivity extends AppCompatActivity {
         theDraggableView = (DraggableView)findViewById(R.id.draggable_view);
         setupDraggableView();
     }
-
+    
     private void setupViewPager(ViewPager viewPager) {
         viewPager.setOffscreenPageLimit(3);
 
@@ -199,5 +200,27 @@ public class MowtubeActivity extends AppCompatActivity {
     // TODO: implement this function
     private boolean isWifiConnected() {
         return false;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save custom values into the bundle
+        savedInstanceState.putInt("key1", 123);
+        savedInstanceState.putString("key2", "abc");
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        // Always call the superclass so it can restore the view hierarchy
+        super.onRestoreInstanceState(savedInstanceState);
+        // Restore state members from saved instance
+        int someIntValue = savedInstanceState.getInt("key1");
+        String someStringValue = savedInstanceState.getString("key2");
+        Toast.makeText(this,
+                "onRestoreInstanceState " + someIntValue + " " + someStringValue,
+                Toast.LENGTH_SHORT)
+                .show();
     }
 }

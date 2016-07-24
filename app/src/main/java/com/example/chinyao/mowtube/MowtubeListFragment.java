@@ -55,6 +55,14 @@ public class MowtubeListFragment extends Fragment {
         RecyclerView rv = (RecyclerView) inflater.inflate(R.layout.mowtube_recyclerview, container, false);
         setupRecyclerView(rv);
 
+        // orientation issue
+        // http://stackoverflow.com/questions/9727173/support-fragmentpageradapter-holds-reference-to-old-fragments
+        // http://stackoverflow.com/questions/32478968/android-viewpager-orientation-change
+        // https://medium.com/@roideuniverse/android-viewpager-fragmentpageradapter-and-orientation-changes-256c23bee035#.ufb2ywv33
+        // http://stackoverflow.com/questions/28982512/handling-orientation-change-with-viewpager-fragmentpageradapter
+        // https://github.com/codepath/android_guides/wiki/ViewPager-with-FragmentPagerAdapter
+        setRetainInstance(true);
+
         return rv;
     }
 
