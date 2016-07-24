@@ -54,9 +54,9 @@ public class MowtubeRecyclerViewAdapter
         public final View mView;
         // public String mBoundString;
 
-        @BindView(R.id.movieImage) ImageView mImageView;
-        @BindView(R.id.title) TextView mTextViewTitle;
-        @BindView(R.id.text2) TextView mTextView2;
+        @BindView(R.id.r_movie_image) ImageView mImageView;
+        @BindView(R.id.r_title) TextView mTextViewTitle;
+        @BindView(R.id.r_sub_title) TextView mTextView2;
 
         public ViewHolder(View view) {
             super(view);
@@ -164,7 +164,7 @@ public class MowtubeRecyclerViewAdapter
                                             return;
                                         }
                                         activity.loadYoutube(MowtubeActivity.YOUTUBE_DEFAULT_LINK);
-                                        Snackbar.make(activity.findViewById(R.id.draggable_view),
+                                        Snackbar.make(activity.findViewById(R.id.m_draggable_view),
                                                 "No Trailer...",
                                                 30000)
                                                 .setAction("Action", null)

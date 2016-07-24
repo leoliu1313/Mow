@@ -38,11 +38,11 @@ public class MowtubeActivity extends AppCompatActivity {
 
     // ButterKnife
     // http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife
-    @BindView(R.id.appbar) AppBarLayout theAppBarLayout;
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.tabs) TabLayout tabLayout;
-    @BindView(R.id.viewpager) ViewPager viewPager;
-    @BindView(R.id.draggable_view) DraggableView theDraggableView;
+    @BindView(R.id.m_app_bar_layout) AppBarLayout theAppBarLayout;
+    @BindView(R.id.m_toolbar) Toolbar toolbar;
+    @BindView(R.id.m_tab_layout) TabLayout tabLayout;
+    @BindView(R.id.m_view_pager) ViewPager viewPager;
+    @BindView(R.id.m_draggable_view) DraggableView theDraggableView;
 
     YouTubePlayer mYouTubePlayer;
 
@@ -196,7 +196,7 @@ public class MowtubeActivity extends AppCompatActivity {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_youtube_player, mYouTubeContainer)
+                .replace(R.id.dv_t_youtube, mYouTubeContainer)
                 .commit();
     }
 

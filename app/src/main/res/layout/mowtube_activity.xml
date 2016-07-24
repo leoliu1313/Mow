@@ -2,18 +2,18 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main_content"
+    android:id="@+id/m_c_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
+        android:id="@+id/m_app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/m_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
@@ -21,7 +21,7 @@
             app:layout_scrollFlags="scroll|enterAlways|snap" />
 
         <android.support.design.widget.TabLayout
-            android:id="@+id/tabs"
+            android:id="@+id/m_tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tabTextAppearance="@style/TabCapsFalse" />
@@ -29,7 +29,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
+        android:id="@+id/m_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
@@ -37,11 +37,11 @@
     <com.github.pedrovgs.DraggableView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:draggable_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/draggable_view"
+        android:id="@+id/m_draggable_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        draggable_view:top_view_id="@+id/top_panel"
-        draggable_view:bottom_view_id="@+id/bottom_panel"
+        draggable_view:top_view_id="@+id/dv_top"
+        draggable_view:bottom_view_id="@+id/dv_bottom"
         draggable_view:top_view_x_scale_factor="3"
         draggable_view:top_view_y_scale_factor="3"
         draggable_view:top_view_margin_right="4dp"
@@ -53,23 +53,62 @@
         <!-- Use ResizeTransformer instead of ScaleTransformer -->
         <!-- to fix minimize issue -->
 
-        <RelativeLayout
-            android:id="@+id/bottom_panel"
+        <LinearLayout
+            android:id="@+id/dv_bottom"
+            android:layout_below="@+id/dv_top"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/top_panel"
             android:background="#ff9461c7"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:gravity="center"
             >
-            <ListView
-                android:id="@+id/lv_episodes"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_alignParentTop="true"
+
+            <RelativeLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <TextView
+                    android:id="@+id/dv_b_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="test"
+                    android:textAppearance="?attr/textAppearanceListItem"
+                    android:layout_centerVertical="true"
+                    android:paddingLeft="16dp"
+                    />
+
+                <ImageButton
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:id="@+id/dv_b_image_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_more_vert_black_18dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/dv_b_sub_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2016-06-29"
+                android:textAppearance="?attr/textAppearanceListItem"
+                android:layout_below="@android:id/title"
+                android:paddingLeft="16dp"
+                android:textColor="@color/grey"
+                android:textSize="14sp"
                 />
-        </RelativeLayout>
+        </LinearLayout>
 
         <RelativeLayout
-            android:id="@+id/top_panel"
+            android:id="@+id/dv_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -82,7 +121,7 @@
                 android:background="#000000"
                 >
                 <FrameLayout
-                    android:id="@+id/fragment_youtube_player"
+                    android:id="@+id/dv_t_youtube"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
