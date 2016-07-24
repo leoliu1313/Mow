@@ -1,5 +1,6 @@
 package com.example.chinyao.mowtube;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -14,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.github.pedrovgs.DraggableListener;
@@ -22,7 +24,7 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,6 +43,7 @@ public class MowtubeActivity extends AppCompatActivity {
     // https://console.developers.google.com/
     public static final String YOUTUBE_API_KEY = "AIzaSyDclFRxzBdoqRGHVftdG1WFqBX2C2mVe04";
     public static final String YOUTUBE_DEFAULT_LINK = "664VCs3c1HU";
+    public static Boolean youtubeError = false;
 
     // ButterKnife
     // http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife
@@ -49,7 +52,7 @@ public class MowtubeActivity extends AppCompatActivity {
     @BindView(R.id.m_tab_layout) TabLayout tabLayout;
     @BindView(R.id.m_view_pager) ViewPager viewPager;
     @BindView(R.id.m_draggable_view) DraggableView theDraggableView;
-    @BindView(R.id.dv_b_sub_slider_layout) SliderLayout mDemoSlider;
+    @BindView(R.id.dv_b_sub_slider_layout) SliderLayout theSliderLayout;
 
     YouTubePlayer mYouTubePlayer;
 
@@ -74,6 +77,10 @@ public class MowtubeActivity extends AppCompatActivity {
         setupViewPager();
 
         setupDraggableView();
+
+        setupYoutubeFragment();
+
+        setupSliderLayout();
     }
 
     private void setupViewPager() {
@@ -145,31 +152,37 @@ public class MowtubeActivity extends AppCompatActivity {
             @Override public void onMaximized() {
                 if (theAppBarLayout.getVisibility() != View.INVISIBLE) {
                     theAppBarLayout.setVisibility(View.INVISIBLE);
-                    mYouTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
+                    if (!youtubeError) {
+                        mYouTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
+                    }
                 }
             }
 
             @Override public void onMinimized() {
                 if (theAppBarLayout.getVisibility() != View.VISIBLE) {
                     theAppBarLayout.setVisibility(View.VISIBLE);
-                    mYouTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
+                    if (!youtubeError) {
+                        mYouTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
+                    }
                 }
             }
 
             @Override public void onClosedToLeft() {
-                mYouTubePlayer.pause();
+                if (!youtubeError) {
+                    mYouTubePlayer.pause();
+                }
             }
 
             @Override public void onClosedToRight() {
-                theDraggableView.maximize();
+                if (!youtubeError) {
+                    theDraggableView.maximize();
+                }
             }
         });
-
-        initializeYoutubeFragment();
     }
 
-    // DraggableView and YouTubePlayerSupportFragment have problems to call initializeYoutubeFragment() again
-    private void initializeYoutubeFragment() {
+    // DraggableView and YouTubePlayerSupportFragment have problems to call setupYoutubeFragment() again
+    private void setupYoutubeFragment() {
         YouTubePlayerSupportFragment mYouTubeContainer = YouTubePlayerSupportFragment.newInstance();
         mYouTubeContainer.initialize(YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
             @Override
@@ -181,7 +194,9 @@ public class MowtubeActivity extends AppCompatActivity {
                         @Override
                         public void onLoading() {}
                         @Override
-                        public void onLoaded(String s) {}
+                        public void onLoaded(String s) {
+                            youtubeError = false;
+                        }
                         @Override
                         public void onAdStarted() {}
                         @Override
@@ -190,6 +205,7 @@ public class MowtubeActivity extends AppCompatActivity {
                         public void onVideoEnded() {}
                         @Override
                         public void onError(YouTubePlayer.ErrorReason errorReason) {
+                            youtubeError = true;
                             Log.d("MowtubeActivity", "onError " + errorReason.toString());
                         }
                     });
@@ -197,6 +213,7 @@ public class MowtubeActivity extends AppCompatActivity {
             }
             @Override
             public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+                youtubeError = true;
                 Log.d("MowtubeActivity", "onInitializationFailure " + youTubeInitializationResult.toString());
             }
         });
@@ -207,31 +224,54 @@ public class MowtubeActivity extends AppCompatActivity {
                 .commit();
     }
 
+    private void setupSliderLayout() {
+        theSliderLayout.setPresetTransformer("DepthPage");
+        theSliderLayout.setCustomAnimation(new DescriptionAnimation());
+        theSliderLayout.setDuration(5000);
+    }
+
     public void loadYoutube(String input) {
-        if (autoplay_on_wifi_only && !isWifiConnected()) {
-            mYouTubePlayer.cueVideo(input);
+        if (!youtubeError) {
+            if (autoplay_on_wifi_only && !isWifiConnected()) {
+                mYouTubePlayer.cueVideo(input);
+            } else {
+                mYouTubePlayer.loadVideo(input);
+            }
+            // mYouTubePlayer.play();
         }
         else {
-            mYouTubePlayer.loadVideo(input);
+            Intent i = getBaseContext().getPackageManager()
+                    .getLaunchIntentForPackage( getBaseContext().getPackageName() );
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
         }
-        // mYouTubePlayer.play();
-        theDraggableView.maximize();
 
-        HashMap<String,String> url_maps = new HashMap<String, String>();
-        url_maps.put("Hannibal", "http://static2.hypable.com/wp-content/uploads/2013/12/hannibal-season-2-release-date.jpg");
-        url_maps.put("Big Bang Theory", "http://tvfiles.alphacoders.com/100/hdclearart-10.png");
-        url_maps.put("House of Cards", "http://cdn3.nflximg.net/images/3093/2043093.jpg");
-        url_maps.put("Game of Thrones", "http://images.boomsbeat.com/data/images/full/19640/game-of-thrones-season-4-jpg.jpg");
+        theSliderLayout.removeAllSliders();
 
-        for(String name : url_maps.keySet()){
+        ArrayList<String> pair = new ArrayList<>();
+        pair.add("Hannibal");
+        pair.add("http://static2.hypable.com/wp-content/uploads/2013/12/hannibal-season-2-release-date.jpg");
+        pair.add("Big Bang Theory");
+        pair.add("http://tvfiles.alphacoders.com/100/hdclearart-10.png");
+        pair.add("House of Cards");
+        pair.add("http://cdn3.nflximg.net/images/3093/2043093.jpg");
+        pair.add("Game of Thrones");
+        pair.add("http://images.boomsbeat.com/data/images/full/19640/game-of-thrones-season-4-jpg.jpg");
+
+        for (int index = 1; index < pair.size(); index = index + 2){
             TextSliderView textSliderView = new TextSliderView(this);
+
             // initialize a SliderLayout
             textSliderView
-                    .description(name)
-                    .image(url_maps.get(name));
+                    .description(pair.get(index - 1))
+                    .image(pair.get(index));
 
-            mDemoSlider.addSlider(textSliderView);
+            theSliderLayout.addSlider(textSliderView);
         }
+        // TODO
+        // animate to slowly show up theSliderLayout to avoid jumping images in the beginning
+
+        theDraggableView.maximize();
         theDraggableView.setVisibility(View.VISIBLE);
     }
 
@@ -264,7 +304,7 @@ public class MowtubeActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        mDemoSlider.stopAutoCycle();
+        theSliderLayout.stopAutoCycle();
         super.onStop();
     }
 }
