@@ -61,6 +61,8 @@ public class MowtubeListFragment extends Fragment {
         // https://medium.com/@roideuniverse/android-viewpager-fragmentpageradapter-and-orientation-changes-256c23bee035#.ufb2ywv33
         // http://stackoverflow.com/questions/28982512/handling-orientation-change-with-viewpager-fragmentpageradapter
         // https://github.com/codepath/android_guides/wiki/ViewPager-with-FragmentPagerAdapter
+        // http://guides.codepath.com/android/Handling-Configuration-Changes
+        // http://guides.codepath.com/android/Understanding-App-Resources
         setRetainInstance(true);
 
         return rv;

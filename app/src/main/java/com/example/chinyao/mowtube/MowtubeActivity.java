@@ -1,5 +1,6 @@
 package com.example.chinyao.mowtube;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
@@ -110,6 +111,12 @@ public class MowtubeActivity extends AppCompatActivity {
     }
 
     private void setupDraggableView() {
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            theDraggableView.setXTopViewScaleFactor((float)1.5);
+            theDraggableView.setYTopViewScaleFactor((float)1.5);
+        }
+
         theDraggableView.setVisibility(View.INVISIBLE);
         //theDraggableView.setVisibility(View.GONE);
 
