@@ -81,7 +81,7 @@
                         android:id="@+id/dv_b_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="test"
+                        android:text="The Legend of Tarzan"
                         android:textAppearance="?attr/textAppearanceListItem"
                         android:layout_centerVertical="true"
                         android:paddingLeft="16dp"
@@ -103,15 +103,97 @@
                     android:id="@+id/dv_b_sub_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2016-06-29"
+                    android:text="Trending Index: 32"
                     android:textAppearance="?attr/textAppearanceListItem"
                     android:layout_below="@android:id/title"
                     android:paddingLeft="16dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:textColor="@color/colorDateLightLight"
+                    android:textSize="14sp"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Release Date: 2016-06-29"
+                    android:textAppearance="?attr/textAppearanceListItem"
+                    android:layout_below="@android:id/title"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:textColor="@color/colorDateLightLight"
+                    android:textSize="14sp"
+                    />
+
+                <io.techery.properratingbar.ProperRatingBar
+                    android:id="@+id/lowerRatingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="16dp"
+                    app:prb_defaultRating="4"
+                    app:prb_tickNormalDrawable="@drawable/ic_star_normal"
+                    app:prb_tickSelectedDrawable="@drawable/ic_star_selected"
+                    app:prb_tickSpacing="5dp"
+                    app:prb_totalTicks="7"
+                    app:prb_clickable="true"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tarzan, having acclimated to life in London, is called back to his former home in the jungle to investigate the activities at a mining encampment."
+                    android:textAppearance="?attr/textAppearanceListItem"
+                    android:layout_below="@android:id/title"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:textColor="@color/colorDateLightLight"
+                    android:textSize="14sp"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Category: Action, Adventure"
+                    android:textAppearance="?attr/textAppearanceListItem"
+                    android:layout_below="@android:id/title"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:textColor="@color/colorDateLightLight"
+                    android:textSize="14sp"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Production: Dark Horse Entertainment, Jerry Weintraub Productions"
+                    android:textAppearance="?attr/textAppearanceListItem"
+                    android:layout_below="@android:id/title"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:textColor="@color/colorDateLightLight"
+                    android:textSize="14sp"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Your Rating: 4"
+                    android:textAppearance="?attr/textAppearanceListItem"
+                    android:layout_below="@android:id/title"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
                     android:textColor="@color/colorDateLightLight"
                     android:textSize="14sp"
                     />
 
                 <include layout="@layout/mowtube_activity_backup"/>
+
             </LinearLayout>
         </ScrollView>
 

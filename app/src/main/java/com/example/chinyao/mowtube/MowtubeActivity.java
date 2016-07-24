@@ -28,8 +28,10 @@ public class MowtubeActivity extends AppCompatActivity {
     // TODO: Use Shared Preferences
     public static Boolean autoplay_on_wifi_only = false;
 
+    // tmdb
     // https://www.themoviedb.org/documentation/api/sessions?language=en
     // http://docs.themoviedb.apiary.io/
+    // https://www.themoviedb.org/documentation/api
     public static final String TMDB_API_KEY = "a07e22bc18f5cb106bfe4cc1f83ad8ed";
 
     // https://console.developers.google.com/
