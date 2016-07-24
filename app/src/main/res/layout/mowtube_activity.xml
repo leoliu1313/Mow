@@ -58,13 +58,12 @@
             android:layout_below="@+id/dv_top"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#ff9461c7"
+            android:layout_height="wrap_content"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:gravity="center"
+            android:background="@color/colorBackground"
             >
 
             <RelativeLayout
@@ -102,7 +101,7 @@
                 android:textAppearance="?attr/textAppearanceListItem"
                 android:layout_below="@android:id/title"
                 android:paddingLeft="16dp"
-                android:textColor="@color/grey"
+                android:textColor="@color/colorDateLightLight"
                 android:textSize="14sp"
                 />
         </LinearLayout>

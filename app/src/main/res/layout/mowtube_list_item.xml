@@ -41,9 +41,9 @@
             >
             <TextView
                 android:id="@+id/r_title"
-                android:layout_width="wrap_content"
+                android:layout_width="280dp"
                 android:layout_height="wrap_content"
-                android:text="test"
+                android:text="CodePath Demo Day"
                 android:textAppearance="?attr/textAppearanceListItem"
                 android:layout_centerVertical="true"
                 android:paddingLeft="16dp"
@@ -69,7 +69,7 @@
             android:textAppearance="?attr/textAppearanceListItem"
             android:layout_below="@+id/r_title"
             android:paddingLeft="16dp"
-            android:textColor="@color/grey"
+            android:textColor="@color/colorDate"
             android:textSize="14sp"
             />
 
