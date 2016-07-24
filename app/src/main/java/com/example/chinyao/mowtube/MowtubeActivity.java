@@ -2,9 +2,16 @@ package com.example.chinyao.mowtube;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +20,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RatingBar;
+import android.widget.RatingBar.OnRatingBarChangeListener;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
@@ -23,16 +33,19 @@ import com.github.pedrovgs.DraggableView;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
-import java.util.ArrayList;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cz.msebera.android.httpclient.Header;
 
 public class MowtubeActivity extends AppCompatActivity {
-
-    // TODO: Use Shared Preferences
-    public static Boolean autoplay_on_wifi_only = false;
 
     // tmdb
     // https://www.themoviedb.org/documentation/api/sessions?language=en
@@ -43,7 +56,16 @@ public class MowtubeActivity extends AppCompatActivity {
     // https://console.developers.google.com/
     public static final String YOUTUBE_API_KEY = "AIzaSyDclFRxzBdoqRGHVftdG1WFqBX2C2mVe04";
     public static final String YOUTUBE_DEFAULT_LINK = "664VCs3c1HU";
-    public static Boolean youtubeError = false;
+
+    // TODO: Use Shared Preferences
+    public Boolean autoplay_on_wifi_only = false;
+
+    // non static
+    public Boolean youtubeError = false;
+    public int orientationStatePrevious = 0;
+    public int orientationState = 0;
+    public String orientationStateVideo = YOUTUBE_DEFAULT_LINK;
+    public int orientationStateId = 0;
 
     // ButterKnife
     // http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife
@@ -52,6 +74,13 @@ public class MowtubeActivity extends AppCompatActivity {
     @BindView(R.id.m_tab_layout) TabLayout tabLayout;
     @BindView(R.id.m_view_pager) ViewPager viewPager;
     @BindView(R.id.m_draggable_view) DraggableView theDraggableView;
+    @BindView(R.id.dv_b_title) TextView theTitle;
+    @BindView(R.id.dv_b_trending) TextView theTrending;
+    @BindView(R.id.dv_b_release) TextView theRelease;
+    @BindView(R.id.dv_b_overview) TextView theOverview;
+    @BindView(R.id.dv_b_category) TextView theCategory;
+    @BindView(R.id.dv_b_production) TextView theProduction;
+    @BindView(R.id.dv_b_rating_bar) RatingBar theRatingBar;
     @BindView(R.id.dv_b_sub_slider_layout) SliderLayout theSliderLayout;
 
     YouTubePlayer mYouTubePlayer;
@@ -81,6 +110,8 @@ public class MowtubeActivity extends AppCompatActivity {
         setupYoutubeFragment();
 
         setupSliderLayout();
+
+        setupRatingBar();
     }
 
     private void setupViewPager() {
@@ -136,8 +167,16 @@ public class MowtubeActivity extends AppCompatActivity {
             theDraggableView.setYTopViewScaleFactor((float)1.5);
         }
 
-        theDraggableView.setVisibility(View.INVISIBLE);
-        //theDraggableView.setVisibility(View.GONE);
+        if (orientationStatePrevious == 0) {
+            theDraggableView.setVisibility(View.INVISIBLE);
+        }
+        else if (orientationStatePrevious == 1) {
+            theDraggableView.minimize();
+        }
+        else if (orientationStatePrevious == 2) {
+            theDraggableView.maximize();
+        }
+
 
         // theDraggableView.bringToFront();
         // ViewGroup viewGroup = ((ViewGroup) viewPager.getParent());
@@ -155,6 +194,9 @@ public class MowtubeActivity extends AppCompatActivity {
                     if (!youtubeError) {
                         mYouTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
                     }
+                    if (orientationState == 1) {
+                        orientationState = 2;
+                    }
                 }
             }
 
@@ -164,12 +206,16 @@ public class MowtubeActivity extends AppCompatActivity {
                     if (!youtubeError) {
                         mYouTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
                     }
+                    if (orientationState == 2) {
+                        orientationState = 1;
+                    }
                 }
             }
 
             @Override public void onClosedToLeft() {
                 if (!youtubeError) {
                     mYouTubePlayer.pause();
+                    orientationState = 0;
                 }
             }
 
@@ -189,7 +235,15 @@ public class MowtubeActivity extends AppCompatActivity {
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
                 if (!wasRestored) {
                     mYouTubePlayer = youTubePlayer;
-                    mYouTubePlayer.cueVideo(MowtubeActivity.YOUTUBE_DEFAULT_LINK);
+
+                    if (orientationStatePrevious == 0) {
+                        mYouTubePlayer.cueVideo(MowtubeActivity.YOUTUBE_DEFAULT_LINK);
+                    }
+                    else {
+                        mYouTubePlayer.loadVideo(orientationStateVideo);
+                        loadDetails(orientationStateId);
+                    }
+
                     mYouTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
                         @Override
                         public void onLoading() {}
@@ -230,48 +284,175 @@ public class MowtubeActivity extends AppCompatActivity {
         theSliderLayout.setDuration(5000);
     }
 
-    public void loadYoutube(String input) {
+    private void setupRatingBar() {
+        setRatingBarColor(R.color.colorAccentLightLight);
+        theRatingBar.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                if (fromUser) {
+                    setRatingBarColor(R.color.colorAccent);
+                    Toast.makeText(MowtubeActivity.this,
+                            "Vote Success : >",
+                            // "Successfully vote " + (int)(rating * 2),
+                            Toast.LENGTH_LONG)
+                            .show();
+                }
+                else {
+                    setRatingBarColor(R.color.colorAccentLightLight);
+                }
+            }
+        });
+    }
+
+    public void loadBottom(String video, int id) {
+        orientationStateVideo = video;
+        orientationStateId = id;
+        orientationState = 1;
+
+        // youtube
+        loadYoutube(video);
+
+        loadDetails(id);
+    }
+
+    public void loadDetails(final int id) {
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        // Turn off Debug Log
+        client.setLoggingEnabled(false);
+        String url = "https://api.themoviedb.org/3/movie/" + id;
+        RequestParams params = new RequestParams();
+        params.put("api_key", MowtubeActivity.TMDB_API_KEY);
+        Log.d("RecyclerViewAdapter", url);
+        client.get(url, params, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        try {
+                            // homepage: "http://legendoftarzan.com",
+                            JSONArray theJSONArray;
+                            JSONObject theJSONObject;
+                            StringBuilder input = new StringBuilder();
+                            String tmp;
+
+                            theTitle.setText(response.getString("title"));
+                            theTrending.setText("Trending Index: " + (int)response.getDouble("vote_average"));
+                            theRelease.setText("Release Date: " + response.getString("release_date"));
+
+                            tmp = response.getString("overview");
+                            if (tmp.equals("null")) {
+                                theOverview.setText("");
+                            }
+                            else {
+                                theOverview.setText(tmp);
+                            }
+
+                            theJSONArray = response.getJSONArray("genres");
+                            input.append("Category: ");
+                            for (int i = 0; i < theJSONArray.length(); i++) {
+                                if (i != 0) {
+                                    input.append(", ");
+                                }
+                                theJSONObject = theJSONArray.getJSONObject(i);
+                                input.append(theJSONObject.getString("name"));
+                            }
+                            theCategory.setText(input.toString());
+
+                            input.setLength(0);
+                            theJSONArray = response.getJSONArray("production_companies");
+                            input.append("Production: ");
+                            for (int i = 0; i < theJSONArray.length(); i++) {
+                                if (i != 0) {
+                                    input.append(", ");
+                                }
+                                theJSONObject = theJSONArray.getJSONObject(i);
+                                input.append(theJSONObject.getString("name"));
+                            }
+                            theProduction.setText(input.toString());
+                            input.setLength(0);
+
+                            theRatingBar.setRating((float) response.getDouble("vote_average"));
+
+                            loadBackdrops(id);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
+                        // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                    }
+                }
+        );
+    }
+
+    public void loadBackdrops(int id) {
+        AsyncHttpClient client = new AsyncHttpClient();
+        // Turn off Debug Log
+        client.setLoggingEnabled(false);
+        String url = "https://api.themoviedb.org/3/movie/" + id + "/images";
+        RequestParams params = new RequestParams();
+        params.put("api_key", MowtubeActivity.TMDB_API_KEY);
+        Log.d("RecyclerViewAdapter", url);
+        client.get(url, params, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        try {
+                            theSliderLayout.removeAllSliders();
+                            JSONArray theJSONArray = response.getJSONArray("backdrops");
+                            for (int i = 0; i < theJSONArray.length(); i++) {
+                                JSONObject theJSONObject = theJSONArray.getJSONObject(i);
+                                TextSliderView textSliderView = new TextSliderView(MowtubeActivity.this);
+                                // initialize a SliderLayout
+                                textSliderView
+                                        .description((String) theTitle.getText())
+                                        .image("http://image.tmdb.org/t/p/w300"
+                                                + theJSONObject.getString("file_path")
+                                                + "?api_key="
+                                                + TMDB_API_KEY);
+                                theSliderLayout.addSlider(textSliderView);
+                            }
+                            // TODO
+                            // animate to slowly show up theSliderLayout to avoid jumping images in the beginning
+                            theSliderLayout.setDuration(5000);
+                            loadFinal();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
+                        // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                    }
+                }
+        );
+    }
+
+    public void loadYoutube(String video) {
         if (!youtubeError) {
             if (autoplay_on_wifi_only && !isWifiConnected()) {
-                mYouTubePlayer.cueVideo(input);
+                mYouTubePlayer.cueVideo(video);
             } else {
-                mYouTubePlayer.loadVideo(input);
+                mYouTubePlayer.loadVideo(video);
             }
             // mYouTubePlayer.play();
-        }
-        else {
+        } else {
             Intent i = getBaseContext().getPackageManager()
-                    .getLaunchIntentForPackage( getBaseContext().getPackageName() );
+                    .getLaunchIntentForPackage(getBaseContext().getPackageName());
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
         }
+    }
 
-        theSliderLayout.removeAllSliders();
-
-        ArrayList<String> pair = new ArrayList<>();
-        pair.add("Hannibal");
-        pair.add("http://static2.hypable.com/wp-content/uploads/2013/12/hannibal-season-2-release-date.jpg");
-        pair.add("Big Bang Theory");
-        pair.add("http://tvfiles.alphacoders.com/100/hdclearart-10.png");
-        pair.add("House of Cards");
-        pair.add("http://cdn3.nflximg.net/images/3093/2043093.jpg");
-        pair.add("Game of Thrones");
-        pair.add("http://images.boomsbeat.com/data/images/full/19640/game-of-thrones-season-4-jpg.jpg");
-
-        for (int index = 1; index < pair.size(); index = index + 2){
-            TextSliderView textSliderView = new TextSliderView(this);
-
-            // initialize a SliderLayout
-            textSliderView
-                    .description(pair.get(index - 1))
-                    .image(pair.get(index));
-
-            theSliderLayout.addSlider(textSliderView);
+    public void loadFinal() {
+        if (orientationStatePrevious == 1) {
+            // reset orientationStatePrevious
+            orientationStatePrevious = 0;
+            theDraggableView.minimize();
         }
-        // TODO
-        // animate to slowly show up theSliderLayout to avoid jumping images in the beginning
-
-        theDraggableView.maximize();
+        else {
+            theDraggableView.maximize();
+        }
         theDraggableView.setVisibility(View.VISIBLE);
     }
 
@@ -283,8 +464,9 @@ public class MowtubeActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
         // Save custom values into the bundle
-        savedInstanceState.putInt("key1", 123);
-        savedInstanceState.putString("key2", "abc");
+        savedInstanceState.putInt("orientationState", orientationState);
+        savedInstanceState.putString("orientationStateVideo", orientationStateVideo);
+        savedInstanceState.putInt("orientationStateId", orientationStateId);
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -294,17 +476,42 @@ public class MowtubeActivity extends AppCompatActivity {
         // Always call the superclass so it can restore the view hierarchy
         super.onRestoreInstanceState(savedInstanceState);
         // Restore state members from saved instance
-        int someIntValue = savedInstanceState.getInt("key1");
-        String someStringValue = savedInstanceState.getString("key2");
+        orientationState = savedInstanceState.getInt("orientationState");
+        orientationStatePrevious = orientationState;
+        orientationStateVideo = savedInstanceState.getString("orientationStateVideo");
+        orientationStateId = savedInstanceState.getInt("orientationStateId");
         Toast.makeText(this,
-                "onRestoreInstanceState " + someIntValue + " " + someStringValue,
+                "onRestoreInstanceState "
+                        + orientationStatePrevious + " "
+                        + orientationStateVideo + " "
+                        + orientationStateId,
                 Toast.LENGTH_SHORT)
                 .show();
     }
 
     @Override
     protected void onStop() {
+        // avoid memory leak
         theSliderLayout.stopAutoCycle();
         super.onStop();
+    }
+
+    private void setRatingBarColor(int id) {
+        LayerDrawable stars = (LayerDrawable) theRatingBar.getProgressDrawable();
+        // Filled stars
+        setDrawableColor(stars.getDrawable(2), ContextCompat.getColor(MowtubeActivity.this, id));
+        // Half filled stars
+        setDrawableColor(stars.getDrawable(1), ContextCompat.getColor(MowtubeActivity.this, id));
+        // Empty stars
+        setDrawableColor(stars.getDrawable(0), ContextCompat.getColor(MowtubeActivity.this, id));
+    }
+
+    private void setDrawableColor(Drawable drawable, @ColorInt int color) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            DrawableCompat.setTint(drawable, color);
+        }
+        else {
+            drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+        }
     }
 }

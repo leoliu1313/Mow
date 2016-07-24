@@ -2,7 +2,6 @@ package com.example.chinyao.mowtube;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -134,7 +134,7 @@ public class MowtubeRecyclerViewAdapter
                 }
                 else {
                     int position = mRecyclerView.getChildAdapterPosition(v);
-                    int id = mMovies.get(position).id;
+                    final int id = mMovies.get(position).id;
                     final MowtubeActivity activity = (MowtubeActivity) v.getContext();
 
                     AsyncHttpClient client = new AsyncHttpClient();
@@ -152,7 +152,7 @@ public class MowtubeRecyclerViewAdapter
                                         for (int i=0; i < moviesJson.length(); i++) {
                                             response = moviesJson.getJSONObject(i);
                                             if (response.getString("type").equals("Trailer")) {
-                                                activity.loadYoutube(response.getString("source"));
+                                                activity.loadBottom(response.getString("source"), id);
                                                 return;
                                             }
                                         }
@@ -160,14 +160,13 @@ public class MowtubeRecyclerViewAdapter
                                             // https://api.themoviedb.org/3/movie/316727/trailers?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed
                                             // Some movies only have Featurette instead of Trailer
                                             response = moviesJson.getJSONObject(0);
-                                            activity.loadYoutube(response.getString("source"));
+                                            activity.loadBottom(response.getString("source"), id);
                                             return;
                                         }
-                                        activity.loadYoutube(MowtubeActivity.YOUTUBE_DEFAULT_LINK);
-                                        Snackbar.make(activity.findViewById(R.id.m_draggable_view),
+                                        activity.loadBottom(MowtubeActivity.YOUTUBE_DEFAULT_LINK, id);
+                                        Toast.makeText(activity,
                                                 "No Trailer...",
-                                                30000)
-                                                .setAction("Action", null)
+                                                Toast.LENGTH_LONG)
                                                 .show();
                                     } catch (JSONException e) {
                                         e.printStackTrace();

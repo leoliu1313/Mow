@@ -19,7 +19,7 @@
     <color name="colorDateLight">#848484</color>
     <!-- three dot button -->
     <color name="colorDate">#757575</color>
-    <!-- sub title -->
+    <!-- list sub title -->
     <color name="colorDateDark">#666666</color>
     <!-- Up next, Autoplay -->
     <color name="colorDateDarkDark">#333333</color>

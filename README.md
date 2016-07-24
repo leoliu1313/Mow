@@ -50,7 +50,7 @@ The following **additional** features are implemented:
     * [x] Drag right or up to maximize the video.
     * [x] Drag left to close the video.
 * [x] Enhance detail movie views.
-    * [x] Users see trending index, release date, description, category, and production company.
+    * [x] Users see trending index, release date, overview, category, and production company.
     * [x] Users see the average vote on RatingBar.
     * [x] Users can vote a score from 1 to 10 on RatingBar.
     * [x] Users see a image slider by SliderLayout. 

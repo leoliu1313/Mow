@@ -90,6 +90,8 @@
                             android:textAppearance="?attr/textAppearanceListItem"
                             android:layout_centerVertical="true"
                             android:paddingLeft="16dp"
+                            android:paddingRight="32dp"
+                            android:textColor="@color/colorDateDarkDark"
                             />
                         <ImageButton
                             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -100,17 +102,19 @@
                             android:src="@drawable/ic_more_vert_black_18dp"
                             android:layout_alignParentRight="true"
                             android:layout_alignParentEnd="true"
+                            android:color="@color/colorDateLight"
                             />
                     </RelativeLayout>
 
                     <TextView
-                        android:id="@+id/dv_b_sub_title"
+                        android:id="@+id/dv_b_trending"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Trending Index: 32"
                         android:textAppearance="?attr/textAppearanceListItem"
                         android:layout_below="@android:id/title"
                         android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
                         android:paddingTop="3dp"
                         android:paddingBottom="3dp"
                         android:textColor="@color/colorDateLightLight"
@@ -118,12 +122,14 @@
                         />
 
                     <TextView
+                        android:id="@+id/dv_b_release"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Release Date: 2016-06-29"
                         android:textAppearance="?attr/textAppearanceListItem"
                         android:layout_below="@android:id/title"
                         android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
                         android:paddingTop="3dp"
                         android:paddingBottom="3dp"
                         android:textColor="@color/colorDateLightLight"
@@ -131,12 +137,14 @@
                         />
 
                     <TextView
+                        android:id="@+id/dv_b_overview"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Tarzan, having acclimated to life in London, is called back to his former home in the jungle to investigate the activities at a mining encampment."
                         android:textAppearance="?attr/textAppearanceListItem"
                         android:layout_below="@android:id/title"
                         android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
                         android:paddingTop="3dp"
                         android:paddingBottom="3dp"
                         android:textColor="@color/colorDateLightLight"
@@ -144,12 +152,14 @@
                         />
 
                     <TextView
+                        android:id="@+id/dv_b_category"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Category: Action, Adventure"
                         android:textAppearance="?attr/textAppearanceListItem"
                         android:layout_below="@android:id/title"
                         android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
                         android:paddingTop="3dp"
                         android:paddingBottom="3dp"
                         android:textColor="@color/colorDateLightLight"
@@ -157,12 +167,14 @@
                         />
 
                     <TextView
+                        android:id="@+id/dv_b_production"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Production: Dark Horse Entertainment, Jerry Weintraub Productions"
                         android:textAppearance="?attr/textAppearanceListItem"
                         android:layout_below="@android:id/title"
                         android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
                         android:paddingTop="3dp"
                         android:paddingBottom="3dp"
                         android:textColor="@color/colorDateLightLight"
@@ -172,7 +184,7 @@
 
                 <RatingBar
                     android:layout_gravity="center"
-                    android:id="@+id/ratingBar"
+                    android:id="@+id/dv_b_rating_bar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -180,7 +192,7 @@
                     android:numStars="5"
                     android:stepSize="0.5"
                     android:rating="2.5"
-                    android:theme="@style/RatingBar"
+                    android:theme="@style/RatingBar1"
                     />
                 <!-- small size but do not support user interaction -->
                 <!-- style="?android:attr/ratingBarStyleIndicator" -->
