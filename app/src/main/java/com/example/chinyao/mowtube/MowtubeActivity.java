@@ -1,12 +1,14 @@
 package com.example.chinyao.mowtube;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.ColorInt;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
@@ -32,6 +34,7 @@ import com.github.pedrovgs.DraggableListener;
 import com.github.pedrovgs.DraggableView;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayer.OnFullscreenListener;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -58,14 +61,18 @@ public class MowtubeActivity extends AppCompatActivity {
     public static final String YOUTUBE_DEFAULT_LINK = "664VCs3c1HU";
 
     // TODO: Use Shared Preferences
-    public Boolean autoplay_on_wifi_only = false;
+    private static int autoplay_mode = 2;
 
     // non static
-    public Boolean youtubeError = false;
-    public int orientationStatePrevious = 0;
-    public int orientationState = 0;
-    public String orientationStateVideo = YOUTUBE_DEFAULT_LINK;
-    public int orientationStateId = 0;
+    private boolean youtubeError = false;
+    private boolean youtubeFullscreen = false;;
+    private boolean youtubePlaying = false;
+    private int youtubePlayingTime = -1;
+    private int orientationStatePrevious = 0;
+    private int orientationState = 0;
+    private String orientationStateVideo = YOUTUBE_DEFAULT_LINK;
+    private int orientationStateId = 0;
+    private boolean doubleBackToExitPressedOnce = false;
 
     // ButterKnife
     // http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife
@@ -117,6 +124,9 @@ public class MowtubeActivity extends AppCompatActivity {
     private void setupViewPager() {
         viewPager.setOffscreenPageLimit(3);
 
+        // TODO
+        // people on stackoverflow said this is bad implementation
+        // use getView() instead?
         MowtubeViewPagerAdapter mowtubeViewPagerAdapter = new MowtubeViewPagerAdapter(getSupportFragmentManager());
         mowtubeViewPagerAdapter.addFragment(MowtubeListFragment.newInstance(1), getString(R.string.home));
         mowtubeViewPagerAdapter.addFragment(MowtubeListFragment.newInstance(2), getString(R.string.upcoming));
@@ -138,10 +148,13 @@ public class MowtubeActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (autoplay_on_wifi_only) {
+        if (autoplay_mode == 1) {
             menu.findItem(R.id.autoplay_on_wifi_only).setChecked(true);
         }
-        else {
+        else if (autoplay_mode == 2) {
+            menu.findItem(R.id.autoplay_on_popular).setChecked(true);
+        }
+        else if (autoplay_mode == 3) {
             menu.findItem(R.id.autoplay_always).setChecked(true);
         }
         return true;
@@ -151,10 +164,13 @@ public class MowtubeActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.autoplay_on_wifi_only:
-                autoplay_on_wifi_only = true;
+                autoplay_mode = 1;
                 return true;
+            case R.id.autoplay_on_popular:
+                autoplay_mode = 2;
+                break;
             case R.id.autoplay_always:
-                autoplay_on_wifi_only = false;
+                autoplay_mode = 3;
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -240,8 +256,7 @@ public class MowtubeActivity extends AppCompatActivity {
                         mYouTubePlayer.cueVideo(MowtubeActivity.YOUTUBE_DEFAULT_LINK);
                     }
                     else {
-                        mYouTubePlayer.loadVideo(orientationStateVideo);
-                        loadDetails(orientationStateId);
+                        loadDetails(orientationStateVideo, orientationStateId);
                     }
 
                     mYouTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
@@ -261,6 +276,25 @@ public class MowtubeActivity extends AppCompatActivity {
                         public void onError(YouTubePlayer.ErrorReason errorReason) {
                             youtubeError = true;
                             Log.d("MowtubeActivity", "onError " + errorReason.toString());
+                        }
+                    });
+
+                    mYouTubePlayer.setOnFullscreenListener(new OnFullscreenListener() {
+                        @Override
+                        public void onFullscreen(boolean _isFullScreen) {
+                            if (youtubeFullscreen && !_isFullScreen) {
+                                // use sensor instead of user's Android setting
+                                // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+
+                                // user's Android setting
+                                // if auto-rotate, then use sensor
+                                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+
+                                // lock to specific orientation
+                                // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                                // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                            }
+                            youtubeFullscreen = _isFullScreen;
                         }
                     });
                 }
@@ -291,7 +325,7 @@ public class MowtubeActivity extends AppCompatActivity {
                 if (fromUser) {
                     setRatingBarColor(R.color.colorAccent);
                     Toast.makeText(MowtubeActivity.this,
-                            "Vote Success : >",
+                            "Vote : >",
                             // "Successfully vote " + (int)(rating * 2),
                             Toast.LENGTH_LONG)
                             .show();
@@ -308,13 +342,13 @@ public class MowtubeActivity extends AppCompatActivity {
         orientationStateId = id;
         orientationState = 1;
 
-        // youtube
-        loadYoutube(video);
+        theDraggableView.minimize();
+        theDraggableView.setVisibility(View.VISIBLE);
 
-        loadDetails(id);
+        loadDetails(video, id);
     }
 
-    public void loadDetails(final int id) {
+    public void loadDetails(final String video, final int id) {
 
         AsyncHttpClient client = new AsyncHttpClient();
         // Turn off Debug Log
@@ -334,7 +368,7 @@ public class MowtubeActivity extends AppCompatActivity {
                             String tmp;
 
                             theTitle.setText(response.getString("title"));
-                            theTrending.setText("Trending Index: " + (int)response.getDouble("vote_average"));
+                            theTrending.setText("Trending Index: " + (int)response.getDouble("popularity"));
                             theRelease.setText("Release Date: " + response.getString("release_date"));
 
                             tmp = response.getString("overview");
@@ -369,9 +403,18 @@ public class MowtubeActivity extends AppCompatActivity {
                             theProduction.setText(input.toString());
                             input.setLength(0);
 
-                            theRatingBar.setRating((float) response.getDouble("vote_average"));
+                            theRatingBar.setRating((float) response.getDouble("vote_average") / 2);
+
+                            // youtube
+                            if (response.getDouble("vote_average") > 5) {
+                                loadYoutube(video, true);
+                            }
+                            else {
+                                loadYoutube(video, false);
+                            }
 
                             loadBackdrops(id);
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -428,15 +471,33 @@ public class MowtubeActivity extends AppCompatActivity {
         );
     }
 
-    public void loadYoutube(String video) {
+    public void loadYoutube(String video, Boolean popular) {
         if (!youtubeError) {
-            if (autoplay_on_wifi_only && !isWifiConnected()) {
+            if (youtubePlaying) {
+                youtubePlaying = false;
+                if (youtubePlayingTime != -1) {
+                    mYouTubePlayer.loadVideo(video, youtubePlayingTime);
+                }
+                else {
+                    mYouTubePlayer.loadVideo(video);
+                }
+            }
+            else if (autoplay_mode == 1 && !isWifiConnected()) {
                 mYouTubePlayer.cueVideo(video);
-            } else {
+            }
+            else if (autoplay_mode == 2 && !popular) {
+                mYouTubePlayer.cueVideo(video);
+            }
+            else {
                 mYouTubePlayer.loadVideo(video);
             }
             // mYouTubePlayer.play();
         } else {
+            // restart app
+            Toast.makeText(this,
+                    "Youtube cannot be initialized.",
+                    Toast.LENGTH_SHORT)
+                    .show();
             Intent i = getBaseContext().getPackageManager()
                     .getLaunchIntentForPackage(getBaseContext().getPackageName());
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -467,6 +528,10 @@ public class MowtubeActivity extends AppCompatActivity {
         savedInstanceState.putInt("orientationState", orientationState);
         savedInstanceState.putString("orientationStateVideo", orientationStateVideo);
         savedInstanceState.putInt("orientationStateId", orientationStateId);
+        if (!youtubeError) {
+            savedInstanceState.putBoolean("youtubePlaying", mYouTubePlayer.isPlaying());
+            savedInstanceState.putInt("youtubePlayingTime", mYouTubePlayer.getCurrentTimeMillis());
+        }
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -480,13 +545,20 @@ public class MowtubeActivity extends AppCompatActivity {
         orientationStatePrevious = orientationState;
         orientationStateVideo = savedInstanceState.getString("orientationStateVideo");
         orientationStateId = savedInstanceState.getInt("orientationStateId");
+        youtubePlaying = savedInstanceState.getBoolean("youtubePlaying");
+        youtubePlayingTime = savedInstanceState.getInt("youtubePlayingTime");
+        /*
         Toast.makeText(this,
                 "onRestoreInstanceState "
                         + orientationStatePrevious + " "
                         + orientationStateVideo + " "
-                        + orientationStateId,
+                        + orientationStateId + " "
+                        + youtubePlaying + " "
+                        + youtubePlayingTime + " "
+                        ,
                 Toast.LENGTH_SHORT)
                 .show();
+                */
     }
 
     @Override
@@ -512,6 +584,36 @@ public class MowtubeActivity extends AppCompatActivity {
         }
         else {
             drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (youtubeFullscreen) {
+            mYouTubePlayer.setFullscreen(false);
+        }
+        else if (orientationState == 2){
+            theDraggableView.minimize();
+        }
+        else {
+            if (doubleBackToExitPressedOnce) {
+                super.onBackPressed();
+            }
+            else {
+                doubleBackToExitPressedOnce = true;
+                Toast.makeText(this, "Press BACK again to exit", Toast.LENGTH_SHORT).show();
+                // TODO: bad implementation
+                // should removeCallbacks() when onDestroy()
+                // or, use another implementation instead
+                // http://stackoverflow.com/questions/8430805/clicking-the-back-button-twice-to-exit-an-activity
+                new Handler().postDelayed(
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                doubleBackToExitPressedOnce = false;
+                            }
+                        }, 2000);
+            }
         }
     }
 }

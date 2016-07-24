@@ -23,11 +23,11 @@ The following **optional** features are implemented:
 The following **bonus** features are implemented:
 
 * [x] Allow user to view details of the movie including ratings and popularity within a separate activity or dialog fragment.
-* [ ] When viewing a popular movie (i.e. a movie voted for more than 5) the video should show the full backdrop image as the layout.  Uses [Heterogenous ListViews](http://guides.codepath.com/android/Implementing-a-Heterogenous-ListView) or [Heterogenous RecyclerView](http://guides.codepath.com/android/Heterogenous-Layouts-inside-RecyclerView) to show different layouts.
-* [ ] Allow video trailers to be played in full-screen using the YouTubePlayerView.
+* [ ] When viewing a popular movie (a movie voted for more than 5 out of 10) the video should show the full backdrop image as the layout.  Uses [Heterogenous ListViews](http://guides.codepath.com/android/Implementing-a-Heterogenous-ListView) or [Heterogenous RecyclerView](http://guides.codepath.com/android/Heterogenous-Layouts-inside-RecyclerView) to show different layouts.
+* [x] Allow video trailers to be played in full-screen using the YouTubePlayerView or YouTubePlayerSupportFragment.
     * [ ] Overlay a play icon for videos that can be played.
-    * [ ] More popular movies should start a separate activity that plays the video immediately.
-    * [ ] Less popular videos rely on the detail page should show ratings and a YouTube preview.
+    * [x] More popular movies should start a separate activity that plays the video immediately.
+    * [x] Less popular videos rely on the detail page should show ratings and a YouTube preview.
 * [ ] Leverages the [data binding support module](http://guides.codepath.com/android/Applying-Data-Binding-for-Views) to bind data into layout templates.
 * [x] Apply the popular [Butterknife annotation library](http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife) to reduce boilerplate code.
 * [x] Apply rounded corners for the poster or background images using [Picasso transformations](https://guides.codepath.com/android/Displaying-Images-with-the-Picasso-Library#other-transformations)
@@ -39,8 +39,11 @@ The following **additional** features are implemented:
     * [x] Default is extended.
     * [x] Scroll down RecyclerView to collapse.
     * [x] Scroll up RecyclerView to extend.
-* [x] Setting supports Auto-play on Wi-Fi only or always
-    * [ ] Detect if Wi-Fi is connected. (When this is still not implemented, simply assume Wi-Fi is not connected.)
+* [x] Setting supports Auto-play setting
+    * [x] Auto-play on Wi-Fi only
+        * [ ] Detect if Wi-Fi is connected. (When this is still not implemented, simply assume Wi-Fi is not connected.)
+    * [x] Auto-play on popular movies
+    * [x] Auto-play always
 * [x] Use TabLayout and ViewPager to show Home, Upcoming, Trending, and Favorite.
 * [x] Users see a ProgressDialog when waiting more than one second for JsonHttpResponseHandler.
 * [x] Use com.github.pedrovgs:draggablepanel, DraggableView to play videos.
