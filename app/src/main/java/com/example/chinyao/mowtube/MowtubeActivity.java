@@ -20,10 +20,13 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MowtubeActivity extends AppCompatActivity {
 
     // TODO: Use Shared Preferences
-    static Boolean autoplay_on_wifi_only = false;
+    public static Boolean autoplay_on_wifi_only = false;
 
     // https://www.themoviedb.org/documentation/api/sessions?language=en
     // http://docs.themoviedb.apiary.io/
@@ -33,16 +36,24 @@ public class MowtubeActivity extends AppCompatActivity {
     public static final String YOUTUBE_API_KEY = "AIzaSyDclFRxzBdoqRGHVftdG1WFqBX2C2mVe04";
     public static final String YOUTUBE_DEFAULT_LINK = "664VCs3c1HU";
 
-    private AppBarLayout theAppBarLayout;
-    private DraggableView theDraggableView;
-    private YouTubePlayer mYouTubePlayer;
+    // ButterKnife
+    // http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife
+    @BindView(R.id.appbar) AppBarLayout theAppBarLayout;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.tabs) TabLayout tabLayout;
+    @BindView(R.id.viewpager) ViewPager viewPager;
+    @BindView(R.id.draggable_view) DraggableView theDraggableView;
+
+    YouTubePlayer mYouTubePlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mowtube_activity);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        // ButterKnife
+        ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
 
         ActionBar ab = getSupportActionBar();
@@ -53,17 +64,12 @@ public class MowtubeActivity extends AppCompatActivity {
             // ab.setDisplayHomeAsUpEnabled(true);
         }
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        if (viewPager != null) {
-            setupViewPager(viewPager);
-        }
+        setupViewPager();
 
-        theAppBarLayout = (AppBarLayout)findViewById(R.id.appbar);
-        theDraggableView = (DraggableView)findViewById(R.id.draggable_view);
         setupDraggableView();
     }
 
-    private void setupViewPager(ViewPager viewPager) {
+    private void setupViewPager() {
         viewPager.setOffscreenPageLimit(3);
 
         MowtubeViewPagerAdapter mowtubeViewPagerAdapter = new MowtubeViewPagerAdapter(getSupportFragmentManager());
@@ -73,7 +79,6 @@ public class MowtubeActivity extends AppCompatActivity {
         mowtubeViewPagerAdapter.addFragment(MowtubeListFragment.newInstance(4), getString(R.string.favorite));
         viewPager.setAdapter(mowtubeViewPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         // use         |     tab1    |     tab2    |
         // instead of  |  tab1  |  tab2  |         |

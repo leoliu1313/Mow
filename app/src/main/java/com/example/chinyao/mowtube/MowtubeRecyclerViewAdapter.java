@@ -24,7 +24,10 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 /**
  * Created by chinyao on 7/23/2016.
@@ -47,19 +50,18 @@ public class MowtubeRecyclerViewAdapter
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        // public String mBoundString;
 
         public final View mView;
-        public final ImageView mImageView;
-        public final TextView mTextViewTitle;
-        public final TextView mTextView2;
+        // public String mBoundString;
+
+        @BindView(R.id.movieImage) ImageView mImageView;
+        @BindView(R.id.title) TextView mTextViewTitle;
+        @BindView(R.id.text2) TextView mTextView2;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mImageView = (ImageView) view.findViewById(R.id.movieImage);
-            mTextViewTitle = (TextView) view.findViewById(android.R.id.title);
-            mTextView2 = (TextView) view.findViewById(android.R.id.text2);
+            ButterKnife.bind(this, view);
         }
     }
 
@@ -110,6 +112,7 @@ public class MowtubeRecyclerViewAdapter
                     // Picasso does not support gif
                     Picasso.with(holder.mImageView.getContext())
                             .load("http://image.tmdb.org/t/p/w500" + theMowtubeMovie.backdrop_path)
+                            .transform(new RoundedCornersTransformation(10, 10))
                             .fit().centerCrop()
                             .placeholder(R.drawable.blobb)
                             .error(R.drawable.tmdb)

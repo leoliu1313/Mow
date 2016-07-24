@@ -10,15 +10,15 @@ The following **required** functionality is completed:
 
 * [x] User can **scroll through current movies** from the Movie Database API
 * [x] Layout is optimized with the [ViewHolder](http://guides.codepath.com/android/Using-an-ArrayAdapter-with-ListView#improving-performance-with-the-viewholder-pattern) pattern.
-* [ ] For each movie displayed, user can see the following details:
-  * [ ] Title, Poster Image, Overview (Portrait mode)
-  * [ ] Title, Backdrop Image, Overview (Landscape mode)
+* [x] For each movie displayed, user can see the following details:
+  * [x] Title, Poster Image, Overview (Portrait mode)
+  * [x] Title, Backdrop Image, Overview (Landscape mode)
 
 The following **optional** features are implemented:
 
 * [ ] User can **pull-to-refresh** popular stream to get the latest movies.
-* [ ] Display a nice default [placeholder graphic](http://guides.codepath.com/android/Displaying-Images-with-the-Picasso-Library#configuring-picasso) for each image during loading.
-* [ ] Improved the user interface through styling and coloring.
+* [x] Display a nice default [placeholder graphic](http://guides.codepath.com/android/Displaying-Images-with-the-Picasso-Library#configuring-picasso) for each image during loading.
+* [x] Improved the user interface through styling and coloring.
 
 The following **bonus** features are implemented:
 
@@ -29,15 +29,26 @@ The following **bonus** features are implemented:
     * [ ] More popular movies should start a separate activity that plays the video immediately.
     * [ ] Less popular videos rely on the detail page should show ratings and a YouTube preview.
 * [ ] Leverages the [data binding support module](http://guides.codepath.com/android/Applying-Data-Binding-for-Views) to bind data into layout templates.
-* [ ] Apply the popular [Butterknife annotation library](http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife) to reduce boilerplate code.
-* [ ] Apply rounded corners for the poster or background images using [Picasso transformations](https://guides.codepath.com/android/Displaying-Images-with-the-Picasso-Library#other-transformations)
+* [x] Apply the popular [Butterknife annotation library](http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife) to reduce boilerplate code.
+* [x] Apply rounded corners for the poster or background images using [Picasso transformations](https://guides.codepath.com/android/Displaying-Images-with-the-Picasso-Library#other-transformations)
 
 The following **additional** features are implemented:
 
 * [x] If waiting more than one second for JsonHttpResponseHandler, then show a ProgressDialog.
-* [x] Use CoordinatorLayout to collapse/extend AppBarLayout
-* [x] Use ViewPager to show Home, Trending, Favorite 
-* [ ] Show loading screen in the beginning
+* [x] Use CoordinatorLayout to collapse/extend Toolbar in AppBarLayout.
+    * [x] Default is extended.
+    * [x] Scroll down RecyclerView to collapse.
+    * [x] Scroll up RecyclerView to extend.
+* [x] Use TabLayout and ViewPager to show Home, Upcoming, Trending, and Favorite.
+* [ ] Show loading screen in the beginning.
+* [x] Setting supports Auto-play on Wi-Fi only or always
+    * [ ] Detect if Wi-Fi is connected. (When this is still not implemented, simply assume Wi-Fi is not connected.)
+* [x] Use com.github.pedrovgs:draggablepanel, DraggableView to play videos.
+    * [x] Default is maximized.
+    * [x] Drag down to minimize the video while keep playing it.
+    * [x] When users select different Fragment pages for ViewPager, the minimized video keeps playing.
+    * [x] Drag right or up to maximize the video.
+    * [x] Drag left to close the video.
 
 ## Video Walkthrough
 
