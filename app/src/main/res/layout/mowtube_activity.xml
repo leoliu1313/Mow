@@ -53,58 +53,67 @@
         <!-- Use ResizeTransformer instead of ScaleTransformer -->
         <!-- to fix minimize issue -->
 
-        <LinearLayout
+        <ScrollView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:id="@+id/dv_bottom"
             android:layout_below="@+id/dv_top"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:background="@color/colorBackground"
             >
 
-            <RelativeLayout
-                xmlns:android="http://schemas.android.com/apk/res/android"
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:background="@color/colorBackground"
                 >
+
+                <RelativeLayout
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+                    <TextView
+                        android:id="@+id/dv_b_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="test"
+                        android:textAppearance="?attr/textAppearanceListItem"
+                        android:layout_centerVertical="true"
+                        android:paddingLeft="16dp"
+                        />
+
+                    <ImageButton
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:id="@+id/dv_b_image_button"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/ic_more_vert_black_18dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        />
+                </RelativeLayout>
+
                 <TextView
-                    android:id="@+id/dv_b_title"
+                    android:id="@+id/dv_b_sub_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="test"
+                    android:text="2016-06-29"
                     android:textAppearance="?attr/textAppearanceListItem"
-                    android:layout_centerVertical="true"
+                    android:layout_below="@android:id/title"
                     android:paddingLeft="16dp"
+                    android:textColor="@color/colorDateLightLight"
+                    android:textSize="14sp"
                     />
 
-                <ImageButton
-                    xmlns:android="http://schemas.android.com/apk/res/android"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:id="@+id/dv_b_image_button"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/ic_more_vert_black_18dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    />
-            </RelativeLayout>
-
-            <TextView
-                android:id="@+id/dv_b_sub_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2016-06-29"
-                android:textAppearance="?attr/textAppearanceListItem"
-                android:layout_below="@android:id/title"
-                android:paddingLeft="16dp"
-                android:textColor="@color/colorDateLightLight"
-                android:textSize="14sp"
-                />
-        </LinearLayout>
+                <include layout="@layout/mowtube_activity_backup"/>
+            </LinearLayout>
+        </ScrollView>
 
         <RelativeLayout
             android:id="@+id/dv_top"

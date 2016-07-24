@@ -201,7 +201,6 @@ public class MowtubeActivity extends AppCompatActivity {
     }
 
     public void loadYoutube(String input) {
-        theDraggableView.maximize();
         if (autoplay_on_wifi_only && !isWifiConnected()) {
             mYouTubePlayer.cueVideo(input);
         }
@@ -209,6 +208,7 @@ public class MowtubeActivity extends AppCompatActivity {
             mYouTubePlayer.loadVideo(input);
         }
         // mYouTubePlayer.play();
+        theDraggableView.maximize();
         theDraggableView.setVisibility(View.VISIBLE);
     }
 
