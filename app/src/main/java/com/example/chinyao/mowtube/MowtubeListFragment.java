@@ -152,6 +152,7 @@ public class MowtubeListFragment extends Fragment {
                                     )
                             );
 
+                            // grey divider between each other
                             recyclerView.addItemDecoration(
                                     new DividerItemDecoration(
                                             getContext(),

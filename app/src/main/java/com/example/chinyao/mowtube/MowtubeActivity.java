@@ -61,7 +61,7 @@ public class MowtubeActivity extends AppCompatActivity {
         theDraggableView = (DraggableView)findViewById(R.id.draggable_view);
         setupDraggableView();
     }
-    
+
     private void setupViewPager(ViewPager viewPager) {
         viewPager.setOffscreenPageLimit(3);
 
@@ -74,6 +74,9 @@ public class MowtubeActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+        // use         |     tab1    |     tab2    |
+        // instead of  |  tab1  |  tab2  |         |
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
     }
 
     @Override
