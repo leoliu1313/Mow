@@ -22,8 +22,8 @@ The following **optional** features are implemented:
 
 The following **bonus** features are implemented:
 
-* [ ] Allow user to view details of the movie including ratings and popularity within a separate activity or dialog fragment.
-* [ ] When viewing a popular movie (i.e. a movie voted for more than 5 stars) the video should show the full backdrop image as the layout.  Uses [Heterogenous ListViews](http://guides.codepath.com/android/Implementing-a-Heterogenous-ListView) or [Heterogenous RecyclerView](http://guides.codepath.com/android/Heterogenous-Layouts-inside-RecyclerView) to show different layouts.
+* [x] Allow user to view details of the movie including ratings and popularity within a separate activity or dialog fragment.
+* [ ] When viewing a popular movie (i.e. a movie voted for more than 5) the video should show the full backdrop image as the layout.  Uses [Heterogenous ListViews](http://guides.codepath.com/android/Implementing-a-Heterogenous-ListView) or [Heterogenous RecyclerView](http://guides.codepath.com/android/Heterogenous-Layouts-inside-RecyclerView) to show different layouts.
 * [ ] Allow video trailers to be played in full-screen using the YouTubePlayerView.
     * [ ] Overlay a play icon for videos that can be played.
     * [ ] More popular movies should start a separate activity that plays the video immediately.
@@ -34,21 +34,27 @@ The following **bonus** features are implemented:
 
 The following **additional** features are implemented:
 
-* [x] If waiting more than one second for JsonHttpResponseHandler, then show a ProgressDialog.
+* [ ] Show loading screen in the beginning.
 * [x] Use CoordinatorLayout to collapse/extend Toolbar in AppBarLayout.
     * [x] Default is extended.
     * [x] Scroll down RecyclerView to collapse.
     * [x] Scroll up RecyclerView to extend.
-* [x] Use TabLayout and ViewPager to show Home, Upcoming, Trending, and Favorite.
-* [ ] Show loading screen in the beginning.
 * [x] Setting supports Auto-play on Wi-Fi only or always
     * [ ] Detect if Wi-Fi is connected. (When this is still not implemented, simply assume Wi-Fi is not connected.)
+* [x] Use TabLayout and ViewPager to show Home, Upcoming, Trending, and Favorite.
+* [x] Users see a ProgressDialog when waiting more than one second for JsonHttpResponseHandler.
 * [x] Use com.github.pedrovgs:draggablepanel, DraggableView to play videos.
     * [x] Default is maximized.
     * [x] Drag down to minimize the video while keep playing it.
     * [x] When users select different Fragment pages for ViewPager, the minimized video keeps playing.
     * [x] Drag right or up to maximize the video.
     * [x] Drag left to close the video.
+* [x] Enhance detail movie views.
+    * [x] Users see trending index, release date, description, category, and production company.
+    * [x] Users see the average vote on RatingBar.
+    * [x] Users can vote a score from 1 to 10 on RatingBar.
+    * [x] Users see a image slider by SliderLayout. 
+* [x] Restart app when youtube api cannot be initialized. It inconsistently suffers from SERVICE_VERSION_UPDATE_REQUIRED.
 
 ## Video Walkthrough
 
