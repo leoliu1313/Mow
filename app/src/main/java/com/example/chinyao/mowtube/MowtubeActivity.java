@@ -1,6 +1,7 @@
 package com.example.chinyao.mowtube;
 
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
@@ -12,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.github.pedrovgs.DraggableListener;
 import com.github.pedrovgs.DraggableView;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -31,6 +33,7 @@ public class MowtubeActivity extends AppCompatActivity {
     private YouTubePlayerSupportFragment mYouTubeContainer;
     private YouTubePlayer mYouTubePlayer;
     private DraggableView theDraggableView;
+    private AppBarLayout theAppBarLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +59,46 @@ public class MowtubeActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
+        theAppBarLayout = (AppBarLayout)findViewById(R.id.appbar);
+        theFragmentManager = getSupportFragmentManager();
         theDraggableView = (DraggableView)findViewById(R.id.draggable_view);
+        theDraggableView.setVisibility(View.INVISIBLE);
         //theDraggableView.setVisibility(View.GONE);
 
-        theFragmentManager = getSupportFragmentManager();
-        theDraggableView.setVisibility(View.INVISIBLE);
+
+        // theDraggableView.bringToFront();
+        // ViewGroup viewGroup = ((ViewGroup) viewPager.getParent());
+        // int index = viewGroup.indexOfChild(viewPager);
+        // for(int i = 0; i<index; i++) {
+        //     viewGroup.bringChildToFront(viewGroup.getChildAt(i));
+        // }
+
+        // AppBarLayout
+        // theAppBarLayout.setVisibility(View.INVISIBLE);
+
+        theDraggableView.setDraggableListener(new DraggableListener() {
+            @Override public void onMaximized() {
+                if (theAppBarLayout.getVisibility() != View.INVISIBLE) {
+                    theAppBarLayout.setVisibility(View.INVISIBLE);
+                    mYouTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
+                }
+            }
+
+            @Override public void onMinimized() {
+                if (theAppBarLayout.getVisibility() != View.VISIBLE) {
+                    theAppBarLayout.setVisibility(View.VISIBLE);
+                    mYouTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
+                }
+            }
+
+            @Override public void onClosedToLeft() {
+                mYouTubePlayer.pause();
+            }
+
+            @Override public void onClosedToRight() {
+                mYouTubePlayer.pause();
+            }
+        });
 
         initializeYoutubeFragment("fis-9Zqu2Ro");
     }
