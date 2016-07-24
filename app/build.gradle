@@ -47,5 +47,4 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.2.1'
     apt 'com.jakewharton:butterknife-compiler:8.2.1'
     compile files('libs/YouTubeAndroidPlayerApi.jar')
-    compile 'com.github.techery:properratingbar:0.0.5'
 }
