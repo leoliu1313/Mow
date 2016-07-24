@@ -2,6 +2,7 @@ package com.example.chinyao.mowtube;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -149,10 +150,22 @@ public class MowtubeRecyclerViewAdapter
                                             response = moviesJson.getJSONObject(i);
                                             if (response.getString("type").equals("Trailer")) {
                                                 activity.loadYoutube(response.getString("source"));
-                                                // activity.initializeYoutubeFragment("IwfUnkBfdZ4");
-                                                break;
+                                                return;
                                             }
                                         }
+                                        if (moviesJson.length() > 0) {
+                                            // https://api.themoviedb.org/3/movie/316727/trailers?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed
+                                            // Some movies only have Featurette instead of Trailer
+                                            response = moviesJson.getJSONObject(0);
+                                            activity.loadYoutube(response.getString("source"));
+                                            return;
+                                        }
+                                        activity.loadYoutube(MowtubeActivity.YOUTUBE_DEFAULT_LINK);
+                                        Snackbar.make(activity.findViewById(R.id.draggable_view),
+                                                "No Trailer...",
+                                                30000)
+                                                .setAction("Action", null)
+                                                .show();
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
