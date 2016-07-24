@@ -6,13 +6,23 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
 public class MowtubeActivity extends AppCompatActivity {
 
     // TODO: Use Shared Preferences
     static Boolean autoplay_on_wifi_only = true;
+
+    public static final String TAG						= "YoutubePlayer";
+    public static final String YOUTUBE_API_KEY			="AIzaSyD0INVrE2YHbGJqhU3iTjzLSPOFDAuactE";
+    private YouTubePlayerSupportFragment mYouTubeContainer;
+    private YouTubePlayer mYouTubePlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +45,8 @@ public class MowtubeActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+        initiliazeYoutubeFragment();
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -74,5 +86,70 @@ public class MowtubeActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+    private void initiliazeYoutubeFragment()
+    {
+
+        mYouTubeContainer = YouTubePlayerSupportFragment.newInstance();
+        mYouTubeContainer.initialize(YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener()
+        {
+            @Override
+            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored)
+            {
+                if (!wasRestored)
+                {
+                    mYouTubePlayer	= youTubePlayer;
+                    //mYouTubePlayer.cueVideo("nCgQDjiotG0");
+                    mYouTubePlayer.loadVideo("nCgQDjiotG0");
+                    mYouTubePlayer.play();
+                    mYouTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener()
+                    {
+                        @Override
+                        public void onLoading()
+                        {
+
+                        }
+
+                        @Override
+                        public void onLoaded(String s)
+                        {
+
+                        }
+
+                        @Override
+                        public void onAdStarted()
+                        {
+
+                        }
+
+                        @Override
+                        public void onVideoStarted()
+                        {
+
+                        }
+
+                        @Override
+                        public void onVideoEnded()
+                        {
+
+                        }
+
+                        @Override
+                        public void onError(YouTubePlayer.ErrorReason errorReason)
+                        {
+                            Log.d(TAG,errorReason.toString());
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult)
+            {
+
+            }
+        });
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_youtube_player, mYouTubeContainer).commit();
+
     }
 }

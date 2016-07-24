@@ -68,7 +68,7 @@ public class MowtubeListFragment extends Fragment {
         RecyclerView rv = (RecyclerView) view.findViewById(R.id.f1_recyclerview);
         setupRecyclerView(rv);
 
-        initiliazeYoutubeFragment();
+        // initiliazeYoutubeFragment();
     }
 
     private void setupRecyclerView(final RecyclerView recyclerView) {
