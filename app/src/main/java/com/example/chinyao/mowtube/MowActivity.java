@@ -144,7 +144,7 @@ public class MowActivity extends AppCompatActivity
             // http://stackoverflow.com/questions/19691530/valid-values-for-androidfontfamily-and-what-they-map-to
             // https://www.syntaxismyui.com/category/android/
             setContentView(com.example.chinyao.mowtube.R.layout.activity_detail);
-            final Toolbar toolbar = (Toolbar) findViewById(com.example.chinyao.mowtube.R.id.toolbar);
+            final Toolbar toolbar = (Toolbar) findViewById(com.example.chinyao.mowtube.R.id.m_toolbar);
             setSupportActionBar(toolbar);
             // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             CollapsingToolbarLayout collapsingToolbar =
@@ -377,7 +377,8 @@ public class MowActivity extends AppCompatActivity
                 }
             });
 
-            final AppBarLayout appbar = (AppBarLayout) findViewById(com.example.chinyao.mowtube.R.id.appbar);
+            final AppBarLayout appbar =
+                    (AppBarLayout) findViewById(com.example.chinyao.mowtube.R.id.m_app_bar_layout);
             appbar.addOnOffsetChangedListener(this);
         }
 
