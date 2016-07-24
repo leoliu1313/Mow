@@ -3,6 +3,7 @@ package com.example.chinyao.mowtube;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +12,18 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by chinyao on 7/23/2016.
@@ -23,7 +33,8 @@ public class MowtubeRecyclerViewAdapter
 
     // private final TypedValue mTypedValue = new TypedValue();
     // private int mBackground;
-    private List<MowtubeMovie> mValues;
+    private List<MowtubeMovie> mMovies;
+    private RecyclerView mRecyclerView;
 
 
     @Override
@@ -51,17 +62,18 @@ public class MowtubeRecyclerViewAdapter
         }
     }
 
-    public MowtubeRecyclerViewAdapter(Context context, List<MowtubeMovie> items) {
+    public MowtubeRecyclerViewAdapter(Context context, List<MowtubeMovie> items, RecyclerView rv) {
         // context.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
         // mBackground = mTypedValue.resourceId;
-        mValues = items;
+        mMovies = items;
+        mRecyclerView = rv;
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        MowtubeMovie theMowtubeMovie = mValues.get(position);
+        MowtubeMovie theMowtubeMovie = mMovies.get(position);
         if (MowtubeListFragment.ContentMode == 1) {
-            // holder.mBoundString = mValues.get(position).title;
+            // holder.mBoundString = mMovies.get(position).title;
             holder.mTextViewTitle.setText(theMowtubeMovie.title);
             Glide.with(holder.mImageView.getContext())
                     .load(MowActivity.getRandomDrawable())
@@ -110,17 +122,55 @@ public class MowtubeRecyclerViewAdapter
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Context context = v.getContext();
-                Intent intent = new Intent(context, MowActivity.class);
-                // intent.putExtra(MowActivity.EXTRA_NAME, holder.mBoundString);
+                if (mRecyclerView == null) {
+                    Context context = v.getContext();
+                    Intent intent = new Intent(context, MowActivity.class);
+                    // intent.putExtra(MowActivity.EXTRA_NAME, holder.mBoundString);
+                    context.startActivity(intent);
+                }
+                else {
+                    int position = mRecyclerView.getChildAdapterPosition(v);
+                    int id = mMovies.get(position).id;
+                    final MowtubeActivity activity = (MowtubeActivity) v.getContext();
 
-                context.startActivity(intent);
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    // Turn off Debug Log
+                    client.setLoggingEnabled(false);
+                    String url = "https://api.themoviedb.org/3/movie/" + id + "/trailers";
+                    RequestParams params = new RequestParams();
+                    params.put("api_key", MowtubeActivity.TMDB_API_KEY);
+                    Log.d("RecyclerViewAdapter", url);
+                    client.get(url, params, new JsonHttpResponseHandler() {
+                                @Override
+                                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                                    try {
+                                        JSONArray moviesJson = response.getJSONArray("youtube");
+                                        for (int i=0; i < moviesJson.length(); i++) {
+                                            response = moviesJson.getJSONObject(i);
+                                            if (response.getString("type").equals("Trailer")) {
+                                                activity.loadYoutube(response.getString("source"));
+                                                // activity.initializeYoutubeFragment("IwfUnkBfdZ4");
+                                                break;
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
+                                    // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                                }
+                            }
+                    );
+                }
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return mMovies.size();
     }
 }

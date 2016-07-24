@@ -42,16 +42,17 @@
         android:layout_height="match_parent"
         draggable_view:top_view_id="@+id/top_panel"
         draggable_view:bottom_view_id="@+id/bottom_panel"
-        draggable_view:top_view_x_scale_factor="2.5"
-        draggable_view:top_view_y_scale_factor="2.5"
+        draggable_view:top_view_x_scale_factor="3"
+        draggable_view:top_view_y_scale_factor="3"
         draggable_view:top_view_margin_right="4dp"
         draggable_view:top_view_margin_bottom="4dp"
-        draggable_view:top_view_resize="true"
         draggable_view:enable_minimized_horizontal_alpha_effect="false"
-
+        draggable_view:top_view_resize="true"
         >
+        <!-- draggable_view:top_view_resize="true" -->
+        <!-- Use ResizeTransformer instead of ScaleTransformer -->
+        <!-- to fix minimize issue -->
 
-        <!-- ListView Episodes -->
         <RelativeLayout
             android:id="@+id/bottom_panel"
             android:layout_width="match_parent"
@@ -67,20 +68,17 @@
                 />
         </RelativeLayout>
 
-        <!-- TvShow Fan Art -->
         <RelativeLayout
             android:id="@+id/top_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             >
-
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_alignParentTop="true"
-
                 android:background="#000000"
                 >
                 <FrameLayout

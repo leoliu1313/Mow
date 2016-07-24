@@ -2,6 +2,7 @@ package com.example.chinyao.mowtube;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -9,7 +10,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
+import com.github.pedrovgs.DraggableView;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
@@ -17,12 +20,17 @@ import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 public class MowtubeActivity extends AppCompatActivity {
 
     // TODO: Use Shared Preferences
-    static Boolean autoplay_on_wifi_only = true;
+    static Boolean autoplay_on_wifi_only = false;
 
-    public static final String TAG						= "YoutubePlayer";
-    public static final String YOUTUBE_API_KEY			="AIzaSyD0INVrE2YHbGJqhU3iTjzLSPOFDAuactE";
+    public static final String TMDB_API_KEY = "a07e22bc18f5cb106bfe4cc1f83ad8ed";
+
+    // https://console.developers.google.com/
+    public static final String YOUTUBE_API_KEY = "AIzaSyDclFRxzBdoqRGHVftdG1WFqBX2C2mVe04";
+
+    private FragmentManager theFragmentManager;
     private YouTubePlayerSupportFragment mYouTubeContainer;
     private YouTubePlayer mYouTubePlayer;
+    private DraggableView theDraggableView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +41,12 @@ public class MowtubeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         final ActionBar ab = getSupportActionBar();
-        // up right menu button
-        ab.setHomeAsUpIndicator(R.drawable.ic_menu);
-        // up left drawer button
-        // ab.setDisplayHomeAsUpEnabled(true);
+        if (ab != null) {
+            // up right menu button
+            ab.setHomeAsUpIndicator(R.drawable.ic_menu);
+            // up left drawer button
+            // ab.setDisplayHomeAsUpEnabled(true);
+        }
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         if (viewPager != null) {
@@ -46,7 +56,13 @@ public class MowtubeActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-        initiliazeYoutubeFragment();
+        theDraggableView = (DraggableView)findViewById(R.id.draggable_view);
+        //theDraggableView.setVisibility(View.GONE);
+
+        theFragmentManager = getSupportFragmentManager();
+        theDraggableView.setVisibility(View.INVISIBLE);
+
+        initializeYoutubeFragment("fis-9Zqu2Ro");
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -87,69 +103,70 @@ public class MowtubeActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    private void initiliazeYoutubeFragment()
-    {
 
+    public void initializeYoutubeFragment(final String input) {
         mYouTubeContainer = YouTubePlayerSupportFragment.newInstance();
-        mYouTubeContainer.initialize(YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener()
-        {
+        mYouTubeContainer.initialize(YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
             @Override
-            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored)
-            {
-                if (!wasRestored)
-                {
-                    mYouTubePlayer	= youTubePlayer;
-                    //mYouTubePlayer.cueVideo("nCgQDjiotG0");
-                    mYouTubePlayer.loadVideo("fis-9Zqu2Ro");
-                    mYouTubePlayer.play();
-                    mYouTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener()
-                    {
+            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
+                if (!wasRestored) {
+                    mYouTubePlayer = youTubePlayer;
+                    mYouTubePlayer.cueVideo(input);
+                    mYouTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
                         @Override
-                        public void onLoading()
-                        {
-
+                        public void onLoading() {
                         }
 
                         @Override
-                        public void onLoaded(String s)
-                        {
-
+                        public void onLoaded(String s) {
                         }
 
                         @Override
-                        public void onAdStarted()
-                        {
-
+                        public void onAdStarted() {
                         }
 
                         @Override
-                        public void onVideoStarted()
-                        {
-
+                        public void onVideoStarted() {
                         }
 
                         @Override
-                        public void onVideoEnded()
-                        {
-
+                        public void onVideoEnded() {
                         }
 
                         @Override
-                        public void onError(YouTubePlayer.ErrorReason errorReason)
-                        {
-                            Log.d(TAG,errorReason.toString());
+                        public void onError(YouTubePlayer.ErrorReason errorReason) {
+                            Log.d("MowtubeActivity", "onError " + errorReason.toString());
                         }
                     });
                 }
             }
 
             @Override
-            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult)
-            {
-
+            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+                Log.d("MowtubeActivity", "onInitializationFailure " + youTubeInitializationResult.toString());
             }
         });
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_youtube_player, mYouTubeContainer).commit();
 
+        theFragmentManager
+                .beginTransaction()
+                .replace(R.id.fragment_youtube_player, mYouTubeContainer)
+                .commit();
+    }
+
+    public void loadYoutube(String input) {
+        theDraggableView.maximize();
+        if (autoplay_on_wifi_only && !isWifiConnected()) {
+            mYouTubePlayer.cueVideo(input);
+        }
+        else {
+            mYouTubePlayer.loadVideo(input);
+        }
+        // mYouTubePlayer.play();
+        theDraggableView.setVisibility(View.VISIBLE);
+    }
+
+    // TODO: implement this function
+    private boolean isWifiConnected() {
+        return false;
     }
 }

@@ -13,9 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -45,10 +42,6 @@ public class MowtubeListFragment extends Fragment {
     private Runnable runnable = null;
     private int mode;
 
-    public static final String TAG						= "YoutubePlayer";
-    public static final String YOUTUBE_API_KEY			="AIzaSyD0INVrE2YHbGJqhU3iTjzLSPOFDAuactE";
-    private YouTubePlayer					mYouTubePlayer;
-
     public static MowtubeListFragment newInstance(int mode) {
         MowtubeListFragment theFragment = new MowtubeListFragment();
         theFragment.mode = mode;
@@ -58,17 +51,11 @@ public class MowtubeListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.mowtube_recyclerview, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        RecyclerView rv = (RecyclerView) view.findViewById(R.id.f1_recyclerview);
+        // Note that this can have more than RecyclerView
+        RecyclerView rv = (RecyclerView) inflater.inflate(R.layout.mowtube_recyclerview, container, false);
         setupRecyclerView(rv);
 
-        // initiliazeYoutubeFragment();
+        return rv;
     }
 
     private void setupRecyclerView(final RecyclerView recyclerView) {
@@ -99,7 +86,8 @@ public class MowtubeListFragment extends Fragment {
             recyclerView.setAdapter(
                     new MowtubeRecyclerViewAdapter(
                             getActivity(),
-                            MowtubeMovie.generateDebugArrayList()
+                            MowtubeMovie.generateDebugArrayList(),
+                            null
                     )
             );
             if (runnable != null) {
@@ -110,6 +98,8 @@ public class MowtubeListFragment extends Fragment {
         }
         else if (ContentMode == 2) {
             AsyncHttpClient client = new AsyncHttpClient();
+            // Turn off Debug Log
+            client.setLoggingEnabled(false);
             String url = "";
             if (mode == 1) {
                 url = "https://api.themoviedb.org/3/movie/now_playing";
@@ -125,7 +115,8 @@ public class MowtubeListFragment extends Fragment {
                 url = "https://api.themoviedb.org/3/movie/top_rated";
             }
             RequestParams params = new RequestParams();
-            params.put("api_key", "a07e22bc18f5cb106bfe4cc1f83ad8ed");
+            params.put("api_key", MowtubeActivity.TMDB_API_KEY);
+            Log.d("MowtubeListFragment", url);
             client.get(url, params, new JsonHttpResponseHandler() {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -148,7 +139,8 @@ public class MowtubeListFragment extends Fragment {
                             recyclerView.setAdapter(
                                     new MowtubeRecyclerViewAdapter(
                                             getActivity(),
-                                            businesses
+                                            businesses,
+                                            recyclerView
                                     )
                             );
 
@@ -179,71 +171,5 @@ public class MowtubeListFragment extends Fragment {
                     }
             );
         }
-    }
-
-    private void initiliazeYoutubeFragment()
-    {
-
-        YouTubePlayerSupportFragment mYouTubeContainer = YouTubePlayerSupportFragment.newInstance();
-        mYouTubeContainer.initialize(YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener()
-        {
-            @Override
-            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored)
-            {
-                if (!wasRestored)
-                {
-                    mYouTubePlayer	= youTubePlayer;
-                    //mYouTubePlayer.cueVideo("nCgQDjiotG0");
-                    mYouTubePlayer.loadVideo("nCgQDjiotG0");
-                    mYouTubePlayer.play();
-                    mYouTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener()
-                    {
-                        @Override
-                        public void onLoading()
-                        {
-
-                        }
-
-                        @Override
-                        public void onLoaded(String s)
-                        {
-
-                        }
-
-                        @Override
-                        public void onAdStarted()
-                        {
-
-                        }
-
-                        @Override
-                        public void onVideoStarted()
-                        {
-
-                        }
-
-                        @Override
-                        public void onVideoEnded()
-                        {
-
-                        }
-
-                        @Override
-                        public void onError(YouTubePlayer.ErrorReason errorReason)
-                        {
-                            Log.d(TAG,errorReason.toString());
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult)
-            {
-
-            }
-        });
-        getChildFragmentManager().beginTransaction().replace(R.id.fragment_youtube_player, mYouTubeContainer).commit();
-
     }
 }
