@@ -180,7 +180,10 @@
                 <!-- small size but do not support user interaction -->
                 <!-- style="?android:attr/ratingBarStyleIndicator" -->
 
-                <>
+                <com.daimajia.slider.library.SliderLayout
+                    android:id="@+id/dv_b_sub_slider_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"/>
 
                 <include layout="@layout/mowtube_activity_backup"/>
 

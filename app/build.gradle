@@ -48,4 +48,6 @@ dependencies {
     apt 'com.jakewharton:butterknife-compiler:8.2.1'
     compile files('libs/YouTubeAndroidPlayerApi.jar')
     compile 'com.github.techery:properratingbar:0.0.5'
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.daimajia.slider:library:1.1.5@aar'
 }

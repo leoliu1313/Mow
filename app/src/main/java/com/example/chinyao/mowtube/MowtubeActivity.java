@@ -14,11 +14,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.github.pedrovgs.DraggableListener;
 import com.github.pedrovgs.DraggableView;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
+
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,6 +49,7 @@ public class MowtubeActivity extends AppCompatActivity {
     @BindView(R.id.m_tab_layout) TabLayout tabLayout;
     @BindView(R.id.m_view_pager) ViewPager viewPager;
     @BindView(R.id.m_draggable_view) DraggableView theDraggableView;
+    @BindView(R.id.dv_b_sub_slider_layout) SliderLayout mDemoSlider;
 
     YouTubePlayer mYouTubePlayer;
 
@@ -211,6 +216,22 @@ public class MowtubeActivity extends AppCompatActivity {
         }
         // mYouTubePlayer.play();
         theDraggableView.maximize();
+
+        HashMap<String,String> url_maps = new HashMap<String, String>();
+        url_maps.put("Hannibal", "http://static2.hypable.com/wp-content/uploads/2013/12/hannibal-season-2-release-date.jpg");
+        url_maps.put("Big Bang Theory", "http://tvfiles.alphacoders.com/100/hdclearart-10.png");
+        url_maps.put("House of Cards", "http://cdn3.nflximg.net/images/3093/2043093.jpg");
+        url_maps.put("Game of Thrones", "http://images.boomsbeat.com/data/images/full/19640/game-of-thrones-season-4-jpg.jpg");
+
+        for(String name : url_maps.keySet()){
+            TextSliderView textSliderView = new TextSliderView(this);
+            // initialize a SliderLayout
+            textSliderView
+                    .description(name)
+                    .image(url_maps.get(name));
+
+            mDemoSlider.addSlider(textSliderView);
+        }
         theDraggableView.setVisibility(View.VISIBLE);
     }
 
@@ -239,5 +260,11 @@ public class MowtubeActivity extends AppCompatActivity {
                 "onRestoreInstanceState " + someIntValue + " " + someStringValue,
                 Toast.LENGTH_SHORT)
                 .show();
+    }
+
+    @Override
+    protected void onStop() {
+        mDemoSlider.stopAutoCycle();
+        super.onStop();
     }
 }
