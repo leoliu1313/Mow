@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -236,18 +237,41 @@ public class MowtubeRecyclerViewAdapter
         });
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener {
+
         public final View mView;
         // public String mBoundString;
 
         @BindView(R.id.r_movie_image) ImageView mImageView;
         @BindView(R.id.r_title) TextView mTextViewTitle;
         @BindView(R.id.r_sub_title) TextView mTextView2;
+        @BindView(R.id.r_menu_image_button) ImageButton mImageButton;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             ButterKnife.bind(this, view);
+            mImageButton.setOnClickListener(this);
+        }
+
+        // TODO: PopupMenu
+        @Override
+        public void onClick(View v) {
+            if (v.getId() == mImageButton.getId()){
+                /*
+                Toast.makeText(
+                        v.getContext(),
+                        "ITEM PRESSED = " + String.valueOf(getAdapterPosition()),
+                        Toast.LENGTH_SHORT
+                ).show();
+                */
+                Toast.makeText(
+                        v.getContext(),
+                        "Add " + (String)mTextViewTitle.getText() + " to Favorite",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
         }
     }
 }

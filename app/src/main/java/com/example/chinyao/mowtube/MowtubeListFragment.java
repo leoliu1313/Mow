@@ -153,7 +153,7 @@ public class MowtubeListFragment extends Fragment {
             }
             else if (mode == 4) {
                 // TODO: actually this is favorite
-                url = "https://api.themoviedb.org/3/movie/top_rated";
+                url = "https://api.themoviedb.org/3/movie/now_playing";
             }
             RequestParams params = new RequestParams();
             params.put("api_key", MowtubeActivity.TMDB_API_KEY);
@@ -162,25 +162,37 @@ public class MowtubeListFragment extends Fragment {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
-                            ArrayList<MowtubeMovie> businesses = null;
+                            ArrayList<MowtubeMovie> movies = null;
                             try {
                                 JSONArray moviesJson = response.getJSONArray("results");
                                 // Here we now have the json array of movies!
                                 // Log.d("MowtubeListFragment", moviesJson.toString());
-                                businesses = MowtubeMovie.fromJson(moviesJson);
+                                movies = MowtubeMovie.fromJson(moviesJson);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
 
-                            if (businesses == null) {
-                                businesses = MowtubeMovie.generateDebugArrayList();
+                            if (movies == null) {
+                                movies = MowtubeMovie.generateDebugArrayList();
+                            }
+
+                            if (mode == 4) {
+                                ArrayList<MowtubeMovie> tmp = new ArrayList<>();
+                                for (MowtubeMovie movie : movies) {
+                                    if (movie.id == 188927
+                                            || movie.id == 332567
+                                            || movie.id == 374205) {
+                                        tmp.add(movie);
+                                    }
+                                }
+                                movies = tmp;
                             }
 
                             // called when response HTTP status is "200 OK"
                             recyclerView.setAdapter(
                                     new MowtubeRecyclerViewAdapter(
                                             getActivity(),
-                                            businesses,
+                                            movies,
                                             recyclerView
                                     )
                             );
