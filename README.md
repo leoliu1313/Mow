@@ -34,8 +34,10 @@ The following **bonus** features are implemented:
 
 The following **additional** features are implemented:
 
+>
 * [ ] Users see a loading screen in the beginning.
 
+>
 * [x] Users can collapse or extend Toolbar in AppBarLayout by CoordinatorLayout.
     * [x] Default is extended.
     * [x] Scroll down RecyclerView to collapse.
@@ -52,6 +54,7 @@ The following **additional** features are implemented:
 * [x] Users can add movies to Favorite.
     * [ ] Users ...
 
+>
 * [x] Enhance detail movie views.
     * [x] Users can drag detail movie views by DraggableView.
         * [x] Default is maximized.
@@ -64,6 +67,7 @@ The following **additional** features are implemented:
     * [x] Users can vote a score from 1 to 10 on RatingBar.
     * [x] Users see a image slider by SliderLayout.
 
+>
 * [x] Enhance the behavior of BACK button.
     * [x] Users can press BACK to minimize detail movie views. 
     * [x] Users can press BACK to close fullscreen. 
@@ -95,9 +99,9 @@ https://youtu.be/KazFNKArcDY
 
 Or, the following screenshots:
 
-<img src='https://raw.githubusercontent.com/leoliu1313/Mowtube/master/week1demo1.gif' title='Screenshot' width="300" alt='Screenshot' />
-<img src='https://raw.githubusercontent.com/leoliu1313/Mowtube/master/week1demo2.gif' title='Screenshot' width="300" alt='Screenshot' />
-<img src='https://raw.githubusercontent.com/leoliu1313/Mowtube/master/week1demo3.gif' title='Screenshot' width="300" alt='Screenshot' />
+<img src='https://raw.githubusercontent.com/leoliu1313/Mowtube/master/week1demo1.jpg' title='Screenshot' width="300" alt='Screenshot' />
+<img src='https://raw.githubusercontent.com/leoliu1313/Mowtube/master/week1demo2.jpg' title='Screenshot' width="300" alt='Screenshot' />
+<img src='https://raw.githubusercontent.com/leoliu1313/Mowtube/master/week1demo3.jpg' title='Screenshot' width="300" alt='Screenshot' />
 
 Video created with Android Studio, FFmpeg, Gifsicle.
 
