@@ -6,11 +6,14 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher_moow"
+        android:icon="@mipmap/ic_launcher_moow_red"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MowtubeActivity">
+        <activity
+            android:name=".MowtubeActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -18,12 +21,14 @@
         </activity>
         <activity
             android:name=".MowActivity"
-            android:windowSoftInputMode="stateAlwaysHidden">
+            android:windowSoftInputMode="stateAlwaysHidden"
+            >
         </activity>
         <activity
             android:name=".EditItemActivity"
             android:label="@string/edit_item_title"
-            android:windowSoftInputMode="stateAlwaysVisible">
+            android:windowSoftInputMode="stateAlwaysVisible"
+            >
         </activity>
     </application>
 

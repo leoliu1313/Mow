@@ -40,6 +40,10 @@ public class MowtubeListFragment extends Fragment {
     // 1: Glide
     // 2: Picasso
 
+    // for landscape view
+    public static final int MaxPosterTitleLength = 35;
+    public static final int MaxPosterSubLength = 120;
+
     private Handler handler = null;
     private Runnable runnable = null;
     private int mode = 1;

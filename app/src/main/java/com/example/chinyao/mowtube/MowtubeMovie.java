@@ -15,7 +15,7 @@ public class MowtubeMovie {
     public Boolean adult;
     public String overview;
     public String release_date;
-    public ArrayList<Integer> genre_ids;
+    public ArrayList<String> genres;
     public Integer id;
     public String original_title;
     public String original_language;
@@ -36,11 +36,11 @@ public class MowtubeMovie {
             b.overview = jsonObject.getString("overview");
             b.release_date = jsonObject.getString("release_date");
             JSONArray jsonArray = jsonObject.getJSONArray("genre_ids");
-            b.genre_ids = new ArrayList<Integer>();
+            b.genres = new ArrayList<String>();
             Integer id;
             for (int i=0; i < jsonArray.length(); i++) {
                 id = new Integer((Integer) jsonArray.get(i));
-                b.genre_ids.add(id);
+                b.genres.add(genresIdToName(id));
             }
             b.id = jsonObject.getInt("id");
             b.original_title = jsonObject.getString("original_title");
@@ -110,5 +110,54 @@ public class MowtubeMovie {
                         )
                 )
         );
+    }
+
+    // TODO: bad hard code implementation
+    // https://api.themoviedb.org/3/genre/movie/list?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed
+    public static String genresIdToName(int id) {
+        switch (id) {
+            case 28:
+                return "Action";
+            case 12:
+                return "Adventure";
+            case 16:
+                return "Animation";
+            case 35:
+                return "Comedy";
+            case 80:
+                return "Crime";
+            case 99:
+                return "Documentary";
+            case 18:
+                return "Drama";
+            case 10751:
+                return "Family";
+            case 14:
+                return "Fantasy";
+            case 10769:
+                return "Foreign";
+            case 36:
+                return "History";
+            case 27:
+                return "Horror";
+            case 10402:
+                return "Music";
+            case 9648:
+                return "Mystery";
+            case 10749:
+                return "Romance";
+            case 878:
+                return "Science Fiction";
+            case 10770:
+                return "TV Movie";
+            case 53:
+                return "Thriller";
+            case 10752:
+                return "War";
+            case 37:
+                return "Western";
+            default:
+                return "";
+        }
     }
 }

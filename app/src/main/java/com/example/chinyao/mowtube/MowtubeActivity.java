@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.RatingBar;
 import android.widget.RatingBar.OnRatingBarChangeListener;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -81,6 +82,7 @@ public class MowtubeActivity extends AppCompatActivity {
     @BindView(R.id.m_tab_layout) TabLayout tabLayout;
     @BindView(R.id.m_view_pager) ViewPager viewPager;
     @BindView(R.id.m_draggable_view) DraggableView theDraggableView;
+    @BindView(R.id.dv_bottom) ScrollView theScrollView;
     @BindView(R.id.dv_b_title) TextView theTitle;
     @BindView(R.id.dv_b_trending) TextView theTrending;
     @BindView(R.id.dv_b_release) TextView theRelease;
@@ -95,6 +97,12 @@ public class MowtubeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+        }
+
         setContentView(R.layout.mowtube_activity);
 
         // ButterKnife
@@ -213,6 +221,7 @@ public class MowtubeActivity extends AppCompatActivity {
                     if (orientationState == 1) {
                         orientationState = 2;
                     }
+                    theScrollView.fullScroll(ScrollView.FOCUS_UP);
                 }
             }
 
@@ -313,9 +322,9 @@ public class MowtubeActivity extends AppCompatActivity {
     }
 
     private void setupSliderLayout() {
-        theSliderLayout.setPresetTransformer("DepthPage");
+        // theSliderLayout.setPresetTransformer("DepthPage");
         theSliderLayout.setCustomAnimation(new DescriptionAnimation());
-        theSliderLayout.setDuration(5000);
+        theSliderLayout.setDuration(3000);
     }
 
     private void setupRatingBar() {
@@ -448,7 +457,7 @@ public class MowtubeActivity extends AppCompatActivity {
                                 // initialize a SliderLayout
                                 textSliderView
                                         .description((String) theTitle.getText())
-                                        .image("http://image.tmdb.org/t/p/w300"
+                                        .image("http://image.tmdb.org/t/p/w500"
                                                 + theJSONObject.getString("file_path")
                                                 + "?api_key="
                                                 + TMDB_API_KEY);
@@ -456,7 +465,7 @@ public class MowtubeActivity extends AppCompatActivity {
                             }
                             // TODO
                             // animate to slowly show up theSliderLayout to avoid jumping images in the beginning
-                            theSliderLayout.setDuration(5000);
+                            theSliderLayout.setDuration(3000);
                             loadFinal();
                         } catch (JSONException e) {
                             e.printStackTrace();

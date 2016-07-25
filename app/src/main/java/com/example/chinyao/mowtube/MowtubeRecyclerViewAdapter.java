@@ -40,36 +40,50 @@ public class MowtubeRecyclerViewAdapter
     private List<MowtubeMovie> mMovies;
     private RecyclerView mRecyclerView;
 
-
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.mowtube_list_item, parent, false);
-        // view.setBackgroundResource(mBackground);
-        return new ViewHolder(view);
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-
-        public final View mView;
-        // public String mBoundString;
-
-        @BindView(R.id.r_movie_image) ImageView mImageView;
-        @BindView(R.id.r_title) TextView mTextViewTitle;
-        @BindView(R.id.r_sub_title) TextView mTextView2;
-
-        public ViewHolder(View view) {
-            super(view);
-            mView = view;
-            ButterKnife.bind(this, view);
-        }
-    }
-
     public MowtubeRecyclerViewAdapter(Context context, List<MowtubeMovie> items, RecyclerView rv) {
         // context.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
         // mBackground = mTypedValue.resourceId;
         mMovies = items;
         mRecyclerView = rv;
+    }
+
+    @Override
+    public int getItemCount() {
+        return mMovies.size();
+    }
+
+    // Heterogenous-Layouts-inside-RecyclerView
+    @Override
+    public int getItemViewType(int position) {
+        if (position < mMovies.size()) {
+            if (mMovies.get(position).vote_average > 5) {
+                return 0;
+            } else {
+                return 1;
+            }
+        }
+        else {
+            return 0;
+        }
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        ViewHolder output = null;
+        View theView;
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        // Heterogenous-Layouts-inside-RecyclerView
+        if (viewType == 1) {
+            theView = inflater.inflate(R.layout.mowtube_list_item_poster, parent, false);
+            // TODO: use different ViewHolder
+            output = new ViewHolder(theView);
+        }
+        else {
+            theView = inflater.inflate(R.layout.mowtube_list_item, parent, false);
+            // theView.setBackgroundResource(mBackground);
+            output = new ViewHolder(theView);
+        }
+        return output;
     }
 
     @Override
@@ -84,38 +98,76 @@ public class MowtubeRecyclerViewAdapter
                     .into(holder.mImageView);
         }
         else if (MowtubeListFragment.ContentMode == 2) {
-            holder.mTextViewTitle.setText(theMowtubeMovie.title);
-            holder.mTextView2.setText(theMowtubeMovie.release_date);
-            if (MowtubeListFragment.ImageLoadingMode == 1) {
-                // Glide supports gif only in load()
-                // speed up gif by diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                Glide.with(holder.mImageView.getContext())
-                        .load("http://image.tmdb.org/t/p/w500" + theMowtubeMovie.backdrop_path)
-                        .centerCrop()
-                        .placeholder(R.drawable.blobb)
-                        .error(R.drawable.tmdb)
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .into(holder.mImageView);
+            String input;
 
+            input = theMowtubeMovie.title;
+            // Heterogenous-Layouts-inside-RecyclerView
+            if (holder.getItemViewType() == 1) {
+                if (input.length() > MowtubeListFragment.MaxPosterTitleLength) {
+                    input = input.substring(0, MowtubeListFragment.MaxPosterTitleLength) + "...";
+                }
+            }
+            holder.mTextViewTitle.setText(input);
+
+            input = theMowtubeMovie.release_date;
+            // Heterogenous-Layouts-inside-RecyclerView
+            if (holder.getItemViewType() == 1) {
+                input += " ";
+                for (int index = 0; index < theMowtubeMovie.genres.size(); index++) {
+                    if (index != 0) {
+                        input += ", ";
+                    }
+                    input += theMowtubeMovie.genres.get(index);
+                }
+                input += ". " + theMowtubeMovie.overview;
+                if (input.length() > MowtubeListFragment.MaxPosterSubLength) {
+                    input = input.substring(0, MowtubeListFragment.MaxPosterSubLength) + "...";
+                }
+            }
+            holder.mTextView2.setText(input);
+
+            // https://api.themoviedb.org/3/configuration?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed
+            // w154
+            // w185
+            // w300
+            // w500
+            String imageLink = theMowtubeMovie.backdrop_path;
+            int placeholderLink = R.drawable.blobb;
+            int errorLink = R.drawable.tmdb;
+            // Heterogenous-Layouts-inside-RecyclerView
+            if (holder.getItemViewType() == 1) {
+                imageLink = theMowtubeMovie.poster_path;
+                placeholderLink = R.drawable.blobb_poster;
+                errorLink = R.drawable.tmdb_poster;
+            }
+            if (MowtubeListFragment.ImageLoadingMode == 1) {
+                Glide.with(holder.mImageView.getContext())
+                        .load("http://image.tmdb.org/t/p/w500" + imageLink)
+                        .fitCenter().centerCrop()
+                        .placeholder(placeholderLink)
+                        .error(errorLink)
+                        .into(holder.mImageView);
             }
             else if (MowtubeListFragment.ImageLoadingMode == 2) {
-                if (theMowtubeMovie.backdrop_path.equals("null")) {
+                if (imageLink.equals("null")) {
+                    // Glide supports gif only in load()
+                    // speed up gif by diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     Glide.with(holder.mImageView.getContext())
-                            .load(R.drawable.blobb)
-                            .centerCrop()
-                            .placeholder(R.drawable.blobb)
-                            .error(R.drawable.tmdb)
+                            .load(placeholderLink)
+                            .fitCenter().centerCrop()
+                            .placeholder(placeholderLink)
+                            .error(errorLink)
                             .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                             .into(holder.mImageView);
                 }
                 else {
                     // Picasso does not support gif
                     Picasso.with(holder.mImageView.getContext())
-                            .load("http://image.tmdb.org/t/p/w500" + theMowtubeMovie.backdrop_path)
+                            .load("http://image.tmdb.org/t/p/w500" + imageLink)
                             .transform(new RoundedCornersTransformation(10, 10))
                             .fit().centerCrop()
-                            .placeholder(R.drawable.blobb)
-                            .error(R.drawable.tmdb)
+                            .placeholder(placeholderLink)
+                            .error(errorLink)
                             .into(holder.mImageView);
                 }
             }
@@ -184,8 +236,18 @@ public class MowtubeRecyclerViewAdapter
         });
     }
 
-    @Override
-    public int getItemCount() {
-        return mMovies.size();
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public final View mView;
+        // public String mBoundString;
+
+        @BindView(R.id.r_movie_image) ImageView mImageView;
+        @BindView(R.id.r_title) TextView mTextViewTitle;
+        @BindView(R.id.r_sub_title) TextView mTextView2;
+
+        public ViewHolder(View view) {
+            super(view);
+            mView = view;
+            ButterKnife.bind(this, view);
+        }
     }
 }
