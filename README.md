@@ -50,8 +50,16 @@ The following **additional** features are implemented:
 * [x] Users see tabs like Home, Upcoming, Trending, and Favorite by TabLayout and ViewPager.
     * [ ] Users see icons on tabs instead of texts.
 * [x] Users see a ProgressDialog when waiting more than one second for JsonHttpResponseHandler.
-* [x] Users can add movies to Favorite.
-    * [ ] Users can see a PopupMenu. 
+* [x] Enhance movie list views.
+    * [x] Apply rounded corners for images.
+    * [x] Heterogenous-Layouts-inside-RecyclerView.
+    * [ ] Users see the average votes at here, not only in detail movie views.
+    * [ ] Users can extend or collapse each item for more details.
+    * [ ] Users can click something to see a PopupMenu. 
+        * [ ] Users can add movies to Favorite.
+        * [ ] Users can remove movies from Favorite.
+        * [ ] Users can share movies.
+    * [ ] Users see endless movie list.
 * ★
 * [x] Enhance detail movie views.
     * [x] Users can drag detail movie views by DraggableView.
@@ -61,6 +69,7 @@ The following **additional** features are implemented:
         * [x] Drag right or up to maximize the video.
         * [x] Drag left to close the video.
     * [x] Users see trending index, release date, overview, category, and production company.
+    * [ ] Users can extend or collapse the details.
     * [x] Users see the average vote on RatingBar.
     * [x] Users can vote a score from 1 to 10 on RatingBar.
     * [x] Users see a image slider by SliderLayout.
@@ -74,6 +83,7 @@ The following **additional** features are implemented:
     * [x] Users see video keeps playing when orientation configuration changes by onSaveInstanceState, onRestoreInstanceState.
     * [x] Users can press BACK to close video fullscreen. 
     * [x] Users see fullscreen in landscape orientation. 
+    * [ ] When movies are playing, Youtube becomes fullscreen if users changes the orientation to landscape. 
 * [x] Youtube cannot be initialized. It inconsistently suffers from "SERVICE_VERSION_UPDATE_REQUIRED" or "java.lang.NullPointerException: Attempt to invoke interface method 'boolean com.google.android.youtube.player.YouTubePlayer.isPlaying()' on a null object reference".
     * [x] Automatically restart app. 
     * [ ] Fix the nondeterministic issues.
