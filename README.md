@@ -61,10 +61,19 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-http://imgur.com/aglbqeg.gif
+<img src='http://i.imgur.com/TsXfyrZ.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [ScreenToGif 2](https://screentogif.codeplex.com/).
+
+https://github.com/atmos/camo < 5 MB by gifsicle
 
 ## Notes
 
 Describe any challenges encountered while building the app.
+
+First, you can check if a file is locally ignored ion your repo with git check-ignore:
+git check-ignore -v -- yourFile
+
+Second, you can force to add that file (bypassing any ignore rule):
+git add -f yourFile
+git status
