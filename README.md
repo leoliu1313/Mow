@@ -23,9 +23,9 @@ The following **optional** features are implemented:
 The following **bonus** features are implemented:
 
 * [x] Allow user to view details of the movie including ratings and popularity within a separate activity or dialog fragment.
-* [ ] When viewing a popular movie (a movie voted for more than 5 out of 10) the video should show the full backdrop image as the layout.  Uses [Heterogenous ListViews](http://guides.codepath.com/android/Implementing-a-Heterogenous-ListView) or [Heterogenous RecyclerView](http://guides.codepath.com/android/Heterogenous-Layouts-inside-RecyclerView) to show different layouts.
+* [x] When viewing a popular movie (a movie voted for more than 5 out of 10) the video should show the full backdrop image as the layout.  Uses [Heterogenous ListViews](http://guides.codepath.com/android/Implementing-a-Heterogenous-ListView) or [Heterogenous RecyclerView](http://guides.codepath.com/android/Heterogenous-Layouts-inside-RecyclerView) to show different layouts.
 * [x] Allow video trailers to be played in full-screen using the YouTubePlayerView or YouTubePlayerSupportFragment.
-    * [x] Overlay a play icon for videos that can be played.
+    * [ ] Overlay a play icon for videos that can be played.
     * [x] More popular movies should start a separate activity that plays the video immediately.
     * [x] Less popular videos rely on the detail page should show ratings and a YouTube preview.
 * [ ] Leverages the [data binding support module](http://guides.codepath.com/android/Applying-Data-Binding-for-Views) to bind data into layout templates.
@@ -34,37 +34,43 @@ The following **bonus** features are implemented:
 
 The following **additional** features are implemented:
 
-* [ ] Show loading screen in the beginning.
-* [x] Use CoordinatorLayout to collapse/extend Toolbar in AppBarLayout.
+* [ ] Users see a loading screen in the beginning.
+
+* [x] Users can collapse or extend Toolbar in AppBarLayout by CoordinatorLayout.
     * [x] Default is extended.
     * [x] Scroll down RecyclerView to collapse.
     * [x] Scroll up RecyclerView to extend.
-* [x] Setting supports Auto-play option.
+* [x] User can set up Auto-play option by onCreateOptionsMenu, onPrepareOptionsMenu, onOptionsItemSelected.
     * [x] Auto-play on Wi-Fi only.
         * [ ] Detect if Wi-Fi is connected. Not implemented yet. Simply assume Wi-Fi is NOT connected.
     * [x] Auto-play on popular movies. (default)
     * [x] Auto-play always.
-* [x] Use TabLayout and ViewPager to show Home, Upcoming, Trending, and Favorite.
+* [x] Users see tabs like Home, Upcoming, Trending, and Favorite by TabLayout and ViewPager.
+    * [ ] Users see icons on tabs instead of texts.
 * [x] Users see a ProgressDialog when waiting more than one second for JsonHttpResponseHandler.
-* [x] Use com.github.pedrovgs:draggablepanel, DraggableView to play videos.
-    * [x] Default is maximized.
-    * [x] Drag down to minimize the video while keep playing it.
-    * [x] When users select different Fragment pages for ViewPager, the minimized video keeps playing.
-    * [x] Drag right or up to maximize the video.
-    * [x] Drag left to close the video.
+
 * [x] Enhance detail movie views.
+    * [x] Users can drag detail movie views by DraggableView.
+        * [x] Default is maximized.
+        * [x] Drag down to minimize the video while keep playing it.
+        * [x] When users select different Fragment pages for ViewPager, the minimized video keeps playing.
+        * [x] Drag right or up to maximize the video.
+        * [x] Drag left to close the video.
     * [x] Users see trending index, release date, overview, category, and production company.
     * [x] Users see the average vote on RatingBar.
     * [x] Users can vote a score from 1 to 10 on RatingBar.
-    * [x] Users see a image slider by SliderLayout. 
+    * [x] Users see a image slider by SliderLayout.
+    
 * [x] Enhance the behavior of BACK button.
     * [x] Users can press BACK to minimize detail movie views. 
     * [x] Users can press BACK to close fullscreen. 
     * [x] Users see a Toast message when they press BACK in the stream views.
     * [x] Users can press BACK twice to close the app. 
-* [x] Enhance youtube orientation behavior.
-    * [x] Users can press BACK to close fullscreen. 
-* [x] Restart app when youtube api cannot be initialized. It inconsistently suffers from SERVICE_VERSION_UPDATE_REQUIRED.
+* [x] Enhance the orientation behavior.
+    * [x] Users see video keeps playing when orientation configuration changes by onSaveInstanceState, onRestoreInstanceState.
+    * [x] Users can press BACK to close video fullscreen. 
+    * [x] Users see fullscreen in landscape orientation. 
+* [x] Restart app when youtube api cannot be initialized. It inconsistently suffers from "SERVICE_VERSION_UPDATE_REQUIRED" or "java.lang.NullPointerException: Attempt to invoke interface method 'boolean com.google.android.youtube.player.YouTubePlayer.isPlaying()' on a null object reference".
 
 ## Video Walkthrough
 
