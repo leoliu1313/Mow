@@ -49,7 +49,8 @@ The following **additional** features are implemented:
 * [x] Users see tabs like Home, Upcoming, Trending, and Favorite by TabLayout and ViewPager.
     * [ ] Users see icons on tabs instead of texts.
 * [x] Users see a ProgressDialog when waiting more than one second for JsonHttpResponseHandler.
-* [x] USers can add movies to Favorite.
+* [x] Users can add movies to Favorite.
+    * [ ] Users ...
 
 * [x] Enhance detail movie views.
     * [x] Users can drag detail movie views by DraggableView.
@@ -62,7 +63,7 @@ The following **additional** features are implemented:
     * [x] Users see the average vote on RatingBar.
     * [x] Users can vote a score from 1 to 10 on RatingBar.
     * [x] Users see a image slider by SliderLayout.
-    
+
 * [x] Enhance the behavior of BACK button.
     * [x] Users can press BACK to minimize detail movie views. 
     * [x] Users can press BACK to close fullscreen. 
@@ -80,11 +81,25 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-https://youtu.be/XrUouAZgQIQ
-https://youtu.be/CZuDY-Xmssw
-https://youtu.be/KazFNKArcDY
+https://rawgit.com/leoliu1313/Mowtube/master/demo.html
+<br>
 
-Video created with Android Studio.
+If the above link doesn't work, please click on the following links.
+
+https://youtu.be/XrUouAZgQIQ
+<br>
+https://youtu.be/CZuDY-Xmssw
+<br>
+https://youtu.be/KazFNKArcDY
+<br>
+
+Or, the following screenshots:
+
+<img src='https://raw.githubusercontent.com/leoliu1313/Mowtube/master/week1demo1.gif' title='Screenshot' width="300" alt='Screenshot' />
+<img src='https://raw.githubusercontent.com/leoliu1313/Mowtube/master/week1demo2.gif' title='Screenshot' width="300" alt='Screenshot' />
+<img src='https://raw.githubusercontent.com/leoliu1313/Mowtube/master/week1demo3.gif' title='Screenshot' width="300" alt='Screenshot' />
+
+Video created with Android Studio, FFmpeg, Gifsicle.
 
 ## Notes
 
@@ -94,19 +109,3 @@ Describe any challenges encountered while building the app.
 
 - [Android Async HTTP](https://github.com/loopj/android-async-http) - Simple asynchronous HTTP requests with JSON parsing
 - [Picasso](http://square.github.io/picasso/) - Image loading and caching library for Android
-
-## License
-
-    Copyright [Ching-yao Liu] [name of copyright owner]
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
