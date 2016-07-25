@@ -34,10 +34,9 @@ The following **bonus** features are implemented:
 
 The following **additional** features are implemented:
 
->
+* ★
 * [ ] Users see a loading screen in the beginning.
-
->
+* ★
 * [x] Users can collapse or extend Toolbar in AppBarLayout by CoordinatorLayout.
     * [x] Default is extended.
     * [x] Scroll down RecyclerView to collapse.
@@ -52,9 +51,8 @@ The following **additional** features are implemented:
     * [ ] Users see icons on tabs instead of texts.
 * [x] Users see a ProgressDialog when waiting more than one second for JsonHttpResponseHandler.
 * [x] Users can add movies to Favorite.
-    * [ ] Users ...
-
->
+    * [ ] Users can see a PopupMenu. 
+* ★
 * [x] Enhance detail movie views.
     * [x] Users can drag detail movie views by DraggableView.
         * [x] Default is maximized.
@@ -66,8 +64,7 @@ The following **additional** features are implemented:
     * [x] Users see the average vote on RatingBar.
     * [x] Users can vote a score from 1 to 10 on RatingBar.
     * [x] Users see a image slider by SliderLayout.
-
->
+* ★
 * [x] Enhance the behavior of BACK button.
     * [x] Users can press BACK to minimize detail movie views. 
     * [x] Users can press BACK to close fullscreen. 
@@ -99,9 +96,9 @@ https://youtu.be/KazFNKArcDY
 
 Or, the following screenshots:
 
-<img src='https://raw.githubusercontent.com/leoliu1313/Mowtube/master/week1demo1.jpg' title='Screenshot' width="300" alt='Screenshot' />
-<img src='https://raw.githubusercontent.com/leoliu1313/Mowtube/master/week1demo2.jpg' title='Screenshot' width="300" alt='Screenshot' />
-<img src='https://raw.githubusercontent.com/leoliu1313/Mowtube/master/week1demo3.jpg' title='Screenshot' width="300" alt='Screenshot' />
+<img src='https://raw.githubusercontent.com/leoliu1313/Mowtube/master/week1demo1.jpg' title='Screenshot' width="300" alt='Screenshot' /><br><br>
+<img src='https://raw.githubusercontent.com/leoliu1313/Mowtube/master/week1demo2.jpg' title='Screenshot' width="300" alt='Screenshot' /><br><br>
+<img src='https://raw.githubusercontent.com/leoliu1313/Mowtube/master/week1demo3.jpg' title='Screenshot' width="300" alt='Screenshot' /><br><br>
 
 Video created with Android Studio, FFmpeg, Gifsicle.
 
@@ -109,7 +106,12 @@ Video created with Android Studio, FFmpeg, Gifsicle.
 
 Describe any challenges encountered while building the app.
 
+Have problems to create PopupMenu for each item of RecyclerView in Fragment. No anchor error.
+
 ## Open-source libraries used
 
-- [Android Async HTTP](https://github.com/loopj/android-async-http) - Simple asynchronous HTTP requests with JSON parsing
-- [Picasso](http://square.github.io/picasso/) - Image loading and caching library for Android
+- [Android Async HTTP](https://github.com/loopj/android-async-http) - Simple asynchronous HTTP requests with JSON parsing.
+- [Picasso](http://square.github.io/picasso/) - Image loading and caching library for Android.
+- [pedrovgs/DraggablePanel](https://github.com/pedrovgs/DraggablePanel) - DraggableView is draggable.
+- [Butterknife annotation library](http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife) to reduce boilerplate code.
+- [daimajia/AndroidImageSlider](https://github.com/daimajia/AndroidImageSlider) - SliderLayout is an image slider.
