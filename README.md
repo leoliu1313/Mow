@@ -49,6 +49,7 @@ The following **additional** features are implemented:
 * [x] Users see tabs like Home, Upcoming, Trending, and Favorite by TabLayout and ViewPager.
     * [ ] Users see icons on tabs instead of texts.
 * [x] Users see a ProgressDialog when waiting more than one second for JsonHttpResponseHandler.
+* [x] USers can add movies to Favorite.
 
 * [x] Enhance detail movie views.
     * [x] Users can drag detail movie views by DraggableView.
@@ -80,6 +81,8 @@ The following **additional** features are implemented:
 Here's a walkthrough of implemented user stories:
 
 https://youtu.be/KazFNKArcDY
+https://youtu.be/CZuDY-Xmssw
+https://youtu.be/XrUouAZgQIQ
 
 Video created with Android Studio.
 
