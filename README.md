@@ -80,9 +80,9 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-https://youtu.be/KazFNKArcDY
-https://youtu.be/CZuDY-Xmssw
 https://youtu.be/XrUouAZgQIQ
+https://youtu.be/CZuDY-Xmssw
+https://youtu.be/KazFNKArcDY
 
 Video created with Android Studio.
 
