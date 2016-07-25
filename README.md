@@ -68,3 +68,5 @@ GIF created with [ScreenToGif 2](https://screentogif.codeplex.com/).
 ## Notes
 
 Describe any challenges encountered while building the app.
+
+Have problems to create CardView for each item of RecyclerView in Fragment with SwipeableItemAdapter.
