@@ -57,6 +57,7 @@ public class MowtubeActivity extends AppCompatActivity {
     // https://www.themoviedb.org/documentation/api
     public static final String TMDB_API_KEY = "a07e22bc18f5cb106bfe4cc1f83ad8ed";
 
+    // youtube
     // https://console.developers.google.com/
     public static final String YOUTUBE_API_KEY = "AIzaSyDclFRxzBdoqRGHVftdG1WFqBX2C2mVe04";
     public static final String YOUTUBE_DEFAULT_LINK = "664VCs3c1HU";
@@ -65,6 +66,7 @@ public class MowtubeActivity extends AppCompatActivity {
     private static int autoplay_mode = 2;
 
     // non static
+    private YouTubePlayer mYouTubePlayer = null;
     private boolean youtubeError = false;
     private boolean youtubeFullscreen = false;;
     private boolean youtubePlaying = false;
@@ -91,8 +93,6 @@ public class MowtubeActivity extends AppCompatActivity {
     @BindView(R.id.dv_b_production) TextView theProduction;
     @BindView(R.id.dv_b_rating_bar) RatingBar theRatingBar;
     @BindView(R.id.dv_b_sub_slider_layout) SliderLayout theSliderLayout;
-
-    YouTubePlayer mYouTubePlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -215,7 +215,7 @@ public class MowtubeActivity extends AppCompatActivity {
             @Override public void onMaximized() {
                 if (theAppBarLayout.getVisibility() != View.INVISIBLE) {
                     theAppBarLayout.setVisibility(View.INVISIBLE);
-                    if (!youtubeError) {
+                    if (isYoutubeReady()) {
                         mYouTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
                     }
                     if (orientationState == 1) {
@@ -228,7 +228,7 @@ public class MowtubeActivity extends AppCompatActivity {
             @Override public void onMinimized() {
                 if (theAppBarLayout.getVisibility() != View.VISIBLE) {
                     theAppBarLayout.setVisibility(View.VISIBLE);
-                    if (!youtubeError) {
+                    if (isYoutubeReady()) {
                         mYouTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
                     }
                     if (orientationState == 2) {
@@ -238,14 +238,14 @@ public class MowtubeActivity extends AppCompatActivity {
             }
 
             @Override public void onClosedToLeft() {
-                if (!youtubeError) {
+                if (isYoutubeReady()) {
                     mYouTubePlayer.pause();
                     orientationState = 0;
                 }
             }
 
             @Override public void onClosedToRight() {
-                if (!youtubeError) {
+                if (isYoutubeReady()) {
                     theDraggableView.maximize();
                 }
             }
@@ -481,7 +481,7 @@ public class MowtubeActivity extends AppCompatActivity {
     }
 
     public void loadYoutube(String video, Boolean popular) {
-        if (!youtubeError) {
+        if (isYoutubeReady()) {
             if (youtubePlaying) {
                 youtubePlaying = false;
                 if (youtubePlayingTime != -1) {
@@ -537,7 +537,7 @@ public class MowtubeActivity extends AppCompatActivity {
         savedInstanceState.putInt("orientationState", orientationState);
         savedInstanceState.putString("orientationStateVideo", orientationStateVideo);
         savedInstanceState.putInt("orientationStateId", orientationStateId);
-        if (!youtubeError) {
+        if (isYoutubeReady()) {
             savedInstanceState.putBoolean("youtubePlaying", mYouTubePlayer.isPlaying());
             savedInstanceState.putInt("youtubePlayingTime", mYouTubePlayer.getCurrentTimeMillis());
         }
@@ -624,5 +624,9 @@ public class MowtubeActivity extends AppCompatActivity {
                         }, 2000);
             }
         }
+    }
+
+    public boolean isYoutubeReady() {
+        return !youtubeError && (mYouTubePlayer != null);
     }
 }

@@ -45,6 +45,7 @@ The following **additional** features are implemented:
         * [ ] Detect if Wi-Fi is connected. Not implemented yet. Simply assume Wi-Fi is NOT connected.
     * [x] Auto-play on popular movies. (default)
     * [x] Auto-play always.
+    * [ ] Implemented by Shared Preferences.
 * [x] Users see tabs like Home, Upcoming, Trending, and Favorite by TabLayout and ViewPager.
     * [ ] Users see icons on tabs instead of texts.
 * [x] Users see a ProgressDialog when waiting more than one second for JsonHttpResponseHandler.
@@ -70,7 +71,9 @@ The following **additional** features are implemented:
     * [x] Users see video keeps playing when orientation configuration changes by onSaveInstanceState, onRestoreInstanceState.
     * [x] Users can press BACK to close video fullscreen. 
     * [x] Users see fullscreen in landscape orientation. 
-* [x] Restart app when youtube api cannot be initialized. It inconsistently suffers from "SERVICE_VERSION_UPDATE_REQUIRED" or "java.lang.NullPointerException: Attempt to invoke interface method 'boolean com.google.android.youtube.player.YouTubePlayer.isPlaying()' on a null object reference".
+* [x] Youtube cannot be initialized. It inconsistently suffers from "SERVICE_VERSION_UPDATE_REQUIRED" or "java.lang.NullPointerException: Attempt to invoke interface method 'boolean com.google.android.youtube.player.YouTubePlayer.isPlaying()' on a null object reference".
+    * [x] Automatically restart app. 
+    * [ ] Fix the nondeterministic issues.
 
 ## Video Walkthrough
 

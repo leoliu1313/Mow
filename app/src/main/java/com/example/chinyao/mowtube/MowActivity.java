@@ -203,7 +203,7 @@ public class MowActivity extends AppCompatActivity
         // update this with DatabaseHelper.java and app/build.gradle
         if (CoordinatorLayout == 1) {
             Toast.makeText(this,
-                           "Version 1607181451",
+                           "Version 1607242012",
                            Toast.LENGTH_SHORT)
                  .show();
         }

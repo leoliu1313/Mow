@@ -10,8 +10,8 @@ android {
         minSdkVersion 16
         targetSdkVersion 24
         versionCode 1
-        versionName "16.0718.1451"
-        // 1607170156
+        versionName "16.724.2012"
+        // 1607242012
         // update this with MowActivity.java and DatabaseHelper.java and app/build.gradle
     }
     buildTypes {
