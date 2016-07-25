@@ -16,7 +16,7 @@ The following **required** functionality is completed:
 
 The following **optional** features are implemented:
 
-* [ ] User can **pull-to-refresh** popular stream to get the latest movies.
+* [x] User can **pull-to-refresh** popular stream to get the latest movies.
 * [x] Display a nice default [placeholder graphic](http://guides.codepath.com/android/Displaying-Images-with-the-Picasso-Library#configuring-picasso) for each image during loading.
 * [x] Improved the user interface through styling and coloring.
 
@@ -39,11 +39,11 @@ The following **additional** features are implemented:
     * [x] Default is extended.
     * [x] Scroll down RecyclerView to collapse.
     * [x] Scroll up RecyclerView to extend.
-* [x] Setting supports Auto-play setting
-    * [x] Auto-play on Wi-Fi only
-        * [ ] Detect if Wi-Fi is connected. (When this is still not implemented, simply assume Wi-Fi is not connected.)
-    * [x] Auto-play on popular movies
-    * [x] Auto-play always
+* [x] Setting supports Auto-play option.
+    * [x] Auto-play on Wi-Fi only.
+        * [ ] Detect if Wi-Fi is connected. Not implemented yet. Simply assume Wi-Fi is NOT connected.
+    * [x] Auto-play on popular movies. (default)
+    * [x] Auto-play always.
 * [x] Use TabLayout and ViewPager to show Home, Upcoming, Trending, and Favorite.
 * [x] Users see a ProgressDialog when waiting more than one second for JsonHttpResponseHandler.
 * [x] Use com.github.pedrovgs:draggablepanel, DraggableView to play videos.
@@ -57,6 +57,13 @@ The following **additional** features are implemented:
     * [x] Users see the average vote on RatingBar.
     * [x] Users can vote a score from 1 to 10 on RatingBar.
     * [x] Users see a image slider by SliderLayout. 
+* [x] Enhance the behavior of BACK button.
+    * [x] Users can press BACK to minimize detail movie views. 
+    * [x] Users can press BACK to close fullscreen. 
+    * [x] Users see a Toast message when they press BACK in the stream views.
+    * [x] Users can press BACK twice to close the app. 
+* [x] Enhance youtube orientation behavior.
+    * [x] Users can press BACK to close fullscreen. 
 * [x] Restart app when youtube api cannot be initialized. It inconsistently suffers from SERVICE_VERSION_UPDATE_REQUIRED.
 
 ## Video Walkthrough

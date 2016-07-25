@@ -81,10 +81,10 @@ public class MowtubeListFragment extends Fragment {
             }
         });
         // Configure the refreshing colors
-        theSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
+        theSwipeRefreshLayout.setColorSchemeResources(
+                R.color.colorAccent,
+                R.color.colorAccentLightLight
+        );
 
         // orientation issue
         // http://stackoverflow.com/questions/9727173/support-fragmentpageradapter-holds-reference-to-old-fragments
@@ -229,7 +229,7 @@ public class MowtubeListFragment extends Fragment {
                 theSwipeRefreshLayout.setRefreshing(false);
             }
         };
-        handler.postDelayed(runnable, 2000);
+        handler.postDelayed(runnable, 5000);
     }
 
     @Override
