@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -40,11 +42,14 @@ public class MowtubeListFragment extends Fragment {
 
     private Handler handler = null;
     private Runnable runnable = null;
-    private int mode;
+    private int mode = 1;
+    private SwipeRefreshLayout theSwipeRefreshLayout = null;
 
     public static MowtubeListFragment newInstance(int mode) {
         MowtubeListFragment theFragment = new MowtubeListFragment();
         theFragment.mode = mode;
+        theFragment.handler = new Handler();
+
         return theFragment;
     }
 
@@ -52,8 +57,34 @@ public class MowtubeListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Note that this can have more than RecyclerView
-        RecyclerView rv = (RecyclerView) inflater.inflate(R.layout.mowtube_recyclerview, container, false);
-        setupRecyclerView(rv);
+        SwipeRefreshLayout theRootContainer =
+                (SwipeRefreshLayout) inflater.inflate(R.layout.mowtube_stream_fragment, container, false);
+
+        if (handler == null) {
+            handler = new Handler();
+        }
+
+        RecyclerView theRecyclerView =
+                (RecyclerView) theRootContainer.findViewById(R.id.mowtube_recycler_view);
+        setupRecyclerView(theRecyclerView);
+
+        // Lookup the swipe container view
+        theSwipeRefreshLayout = theRootContainer;
+        // Setup refresh listener which triggers new data loading
+        theSwipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                fetchTimelineAsync();
+            }
+        });
+        // Configure the refreshing colors
+        theSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         // orientation issue
         // http://stackoverflow.com/questions/9727173/support-fragmentpageradapter-holds-reference-to-old-fragments
@@ -65,7 +96,7 @@ public class MowtubeListFragment extends Fragment {
         // http://guides.codepath.com/android/Understanding-App-Resources
         setRetainInstance(true);
 
-        return rv;
+        return theRootContainer;
     }
 
     private void setupRecyclerView(final RecyclerView recyclerView) {
@@ -76,9 +107,6 @@ public class MowtubeListFragment extends Fragment {
         progressDialog.setCancelable(true);
         progressDialog.setMessage(getString(R.string.loading_msg));
 
-        if (handler == null) {
-            handler = new Handler();
-        }
         if (runnable != null) {
             handler.removeCallbacks(runnable);
             runnable = null;
@@ -89,7 +117,6 @@ public class MowtubeListFragment extends Fragment {
                 progressDialog.show();
             }
         };
-        //Do something after 1 second
         handler.postDelayed(runnable, 1000);
 
         if (ContentMode == 1) {
@@ -181,6 +208,40 @@ public class MowtubeListFragment extends Fragment {
                         }
                     }
             );
+        }
+    }
+
+    public void fetchTimelineAsync() {
+        // Send the network request to fetch the updated data
+        // `client` here is an instance of Android Async HTTP
+
+        // Since movie data is most likely the same,
+        // simply do a fake refresh.
+        // TODO: implement real refresh for fetchTimelineAsync()
+
+        if (runnable != null) {
+            handler.removeCallbacks(runnable);
+            runnable = null;
+        }
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                theSwipeRefreshLayout.setRefreshing(false);
+            }
+        };
+        handler.postDelayed(runnable, 2000);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // avoid memory leak
+        // https://techblog.badoo.com/blog/2014/08/28/android-handler-memory-leaks/
+        // http://stackoverflow.com/questions/8430805/clicking-the-back-button-twice-to-exit-an-activity
+        if (handler != null) {
+            // remove all the callbacks
+            handler.removeCallbacksAndMessages(null);
         }
     }
 }

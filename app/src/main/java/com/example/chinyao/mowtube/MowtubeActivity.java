@@ -602,7 +602,7 @@ public class MowtubeActivity extends AppCompatActivity {
             else {
                 doubleBackToExitPressedOnce = true;
                 Toast.makeText(this, "Press BACK again to exit", Toast.LENGTH_SHORT).show();
-                // TODO: bad implementation
+                // TODO: bad implementation due to memory leak
                 // should removeCallbacks() when onDestroy()
                 // or, use another implementation instead
                 // http://stackoverflow.com/questions/8430805/clicking-the-back-button-twice-to-exit-an-activity
