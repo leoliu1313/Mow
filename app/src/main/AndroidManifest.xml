@@ -9,14 +9,13 @@
         android:supportsRtl="true"
         android:label="@string/app_name"
         android:theme="@style/MowTheme"
-        android:icon="@mipmap/ic_launcher_moow"
+        android:icon="@mipmap/ic_launcher_mow"
         >
         <activity
-            android:name=".mowtube.MowtubeActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"
+            android:name=".mowtube.MowtubeSplashActivity"
+            android:theme="@style/SplashTheme"
             android:label="@string/mowtube_app_name"
-            android:theme="@style/MowtubeTheme"
-            android:icon="@mipmap/ic_launcher_moow_red"
+            android:icon="@mipmap/ic_launcher_mowtube"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,11 +23,18 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".mowtube.MowtubeActivity"
+            android:theme="@style/MowtubeTheme"
+            android:label="@string/mowtube_app_name"
+            android:icon="@mipmap/ic_launcher_mowtube"
+            >
+        </activity>
+        <activity
             android:name=".mow.MowActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:label="@string/mow_app_name"
             android:theme="@style/MowTheme"
-            android:icon="@mipmap/ic_launcher_moow"
+            android:label="@string/mow_app_name"
+            android:icon="@mipmap/ic_launcher_mow"
+            android:windowSoftInputMode="stateAlwaysHidden"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,10 +43,10 @@
         </activity>
         <activity
             android:name=".mow.EditItemActivity"
-            android:windowSoftInputMode="stateAlwaysVisible"
-            android:label="@string/edit_item_title"
             android:theme="@style/MowTheme"
-            android:icon="@mipmap/ic_launcher_moow"
+            android:label="@string/edit_item_title"
+            android:icon="@mipmap/ic_launcher_mow"
+            android:windowSoftInputMode="stateAlwaysVisible"
             >
         </activity>
     </application>

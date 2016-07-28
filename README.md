@@ -35,7 +35,7 @@ The following **bonus** features are implemented:
 The following **additional** features are implemented:
 
 * ★
-* [ ] Users see a loading screen in the beginning.
+* [x] Users see a loading screen in the beginning.
 * ★
 * [x] Users can collapse or extend Toolbar in AppBarLayout by CoordinatorLayout.
     * [x] Default is extended.
