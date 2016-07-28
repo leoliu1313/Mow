@@ -1,20 +1,26 @@
 <resources>
 
-    <!-- Base application theme. -->
     <!-- MowActivity.java -->
     <!-- 1: not CoordinatorLayout Theme.AppCompat.Light.DarkActionBar -->
     <!-- 2:     CoordinatorLayout Theme.AppCompat.Light.NoActionBar -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="MowTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/mowColorPrimary</item>
+        <item name="colorPrimaryDark">@color/mowColorPrimaryDark</item>
+        <item name="colorAccent">@color/mowColorAccent</item>
+    </style>
+
+    <style name="MowtubeTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/mowtubeColorPrimary</item>
+        <item name="colorPrimaryDark">@color/mowtubeColorPrimaryDark</item>
+        <item name="colorAccent">@color/mowtubeColorAccent</item>
     </style>
 
     <style name="DateTheme" parent="BetterPickersRadialTimePickerDialog">
-        <item name="bpAccentColor">@color/colorDate</item>
-        <item name="bpTitleColor">@color/colorDate</item>
-        <item name="bpLineColor">@color/colorDate</item>
+        <item name="bpAccentColor">@color/mowColorDate</item>
+        <item name="bpTitleColor">@color/mowColorDate</item>
+        <item name="bpLineColor">@color/mowColorDate</item>
     </style>
 
     <style name="Widget.CardContent" parent="android:Widget">
@@ -27,7 +33,7 @@
 
     <style name="AppTheme.expandedTitle" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:fontFamily">"sans-serif-light"</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textColor">@color/mowColorPrimaryDark</item>
     </style>
 
     <style name="AppTheme.collapsedTitle" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -51,15 +57,15 @@
     </style>
 
     <style name="RatingBar1" parent="Theme.AppCompat">
-        <item name="colorControlNormal">@color/colorAccentLightLight</item>
-        <item name="colorControlActivated">@color/colorAccent</item>
-        <item name="colorControlHighlight">@color/colorAccent</item>
+        <item name="colorControlNormal">@color/mowtubeColorAccentLightLight</item>
+        <item name="colorControlActivated">@color/mowtubeColorAccent</item>
+        <item name="colorControlHighlight">@color/mowtubeColorAccent</item>
     </style>
 
     <style name="RatingBar2" parent="Theme.AppCompat">
-        <item name="colorControlNormal">@color/colorAccent</item>
-        <item name="colorControlActivated">@color/colorAccentLightLight</item>
-        <item name="colorControlHighlight">@color/colorAccentLightLight</item>
+        <item name="colorControlNormal">@color/mowtubeColorAccent</item>
+        <item name="colorControlActivated">@color/mowtubeColorAccentLightLight</item>
+        <item name="colorControlHighlight">@color/mowtubeColorAccentLightLight</item>
     </style>
 
 </resources>

@@ -69,7 +69,7 @@
             android:textAppearance="?attr/textAppearanceListItem"
             android:layout_below="@+id/r_title"
             android:paddingLeft="16dp"
-            android:textColor="@color/colorDate"
+            android:textColor="@color/mowtubeColorDate"
             android:textSize="14sp"
             />
 

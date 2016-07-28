@@ -1,5 +1,18 @@
 <resources>
-    <string name="app_name">Mowtube</string>
+    <string name="app_name">Mow</string>
+    <string name="mow_app_name">Mow</string>
+    <string name="mowtube_app_name">Mowtube</string>
+
+    <string name="app_version">16.0728.0605</string>
+    <!--
+    we need to update this when data model changes
+    update this with
+    app/build.gradle ***
+    strings.xml ***
+    DatabaseHelper.java
+    MowActivity.java
+    -->
+
     <string name="add_item_hint">Add a new item...</string>
     <string name="add_button">Add</string>
     <string name="edit_item_title">Edit Item</string>

@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.chinyao.mowtube">
+    package="com.example.chinyao.mow">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher_moow_red"
-        android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:label="@string/app_name"
+        android:theme="@style/MowTheme"
+        android:icon="@mipmap/ic_launcher_moow"
+        >
         <activity
-            android:name=".MowtubeActivity"
+            android:name=".mowtube.MowtubeActivity"
             android:windowSoftInputMode="stateAlwaysHidden"
+            android:label="@string/mowtube_app_name"
+            android:theme="@style/MowtubeTheme"
+            android:icon="@mipmap/ic_launcher_moow_red"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,14 +24,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MowActivity"
+            android:name=".mow.MowActivity"
             android:windowSoftInputMode="stateAlwaysHidden"
+            android:label="@string/mow_app_name"
+            android:theme="@style/MowTheme"
+            android:icon="@mipmap/ic_launcher_moow"
             >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
-            android:name=".EditItemActivity"
-            android:label="@string/edit_item_title"
+            android:name=".mow.EditItemActivity"
             android:windowSoftInputMode="stateAlwaysVisible"
+            android:label="@string/edit_item_title"
+            android:theme="@style/MowTheme"
+            android:icon="@mipmap/ic_launcher_moow"
             >
         </activity>
     </application>

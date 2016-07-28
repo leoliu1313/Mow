@@ -65,7 +65,7 @@
             android:text="h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h ..."
             android:textAppearance="?attr/textAppearanceListItem"
             android:layout_below="@+id/r_title"
-            android:textColor="@color/colorDate"
+            android:textColor="@color/mowtubeColorDate"
             android:textSize="14sp"
             />
 
