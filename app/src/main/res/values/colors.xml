@@ -1,12 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimaryLight">#FFE082</color>
-    <color name="colorPrimary">#FFC107</color>
-    <color name="colorPrimaryDark">#FF6F00</color>
-    <color name="colorAccentLight">#FF80AB</color>
-    <color name="colorAccent">#ff4081</color>
-    <color name="colorDateLight">#69F0AE</color>
-    <color name="colorDate">#00C853</color>
+    <color name="colorPrimaryLight">#FF80AB</color>
+    <!-- N/A -->
+    <color name="colorPrimary">#E62117</color>
+    <!-- label -->
+    <color name="colorPrimaryDark">#BA1B12</color>
+    <!-- status bar -->
+    <color name="colorPrimaryDarkDark">#5C0D09</color>
+    <!-- view pager icon -->
+    <color name="colorAccentLightLight">#C6DAFC</color>
+    <!-- Autoplay switch -->
+    <color name="colorAccentLight">#4285F4</color>
+    <!-- Watch Now -->
+    <color name="colorAccent">#4182EF</color>
+    <!-- Autoplay switch -->
+    <color name="colorDateLightLight">#999999</color>
+    <!-- top sub title -->
+    <color name="colorDateLight">#848484</color>
+    <!-- three dot button -->
+    <color name="colorDate">#757575</color>
+    <!-- list sub title -->
+    <color name="colorDateDark">#666666</color>
+    <!-- Up next, Autoplay -->
+    <color name="colorDateDarkDark">#333333</color>
+    <!-- title -->
+    <color name="colorBackground">#FFFFFF</color>
+    <!-- background -->
 
     <color name="bg_item_normal_state">#fff0f0f0</color>
     <color name="bg_item_dragging_state">#ffffdddd</color>

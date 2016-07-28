@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/autoplay"
+        android:title="@string/autoplay"
+        app:showAsAction="never">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/autoplay_on_wifi_only"
+                    android:title="@string/on_wifi_only" />
+                <item
+                    android:id="@+id/autoplay_on_popular"
+                    android:title="@string/on_popular" />
+                <item
+                    android:id="@+id/autoplay_always"
+                    android:title="@string/autoplay_always" />
+            </group>
+        </menu>
+    </item>
+
+</menu>
