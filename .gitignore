@@ -4,6 +4,8 @@
 
 # files for the dex VM
 *.dex
+!gifdiff.exe
+!gifsicle.exe
 
 # Java class files
 *.class
