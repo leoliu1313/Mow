@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
+
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -11,21 +12,24 @@
         android:background="@drawable/background"
         android:orientation="vertical"
         >
+
         <com.lorentzos.flingswipe.SwipeFlingAdapterView
-            android:id="@+id/r_swipe"
+            android:id="@+id/m1_swipe"
             android:layout_width="match_parent"
             android:layout_height="450dp"
             />
+
         <LinearLayout
-            android:id="@+id/r_bottom"
+            android:id="@+id/m1_bottom"
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_below="@+id/r_swipe"
+            android:layout_below="@+id/m1_swipe"
             >
+
             <Button
-                android:id="@+id/r_bottom_left"
+                android:id="@+id/m1_bottom_left"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
@@ -33,12 +37,15 @@
                 />
 
             <Button
-                android:id="@+id/r_bottom_right"
+                android:id="@+id/m1_bottom_right"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:text="Right"
                 />
+
         </LinearLayout>
+
     </RelativeLayout >
+
 </android.support.v4.widget.NestedScrollView>
