@@ -68,16 +68,32 @@ public class MowtubeListFragment extends Fragment {
         SwipeRefreshLayout theRootContainer =
                 (SwipeRefreshLayout) inflater.inflate(R.layout.mowtube_stream_fragment, container, false);
 
+        RecyclerView theRecyclerView =
+                (RecyclerView) theRootContainer.findViewById(R.id.mowtube_recycler_view);
+        // Lookup the swipe container view
+        theSwipeRefreshLayout = theRootContainer;
         if (handler == null) {
             handler = new Handler();
         }
 
-        RecyclerView theRecyclerView =
-                (RecyclerView) theRootContainer.findViewById(R.id.mowtube_recycler_view);
         setupRecyclerView(theRecyclerView);
 
-        // Lookup the swipe container view
-        theSwipeRefreshLayout = theRootContainer;
+        setupSwipeRefreshLayout();
+
+        // orientation issue
+        // http://stackoverflow.com/questions/9727173/support-fragmentpageradapter-holds-reference-to-old-fragments
+        // http://stackoverflow.com/questions/32478968/android-viewpager-orientation-change
+        // https://medium.com/@roideuniverse/android-viewpager-fragmentpageradapter-and-orientation-changes-256c23bee035#.ufb2ywv33
+        // http://stackoverflow.com/questions/28982512/handling-orientation-change-with-viewpager-fragmentpageradapter
+        // https://github.com/codepath/android_guides/wiki/ViewPager-with-FragmentPagerAdapter
+        // http://guides.codepath.com/android/Handling-Configuration-Changes
+        // http://guides.codepath.com/android/Understanding-App-Resources
+        setRetainInstance(true);
+
+        return theRootContainer;
+    }
+
+    private void setupSwipeRefreshLayout() {
         // Setup refresh listener which triggers new data loading
         theSwipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
@@ -93,18 +109,6 @@ public class MowtubeListFragment extends Fragment {
                 R.color.mowtubeColorAccent,
                 R.color.mowtubeColorAccentLightLight
         );
-
-        // orientation issue
-        // http://stackoverflow.com/questions/9727173/support-fragmentpageradapter-holds-reference-to-old-fragments
-        // http://stackoverflow.com/questions/32478968/android-viewpager-orientation-change
-        // https://medium.com/@roideuniverse/android-viewpager-fragmentpageradapter-and-orientation-changes-256c23bee035#.ufb2ywv33
-        // http://stackoverflow.com/questions/28982512/handling-orientation-change-with-viewpager-fragmentpageradapter
-        // https://github.com/codepath/android_guides/wiki/ViewPager-with-FragmentPagerAdapter
-        // http://guides.codepath.com/android/Handling-Configuration-Changes
-        // http://guides.codepath.com/android/Understanding-App-Resources
-        setRetainInstance(true);
-
-        return theRootContainer;
     }
 
     private void setupRecyclerView(final RecyclerView recyclerView) {

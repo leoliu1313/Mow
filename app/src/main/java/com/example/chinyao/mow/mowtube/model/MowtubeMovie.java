@@ -88,7 +88,7 @@ public class MowtubeMovie {
         for (int i=0; i < input.size(); i++) {
             MowtubeMovie movie = new MowtubeMovie();
             movie.title = input.get(i);
-            movie.poster_path = "/vsjBeMPZtyB7yNsYY56XYxifaQZ.jpg";
+            movie.poster_path = "http://image.tmdb.org/t/p/w500/vsjBeMPZtyB7yNsYY56XYxifaQZ.jpg";
             movie.adult = false;
             movie.overview = "overview";
             movie.release_date = "2016-03-23";
@@ -97,7 +97,7 @@ public class MowtubeMovie {
             movie.id = 209112;
             movie.original_title = "original_title";
             movie.original_language = "original_language";
-            movie.backdrop_path = "/vsjBeMPZtyB7yNsYY56XYxifaQZ.jpg";
+            movie.backdrop_path = "http://image.tmdb.org/t/p/w500/vsjBeMPZtyB7yNsYY56XYxifaQZ.jpg";
             movie.popularity = 33.499162;
             movie.vote_count = 2983;
             movie.video = false;

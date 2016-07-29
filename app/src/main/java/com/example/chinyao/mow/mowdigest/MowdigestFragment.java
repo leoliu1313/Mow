@@ -3,16 +3,19 @@ package com.example.chinyao.mow.mowdigest;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
-import android.util.Log;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.chinyao.mow.R;
-import com.lorentzos.flingswipe.SwipeFlingAdapterView;
+import com.example.chinyao.mow.mowtube.model.MowtubeMovie;
+import com.example.chinyao.mow.mowtube.recycler.MowtubeRecyclerViewAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,16 +26,10 @@ import butterknife.ButterKnife;
 public class MowdigestFragment extends Fragment {
     // ButterKnife
     // http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife
-    @BindView(R.id.m1_swipe)
-    SwipeFlingAdapterView theSwipe;
+    @BindView(R.id.mowtube_recycler_view)
+    RecyclerView theRecyclerView;
 
     private int mode = 1;
-    private ArrayList<Swipe> al;
-    private MowdigestSwipeAdapter myAppAdapter;
-
-    static String link1 = "https://s-media-cache-ak0.pinimg.com/236x/e7/7b/29/e77b294d3dc6245ab4b517142e1f63b0.jpg";
-    static String link2 = "https://s-media-cache-ak0.pinimg.com/236x/e7/7b/29/e77b294d3dc6245ab4b517142e1f63b0.jpg";
-    static String link3 = "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTqEJBhd92spKnkYretdXnn5Twbnoii1NgdjXLBuddq8bF1bfEA";
 
     public static MowdigestFragment newInstance(int mode) {
         MowdigestFragment theFragment = new MowdigestFragment();
@@ -45,14 +42,14 @@ public class MowdigestFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        NestedScrollView theRootContainer =
-                (NestedScrollView) inflater.inflate(R.layout.mowdigest_fragment, container, false);
+        // Note that this can have more than RecyclerView
+        SwipeRefreshLayout theRootContainer =
+                (SwipeRefreshLayout) inflater.inflate(R.layout.mowtube_stream_fragment, container, false);
 
         // ButterKnife
         ButterKnife.bind(this, theRootContainer);
-        theSwipe = (SwipeFlingAdapterView) theRootContainer.findViewById(R.id.m1_swipe);
 
-        setupSwipe();
+        setupRecyclerView(theRecyclerView);
 
         // orientation issue
         // http://stackoverflow.com/questions/9727173/support-fragmentpageradapter-holds-reference-to-old-fragments
@@ -67,55 +64,24 @@ public class MowdigestFragment extends Fragment {
         return theRootContainer;
     }
 
-    private void setupSwipe() {
-        al = new ArrayList<>();
-        al.add(new Swipe(link1, "link1"));
-        al.add(new Swipe(link2, "link2"));
-        al.add(new Swipe(link1, "link1"));
-        al.add(new Swipe(link2, "link2"));
-        al.add(new Swipe(link1, "link1"));
-        al.add(new Swipe(link2, "link2"));
-
-        myAppAdapter = new MowdigestSwipeAdapter(al, getContext());
-
-
-        theSwipe.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
-            @Override
-            public void removeFirstObjectInAdapter() {
-                // nothing
-                Log.d("MowdigestFragment", "removeFirstObjectInAdapter");
-            }
-
-            @Override
-            public void onLeftCardExit(Object dataObject) {
-                al.remove(0);
-                myAppAdapter.notifyDataSetChanged();
-                //Do something on the left!
-                //You also have access to the original object.
-                //If you want to use it just cast it (String) dataObject
-            }
-
-            @Override
-            public void onRightCardExit(Object dataObject) {
-                al.remove(0);
-                myAppAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onAdapterAboutToEmpty(int itemsInAdapter) {
-                al.add(new Swipe(link3, "More"));
-                myAppAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onScroll(float scrollProgressPercent) {
-                View view = theSwipe.getSelectedView();
-                view.findViewById(R.id.background).setAlpha(0);
-                view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
-                view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
-            }
-        });
-
-        theSwipe.setAdapter(myAppAdapter);
+    private void setupRecyclerView(RecyclerView recyclerView) {
+        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
+        if (mode == 1) {
+            recyclerView.setAdapter(
+                    new MowdigestRecyclerOneAdapter(
+                            getActivity(),
+                            new ArrayList<String>(Arrays.asList(""))
+                    )
+            );
+        }
+        else if (mode == 2){
+            recyclerView.setAdapter(
+                    new MowtubeRecyclerViewAdapter(
+                            getActivity(),
+                            MowtubeMovie.generateDebugArrayList(),
+                            null
+                    )
+            );
+        }
     }
 }
