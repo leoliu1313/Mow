@@ -30,8 +30,7 @@ public class MowdigestFragment extends Fragment {
         /*
         // Note that this can have more than RecyclerView
         SwipeRefreshLayout theRootContainer =
-                (SwipeRefreshLayout) inflater.inflate(R.layout.mowtube_stream_fragment, container, false);
-                */
+                (SwipeRefreshLayout) inflater.inflate(R.layout.mowtube_stream_fragment, containeNestedScrollView         */
         NestedScrollView theRootContainer =
                 (NestedScrollView) inflater.inflate(R.layout.mowdigest_fragment, container, false);
 
