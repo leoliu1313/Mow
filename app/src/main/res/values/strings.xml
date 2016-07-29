@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">Mow</string>
     <string name="mow_app_name">Mow</string>
-    <string name="mowtube_app_name">Mowtube</string>
+    <string name="mowtube_app_name">MowTube</string>
+    <string name="mowdigest_app_name">MowDigest</string>
 
-    <string name="app_version">16.0728.0605</string>
+    <string name="app_version">1607280605</string>
     <!--
     we need to update this when data model changes
     update this with

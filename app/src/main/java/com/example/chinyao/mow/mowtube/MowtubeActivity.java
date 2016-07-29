@@ -322,6 +322,7 @@ public class MowtubeActivity extends AppCompatActivity {
                 .commit();
     }
 
+    // set up image slider layout
     private void setupSliderLayout() {
         // theSliderLayout.setPresetTransformer("DepthPage");
         theSliderLayout.setCustomAnimation(new DescriptionAnimation());

@@ -4,8 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.chinyao.mow.R;
-
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -14,7 +12,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // private final static int DATABASE_VERSION = 1607280552;
 
     public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, Integer.parseInt(context.getString(R.string.app_version)));
+        // nothing can be placed before super
+        super(context,
+                DATABASE_NAME,
+                null,
+                //Integer.parseInt(context.getString(R.string.app_version))
+                1607280605
+        );
         // we need to update this when data model changes
         // update this with
         // app/build.gradle ***
