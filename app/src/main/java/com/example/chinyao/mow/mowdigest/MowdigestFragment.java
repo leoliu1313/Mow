@@ -3,10 +3,10 @@ package com.example.chinyao.mow.mowdigest;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.example.chinyao.mow.R;
 
@@ -32,8 +32,8 @@ public class MowdigestFragment extends Fragment {
         SwipeRefreshLayout theRootContainer =
                 (SwipeRefreshLayout) inflater.inflate(R.layout.mowtube_stream_fragment, container, false);
                 */
-        LinearLayout theRootContainer =
-                (LinearLayout) inflater.inflate(R.layout.mowdigest_fragment, container, false);
+        NestedScrollView theRootContainer =
+                (NestedScrollView) inflater.inflate(R.layout.mowdigest_fragment, container, false);
 
         // orientation issue
         // http://stackoverflow.com/questions/9727173/support-fragmentpageradapter-holds-reference-to-old-fragments

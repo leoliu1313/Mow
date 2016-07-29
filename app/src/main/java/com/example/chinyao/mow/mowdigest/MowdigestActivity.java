@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.example.chinyao.mow.R;
+import com.example.chinyao.mow.mowtube.MowtubeListFragment;
 import com.example.chinyao.mow.mowtube.MowtubeViewPagerAdapter;
 
 import butterknife.BindView;
@@ -63,7 +64,7 @@ public class MowdigestActivity extends AppCompatActivity {
         MowtubeViewPagerAdapter mowtubeViewPagerAdapter = new MowtubeViewPagerAdapter(getSupportFragmentManager());
         mowtubeViewPagerAdapter.addFragment(MowdigestFragment.newInstance(1), getString(R.string.learning));
         mowtubeViewPagerAdapter.addFragment(MowdigestFragment.newInstance(2), getString(R.string.digest));
-        mowtubeViewPagerAdapter.addFragment(MowdigestFragment.newInstance(3), getString(R.string.explore));
+        mowtubeViewPagerAdapter.addFragment(MowtubeListFragment.newInstance(3), getString(R.string.explore));
         viewPager.setAdapter(mowtubeViewPagerAdapter);
 
         tabLayout.setupWithViewPager(viewPager);
