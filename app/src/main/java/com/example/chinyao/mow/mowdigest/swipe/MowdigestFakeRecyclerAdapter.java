@@ -1,4 +1,4 @@
-package com.example.chinyao.mow.mowdigest;
+package com.example.chinyao.mow.mowdigest.swipe;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -22,7 +22,7 @@ public class MowdigestFakeRecyclerAdapter
     private List<String> mItems;
     private Context mContext;
 
-    private ArrayList<Swipe> al;
+    private ArrayList<MowdigestSwipe> al;
     private MowdigestSwipeAdapter myAppAdapter;
 
     static String link1 = "https://s-media-cache-ak0.pinimg.com/236x/e7/7b/29/e77b294d3dc6245ab4b517142e1f63b0.jpg";
@@ -68,12 +68,12 @@ public class MowdigestFakeRecyclerAdapter
     private void setupSwipe(final ViewHolder holder) {
 
         al = new ArrayList<>();
-        al.add(new Swipe(link1, "link1"));
-        al.add(new Swipe(link2, "link2"));
-        al.add(new Swipe(link1, "link1"));
-        al.add(new Swipe(link2, "link2"));
-        al.add(new Swipe(link1, "link1"));
-        al.add(new Swipe(link2, "link2"));
+        al.add(new MowdigestSwipe(link1, "link1"));
+        al.add(new MowdigestSwipe(link2, "link2"));
+        al.add(new MowdigestSwipe(link1, "link1"));
+        al.add(new MowdigestSwipe(link2, "link2"));
+        al.add(new MowdigestSwipe(link1, "link1"));
+        al.add(new MowdigestSwipe(link2, "link2"));
 
         // myAppAdapter = new MowdigestSwipeAdapter(al, getContext());
         myAppAdapter = new MowdigestSwipeAdapter(al, mContext);
@@ -102,7 +102,7 @@ public class MowdigestFakeRecyclerAdapter
 
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
-                al.add(new Swipe(link3, "More"));
+                al.add(new MowdigestSwipe(link3, "More"));
                 myAppAdapter.notifyDataSetChanged();
             }
 

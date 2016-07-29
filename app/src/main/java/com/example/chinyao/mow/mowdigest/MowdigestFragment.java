@@ -6,13 +6,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.chinyao.mow.R;
-import com.example.chinyao.mow.mowtube.model.MowtubeMovie;
-import com.example.chinyao.mow.mowtube.recycler.MowtubeRecyclerViewAdapter;
+import com.example.chinyao.mow.mowdigest.swipe.MowdigestFakeRecyclerAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,8 +65,8 @@ public class MowdigestFragment extends Fragment {
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
-        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         if (mode == 1) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
             recyclerView.setAdapter(
                     new MowdigestFakeRecyclerAdapter(
                             getActivity(),
@@ -75,11 +75,12 @@ public class MowdigestFragment extends Fragment {
             );
         }
         else if (mode == 2){
+            recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
             recyclerView.setAdapter(
-                    new MowtubeRecyclerViewAdapter(
+                    new MowdigestRecyclerAdapter(
                             getActivity(),
-                            MowtubeMovie.generateDebugArrayList(),
-                            null
+                            MowdigestNews.debug(),
+                            recyclerView
                     )
             );
         }

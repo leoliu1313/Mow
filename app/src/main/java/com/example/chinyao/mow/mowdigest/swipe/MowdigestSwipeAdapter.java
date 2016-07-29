@@ -1,4 +1,4 @@
-package com.example.chinyao.mow.mowdigest;
+package com.example.chinyao.mow.mowdigest.swipe;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -19,11 +19,11 @@ import java.util.List;
  */
 public class MowdigestSwipeAdapter extends BaseAdapter {
 
-    private List<Swipe> parkingList;
+    private List<MowdigestSwipe> parkingList;
     private Context context;
     private static ViewHolder viewHolder;
 
-    public MowdigestSwipeAdapter(List<Swipe> apps, Context context) {
+    public MowdigestSwipeAdapter(List<MowdigestSwipe> apps, Context context) {
         this.parkingList = apps;
         this.context = context;
     }

@@ -1,15 +1,15 @@
-package com.example.chinyao.mow.mowdigest;
+package com.example.chinyao.mow.mowdigest.swipe;
 
 /**
  * Created by chinyao on 7/29/2016.
  */
-public class Swipe {
+public class MowdigestSwipe {
 
     private String description;
 
     private String imagePath;
 
-    public Swipe(String imagePath, String description) {
+    public MowdigestSwipe(String imagePath, String description) {
         this.imagePath = imagePath;
         this.description = description;
     }
