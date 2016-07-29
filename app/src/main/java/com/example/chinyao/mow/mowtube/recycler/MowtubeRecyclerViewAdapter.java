@@ -100,7 +100,7 @@ public class MowtubeRecyclerViewAdapter
             // holder.mBoundString = mMovies.get(position).title;
             holder.mTextViewTitle.setText(theMowtubeMovie.title);
             Glide.with(holder.mImageView.getContext())
-                    .load(MowActivity.getRandomDrawable())
+                    .load(theMowtubeMovie.backdrop_path)
                     .fitCenter()
                     .into(holder.mImageView);
         }

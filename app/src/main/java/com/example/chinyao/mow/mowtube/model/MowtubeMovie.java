@@ -88,6 +88,20 @@ public class MowtubeMovie {
         for (int i=0; i < input.size(); i++) {
             MowtubeMovie movie = new MowtubeMovie();
             movie.title = input.get(i);
+            movie.poster_path = "/vsjBeMPZtyB7yNsYY56XYxifaQZ.jpg";
+            movie.adult = false;
+            movie.overview = "overview";
+            movie.release_date = "2016-03-23";
+            movie.genres = new ArrayList<String>();
+            movie.genres.add("Action");
+            movie.id = 209112;
+            movie.original_title = "original_title";
+            movie.original_language = "original_language";
+            movie.backdrop_path = "/vsjBeMPZtyB7yNsYY56XYxifaQZ.jpg";
+            movie.popularity = 33.499162;
+            movie.vote_count = 2983;
+            movie.video = false;
+            movie.vote_average = 5.6;
             movies.add(movie);
         }
         return movies;
@@ -97,6 +111,8 @@ public class MowtubeMovie {
         return MowtubeMovie.fromArrayList(
                 new ArrayList<String>(
                         Arrays.asList(
+                            "Batman v Superman: Dawn of Justice"
+                            /*
                             "The Legend of Tarzan",
                             "Independence Day: Resurgence",
                             "Finding Dory",
@@ -107,6 +123,7 @@ public class MowtubeMovie {
                             "Star Trek Beyond",
                             "Central Intelligence",
                             "Now You See Me 2"
+                            */
                         )
                 )
         );
