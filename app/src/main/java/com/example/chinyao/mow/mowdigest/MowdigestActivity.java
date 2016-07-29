@@ -10,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.example.chinyao.mow.R;
-import com.example.chinyao.mow.mowtube.MowtubeListFragment;
 import com.example.chinyao.mow.mowtube.MowtubeViewPagerAdapter;
 
 import butterknife.BindView;
@@ -55,16 +54,16 @@ public class MowdigestActivity extends AppCompatActivity {
     }
 
     private void setupViewPager() {
-        viewPager.setOffscreenPageLimit(3);
+        // 3 tabs so set it to 2
+        viewPager.setOffscreenPageLimit(2);
 
         // TODO
         // people on stackoverflow said this is bad implementation
         // use getView() instead?
         MowtubeViewPagerAdapter mowtubeViewPagerAdapter = new MowtubeViewPagerAdapter(getSupportFragmentManager());
-        mowtubeViewPagerAdapter.addFragment(MowtubeListFragment.newInstance(1), getString(R.string.home));
-        mowtubeViewPagerAdapter.addFragment(MowtubeListFragment.newInstance(2), getString(R.string.upcoming));
-        mowtubeViewPagerAdapter.addFragment(MowtubeListFragment.newInstance(3), getString(R.string.trending));
-        mowtubeViewPagerAdapter.addFragment(MowtubeListFragment.newInstance(4), getString(R.string.favorite));
+        mowtubeViewPagerAdapter.addFragment(MowdigestFragment.newInstance(1), getString(R.string.learning));
+        mowtubeViewPagerAdapter.addFragment(MowdigestFragment.newInstance(2), getString(R.string.digest));
+        mowtubeViewPagerAdapter.addFragment(MowdigestFragment.newInstance(3), getString(R.string.explore));
         viewPager.setAdapter(mowtubeViewPagerAdapter);
 
         tabLayout.setupWithViewPager(viewPager);

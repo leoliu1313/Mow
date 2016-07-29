@@ -131,6 +131,7 @@ public class MowtubeActivity extends AppCompatActivity {
     }
 
     private void setupViewPager() {
+        // 4 tabs so set it to 3
         viewPager.setOffscreenPageLimit(3);
 
         // TODO

@@ -53,4 +53,5 @@ dependencies {
     compile 'com.github.techery:properratingbar:0.0.5'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.daimajia.slider:library:1.1.5@aar'
+    compile 'com.lorentzos.swipecards:library:1.0.9@aar'
 }

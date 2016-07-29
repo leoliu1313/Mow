@@ -81,4 +81,8 @@
     <string name="on_wifi_only">on Wi-Fi only</string>
     <string name="on_popular">on popular movies</string>
     <string name="autoplay_always">always</string>
+
+    <string name="learning">Learning</string>
+    <string name="digest">Digest</string>
+    <string name="explore">Explore</string>
 </resources>
