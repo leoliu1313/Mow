@@ -16,8 +16,8 @@ import java.util.List;
 /**
  * Created by chinyao on 7/23/2016.
  */
-public class MowdigestRecyclerOneAdapter
-        extends RecyclerView.Adapter<MowdigestRecyclerOneAdapter.ViewHolder> {
+public class MowdigestFakeRecyclerAdapter
+        extends RecyclerView.Adapter<MowdigestFakeRecyclerAdapter.ViewHolder> {
 
     private List<String> mItems;
     private Context mContext;
@@ -40,7 +40,7 @@ public class MowdigestRecyclerOneAdapter
         }
     }
 
-    public MowdigestRecyclerOneAdapter(Context context, List<String> items) {
+    public MowdigestFakeRecyclerAdapter(Context context, List<String> items) {
         mContext = context;
         mItems = items;
     }
@@ -50,7 +50,7 @@ public class MowdigestRecyclerOneAdapter
         ViewHolder output = null;
         View theView;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            theView = inflater.inflate(R.layout.mowdigest_fragment, parent, false);
+            theView = inflater.inflate(R.layout.mowdigest_fake_recycler_view, parent, false);
         output = new ViewHolder(theView);
         return output;
     }

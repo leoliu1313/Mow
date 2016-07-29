@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:layout_marginBottom="48dp"
+    android:layout_marginBottom="80dp"
     android:layout_marginLeft="20dp"
     android:layout_marginRight="20dp"
-    android:layout_marginTop="64dp">
+    android:layout_marginTop="40dp">
 
     <FrameLayout
         android:id="@+id/background"

@@ -68,7 +68,7 @@ public class MowdigestFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         if (mode == 1) {
             recyclerView.setAdapter(
-                    new MowdigestRecyclerOneAdapter(
+                    new MowdigestFakeRecyclerAdapter(
                             getActivity(),
                             new ArrayList<String>(Arrays.asList(""))
                     )
