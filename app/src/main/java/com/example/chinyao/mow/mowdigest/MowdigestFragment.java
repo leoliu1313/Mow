@@ -75,6 +75,8 @@ public class MowdigestFragment extends Fragment {
             );
         }
         else if (mode == 2){
+            // TODO
+            // recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
             recyclerView.setAdapter(
                     new MowdigestRecyclerAdapter(

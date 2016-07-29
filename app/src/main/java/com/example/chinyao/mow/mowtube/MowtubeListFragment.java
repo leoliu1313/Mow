@@ -36,7 +36,7 @@ import cz.msebera.android.httpclient.Header;
  */
 public class MowtubeListFragment extends Fragment {
 
-    public static final int ContentMode = 1;
+    public static final int ContentMode = 2;
     // 1: debug mode
     // 2: android-async-http
 

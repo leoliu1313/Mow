@@ -16,6 +16,9 @@ import java.util.List;
 /**
  * Created by chinyao on 7/23/2016.
  */
+// TODO
+// try to remove this fake class
+// use NestedScrollView without background instead
 public class MowdigestFakeRecyclerAdapter
         extends RecyclerView.Adapter<MowdigestFakeRecyclerAdapter.ViewHolder> {
 

@@ -111,8 +111,8 @@ public class MowtubeMovie {
         return MowtubeMovie.fromArrayList(
                 new ArrayList<String>(
                         Arrays.asList(
-                            "Batman v Superman: Dawn of Justice"
-                            /*
+                            // "Batman v Superman: Dawn of Justice"
+
                             "The Legend of Tarzan",
                             "Independence Day: Resurgence",
                             "Finding Dory",
@@ -123,7 +123,6 @@ public class MowtubeMovie {
                             "Star Trek Beyond",
                             "Central Intelligence",
                             "Now You See Me 2"
-                            */
                         )
                 )
         );
