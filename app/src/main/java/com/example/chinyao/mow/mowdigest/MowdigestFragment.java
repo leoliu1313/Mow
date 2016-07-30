@@ -104,6 +104,7 @@ public class MowdigestFragment extends Fragment {
             }
             else if (HTTP_Mode == 2) {
                 Retrofit retrofit = new Retrofit.Builder()
+                        .client(MowdigestActivity.okClient)
                         .baseUrl(MowdigestFragment.BASE_URL)
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();

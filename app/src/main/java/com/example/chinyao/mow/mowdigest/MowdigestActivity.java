@@ -12,9 +12,12 @@ import android.widget.Toast;
 import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowtube.MowtubeListFragment;
 import com.example.chinyao.mow.mowtube.MowtubeViewPagerAdapter;
+import com.facebook.stetho.Stetho;
+import com.facebook.stetho.okhttp3.StethoInterceptor;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.OkHttpClient;
 
 public class MowdigestActivity extends AppCompatActivity {
     // ButterKnife
@@ -28,6 +31,8 @@ public class MowdigestActivity extends AppCompatActivity {
     @BindView(R.id.m_view_pager)
     ViewPager viewPager;
 
+    public static OkHttpClient okClient = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +40,14 @@ public class MowdigestActivity extends AppCompatActivity {
 
         // ButterKnife
         ButterKnife.bind(this);
+
+        // chrome://inspect/#devices
+        Stetho.initializeWithDefaults(this);
+        // add a Facebook StethoInterceptor to the OkHttpClient's list of network interceptors
+        okClient = new OkHttpClient.Builder()
+                .addNetworkInterceptor(new StethoInterceptor())
+                .build();
+        // set up a breakpoint below for early network calls
 
         setSupportActionBar(toolbar);
 

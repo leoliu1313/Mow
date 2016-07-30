@@ -18,6 +18,10 @@ public interface MowdigestApiInterface {
     // http://guides.codepath.com/android/Leveraging-the-Gson-Library
     // Retrofit is based on OkHttp
     // http://guides.codepath.com/android/Consuming-APIs-with-Retrofit
+    // Debug network and database
+    // http://guides.codepath.com/android/Debugging-with-Stetho
+    // http://stackoverflow.com/questions/35444136/stetho-dont-see-network-calls-in-console
+    // chrome://inspect/#devices
 
     // GET Retrofit.Builder().baseUrl() + the following link filled with @Path + ?@Query=
     @GET(MowdigestFragment.MOST_POPULAR + "/{section}/{time_period}.json")
