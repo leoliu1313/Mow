@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chinyao.mow.R;
+import com.example.chinyao.mow.mowdigest.model.MowdigestNews;
 
 import java.util.List;
 
