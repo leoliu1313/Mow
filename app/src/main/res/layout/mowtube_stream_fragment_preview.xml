@@ -1,17 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mowtube_swipe_refresh_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:weightSum = "2"
+    >
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/mowtube_recycler_view"
-        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         tools:listitem="@layout/mowdigest_card_view"
         />
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        >
+        <include layout="@layout/mowdigest_card_view"/>
+    </LinearLayout>
 
     <!--
     StaggeredGridLayoutManager
@@ -19,4 +31,4 @@
     http://tools.android.com/tech-docs/tools-attributes
     -->
 
-</android.support.v4.widget.SwipeRefreshLayout>
+</LinearLayout>

@@ -33,6 +33,7 @@
             android:padding="16dp"
             android:textColor="@color/mowtubeColorDateDarkDark"
             android:text="Manu Ginobili explains why he nearly left San Antonio this offseason"
+            tools:text="Manu Ginobili explains why he nearly left San Antonio this offseason"
             />
 
         <LinearLayout
@@ -49,6 +50,7 @@
                     android:padding="16dp"
                     android:textColor="@color/mowtubeColorDate"
                     android:text="Sports"
+                    tools:text="Sports"
                 />
 
         </LinearLayout>
