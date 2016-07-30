@@ -64,14 +64,20 @@ public class MowdigestRecyclerAdapter
 
     @Override
     public void onBindViewHolder(MowdigestRecyclerAdapter.ViewHolder holder, int position) {
-        holder.mTextViewTitle.setText(Integer.toString(position));
-        if (position % 3 == 0) {
-            holder.mImageView.setImageResource(R.drawable.background);
+        //holder.mTextViewTitle.setText(Integer.toString(position));
+        if (position % 5 == 0) {
+            holder.mImageView.setImageResource(R.drawable.coffee_21);
         }
-        else if (position % 3 == 1) {
+        else if (position % 5 == 1) {
             holder.mImageView.setImageResource(R.drawable.coffee_22);
         }
-        else {
+        else if (position % 5 == 2) {
+            holder.mImageView.setImageResource(R.drawable.coffee_23);
+        }
+        else if (position % 5 == 3) {
+            holder.mImageView.setImageResource(R.drawable.blobb);
+        }
+        else if (position % 5 == 4) {
             holder.mImageView.setImageResource(R.drawable.blobb_poster);
         }
     }

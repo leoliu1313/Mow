@@ -10,11 +10,14 @@
         android:icon="@mipmap/ic_launcher_mow"
         android:label="@string/app_name"
         android:theme="@style/MowTheme">
+        <!-- Mow Digest -->
         <activity
             android:name=".mowdigest.MowdigestActivity"
-            android:icon="@mipmap/ic_launcher_mowtube"
+            android:taskAffinity="mowdigest.MowdigestActivity"
+            android:icon="@mipmap/ic_launcher_mowdigest"
             android:label="@string/mowdigest_app_name"
-            android:theme="@style/MowtubeTheme">
+            android:theme="@style/MowdigestTheme"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,12 +25,35 @@
             </intent-filter>
         </activity>
 
+        <!-- Mowtube -->
+        <activity
+            android:name=".mowtube.MowtubeSplashActivity"
+            android:taskAffinity=".mowtube.MowtubeSplashActivity"
+            android:icon="@mipmap/ic_launcher_mowtube"
+            android:label="@string/mowtube_app_name"
+            android:theme="@style/SplashTheme"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".mowtube.MowtubeActivity"
+            android:icon="@mipmap/ic_launcher_mowtube"
+            android:label="@string/mowtube_app_name"
+            android:theme="@style/MowtubeTheme"/>
+
+        <!-- Mow -->
         <activity
             android:name=".mow.MowActivity"
+            android:taskAffinity=".mow.MowActivity"
             android:icon="@mipmap/ic_launcher_mow"
             android:label="@string/mow_app_name"
             android:theme="@style/MowTheme"
-            android:windowSoftInputMode="stateAlwaysHidden">
+            android:windowSoftInputMode="stateAlwaysHidden"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,24 +65,7 @@
             android:icon="@mipmap/ic_launcher_mow"
             android:label="@string/edit_item_title"
             android:theme="@style/MowTheme"
-            android:windowSoftInputMode="stateAlwaysVisible"></activity>
-
-        <activity
-            android:name=".mowtube.MowtubeSplashActivity"
-            android:icon="@mipmap/ic_launcher_mowtube"
-            android:label="@string/mowtube_app_name"
-            android:theme="@style/SplashTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".mowtube.MowtubeActivity"
-            android:icon="@mipmap/ic_launcher_mowtube"
-            android:label="@string/mowtube_app_name"
-            android:theme="@style/MowtubeTheme"></activity>
+            android:windowSoftInputMode="stateAlwaysVisible"/>
     </application>
 
 </manifest>
