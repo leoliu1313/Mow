@@ -62,4 +62,4 @@ Describe any challenges encountered while building the app.
 - [Butterknife annotation library](http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife) to reduce boilerplate code.
 - [Diolor/Swipecards](https://github.com/Diolor/Swipecards) - SwipeFlingAdapterView is swipeable.
 - [google/gson](https://github.com/google/gson) - Gson fromJson() to Java class.
-- [square/retrofit](https://github.com/square/retrofit) - Gson fromJson() to Java class.
+- [square/retrofit](https://github.com/square/retrofit) - HTTP client with interface, functions, Call<> enqueue().

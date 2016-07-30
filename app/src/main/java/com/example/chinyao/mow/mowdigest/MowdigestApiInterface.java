@@ -11,6 +11,14 @@ import retrofit2.http.Query;
  * Created by chinyao on 7/30/2016.
  */
 public interface MowdigestApiInterface {
+    // OkHttp is better than android-async-http
+    // http://guides.codepath.com/android/Using-Android-Async-Http-Client
+    // http://guides.codepath.com/android/Using-OkHttp
+    // Gson fromJson() to Java class.
+    // http://guides.codepath.com/android/Leveraging-the-Gson-Library
+    // Retrofit is based on OkHttp
+    // http://guides.codepath.com/android/Consuming-APIs-with-Retrofit
+
     // GET Retrofit.Builder().baseUrl() + the following link filled with @Path + ?@Query=
     @GET(MowdigestFragment.MOST_POPULAR + "/{section}/{time_period}.json")
     Call<MowdigestArticleSearch> getSearch(@Path("section") String section,
