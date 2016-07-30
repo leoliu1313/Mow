@@ -19,6 +19,7 @@ public class MowdigestArticleSearch {
     }
 
     public static MowdigestArticleSearch parseJSON(String response) {
+        // LOWER_CASE_WITH_DASHES translate "_some-field-name" to "_someFieldName"
         GsonBuilder gsonBuilder = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES);
         // register type adapters here, specify field naming policy, etc.
         Gson gson = gsonBuilder.create();
