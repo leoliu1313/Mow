@@ -18,7 +18,7 @@ public interface MowdigestApiInterface {
     // http://guides.codepath.com/android/Leveraging-the-Gson-Library
     // Retrofit is based on OkHttp
     // http://guides.codepath.com/android/Consuming-APIs-with-Retrofit
-    // Debug network and database
+    // Debug network activity
     // http://guides.codepath.com/android/Debugging-with-Stetho
     // http://stackoverflow.com/questions/35444136/stetho-dont-see-network-calls-in-console
     // chrome://inspect/#devices

@@ -63,3 +63,4 @@ Describe any challenges encountered while building the app.
 - [Diolor/Swipecards](https://github.com/Diolor/Swipecards) - SwipeFlingAdapterView is swipeable.
 - [google/gson](https://github.com/google/gson) - Gson fromJson() to Java class.
 - [square/retrofit](https://github.com/square/retrofit) - HTTP client with interface, functions, Call<> enqueue().
+- [facebook/stetho](https://github.com/facebook/stetho) - Debug network activity.
