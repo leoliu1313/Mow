@@ -53,7 +53,7 @@ public class MowdigestFakeRecyclerAdapter
         ViewHolder output = null;
         View theView;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            theView = inflater.inflate(R.layout.mowdigest_fake_recycler_view, parent, false);
+            theView = inflater.inflate(R.layout.mowdigest_fake_recycler_item, parent, false);
         output = new ViewHolder(theView);
         return output;
     }
