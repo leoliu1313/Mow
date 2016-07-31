@@ -132,6 +132,7 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
+                newsDigest.clear();
                 refreshAsync();
             }
         });
