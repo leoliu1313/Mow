@@ -9,7 +9,9 @@ import android.view.ViewGroup;
 
 import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowdigest.MowdigestActivity;
+import com.example.chinyao.mow.mowdigest.MowdigestFragment;
 import com.example.chinyao.mow.mowdigest.model.MowdigestArticleSearch;
+import com.example.chinyao.mow.mowdigest.model.MowdigestNews;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -31,8 +33,10 @@ import cz.msebera.android.httpclient.Header;
 public class MowdigestFakeAdapter
         extends RecyclerView.Adapter<MowdigestFakeAdapter.ViewHolder> {
 
-    private List<String> mItems;
-    private Context mContext;
+    private List<String> items;
+    private Context context;
+    private List<MowdigestNews> newsDigest;
+    private MowdigestFragment fragment;
 
     private ArrayList<MowdigestSwipe> theSwipes;
     private MowdigestSwipeAdapter theSwipeAdapter;
@@ -40,7 +44,7 @@ public class MowdigestFakeAdapter
     private static final int HTTP_Mode = 2;
     // 1: android-async-http
     // 2: retrofit
-    private static final int MowdigestContentMode = 2;
+    private static final int SwipeContentMode = 2;
     // 1: debug
     // 2: nytimes api
     private static final String link1 = "https://s-media-cache-ak0.pinimg.com/236x/e7/7b/29/e77b294d3dc6245ab4b517142e1f63b0.jpg";
@@ -57,9 +61,14 @@ public class MowdigestFakeAdapter
         }
     }
 
-    public MowdigestFakeAdapter(Context context, List<String> items) {
-        mContext = context;
-        mItems = items;
+    public MowdigestFakeAdapter(Context theContext,
+                                List<String> theItems,
+                                List<MowdigestNews> theNewsDigest,
+                                MowdigestFragment theFragment) {
+        context = theContext;
+        items = theItems;
+        newsDigest = theNewsDigest;
+        fragment = theFragment;
     }
 
     @Override
@@ -77,16 +86,17 @@ public class MowdigestFakeAdapter
 
     @Override
     public int getItemCount() {
-        return mItems.size();
+        return items.size();
     }
 
     private void setupSwipe(final ViewHolder holder) {
         theSwipes = new ArrayList<>();
         // theSwipeAdapter = new MowdigestSwipeAdapter(al, getContext());
-        theSwipeAdapter = new MowdigestSwipeAdapter(theSwipes, mContext);
+        theSwipeAdapter = new MowdigestSwipeAdapter(theSwipes, context);
+        theSwipeAdapter.setOnAsyncFinishedListener(fragment);
         Log.d("MowdigestFakeAdapter", "theSwipes is ready");
 
-        if (MowdigestContentMode == 1) {
+        if (SwipeContentMode == 1) {
             theSwipes.add(new MowdigestSwipe(link1, "link1"));
             theSwipes.add(new MowdigestSwipe(link2, "link2"));
             theSwipes.add(new MowdigestSwipe(link1, "link1"));
@@ -95,7 +105,7 @@ public class MowdigestFakeAdapter
             theSwipes.add(new MowdigestSwipe(link2, "link2"));
             theSwipeAdapter.notifyDataSetChanged();
         }
-        else if (MowdigestContentMode == 2) {
+        else if (SwipeContentMode == 2) {
             if (HTTP_Mode == 1) {
                 AsyncHttpClient client = new AsyncHttpClient();
                 // Turn off Debug Log
@@ -132,12 +142,12 @@ public class MowdigestFakeAdapter
             @Override
             public void removeFirstObjectInAdapter() {
                 // nothing
-                Log.d("MowdigestFakeAdapter", "removeFirstObjectInAdapter");
+                // Log.d("MowdigestFakeAdapter", "removeFirstObjectInAdapter");
             }
 
             @Override
             public void onLeftCardExit(Object dataObject) {
-                // TODO
+                // TODO decrease the interest on the section
                 // fix bug: no need to reload cards
                 theSwipes.remove(0);
                 theSwipeAdapter.notifyDataSetChanged();
@@ -145,7 +155,9 @@ public class MowdigestFakeAdapter
 
             @Override
             public void onRightCardExit(Object dataObject) {
-                // TODO
+                // TODO increase the interest on the section
+                MowdigestNews theNews = theSwipes.get(0).getNews();
+                newsDigest.add(theNews);
                 // fix bug: no need to reload cards
                 theSwipes.remove(0);
                 theSwipeAdapter.notifyDataSetChanged();
@@ -153,11 +165,11 @@ public class MowdigestFakeAdapter
 
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
-                if (MowdigestContentMode == 1) {
+                if (SwipeContentMode == 1) {
                     theSwipes.add(new MowdigestSwipe(link3, "More"));
                     theSwipeAdapter.notifyDataSetChanged();
                 }
-                else if (MowdigestContentMode == 2) {
+                else if (SwipeContentMode == 2) {
                     theSwipeAdapter.loadMore();
                 }
             }
@@ -171,8 +183,18 @@ public class MowdigestFakeAdapter
                     // hide two background layouts
                     viewHolder.item_swipe_background.setAlpha(0);
                     // show right or left indicator
-                    viewHolder.item_swipe_right_indicator.setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
-                    viewHolder.item_swipe_left_indicator.setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+                    if (scrollProgressPercent < 0) {
+                        // like
+                        viewHolder.item_swipe_right_indicator.setAlpha(-scrollProgressPercent);
+                    }
+                    else if (scrollProgressPercent > 0) {
+                        // nope
+                        viewHolder.item_swipe_left_indicator.setAlpha(scrollProgressPercent);
+                    }
+                    else {
+                        viewHolder.item_swipe_right_indicator.setAlpha(0);
+                        viewHolder.item_swipe_left_indicator.setAlpha(0);
+                    }
                 }
             }
         });

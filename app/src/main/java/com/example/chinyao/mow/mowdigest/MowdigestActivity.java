@@ -10,10 +10,14 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.example.chinyao.mow.R;
+import com.example.chinyao.mow.mowdigest.model.MowdigestNews;
 import com.example.chinyao.mow.mowtube.MowtubeListFragment;
 import com.example.chinyao.mow.mowtube.MowtubeViewPagerAdapter;
 import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,6 +36,9 @@ public class MowdigestActivity extends AppCompatActivity {
     TabLayout tabLayout;
     @BindView(R.id.m_view_pager)
     ViewPager viewPager;
+
+    private List<MowdigestNews> newsDigest;
+    private MowdigestFragment newsDigestFragment;
 
     public static OkHttpClient TheOkHttpClient = null;
     public static MowdigestAPIInterface TheAPIInterface = null;
@@ -86,6 +93,8 @@ public class MowdigestActivity extends AppCompatActivity {
     }
 
     private void setupViewPager() {
+        newsDigest = new ArrayList<>();
+
         // 3 tabs so set it to 2
         viewPager.setOffscreenPageLimit(2);
 
@@ -93,8 +102,9 @@ public class MowdigestActivity extends AppCompatActivity {
         // people on stackoverflow said this is bad implementation
         // use getView() instead?
         MowtubeViewPagerAdapter mowtubeViewPagerAdapter = new MowtubeViewPagerAdapter(getSupportFragmentManager());
-        mowtubeViewPagerAdapter.addFragment(MowdigestFragment.newInstance(1), getString(R.string.training));
-        mowtubeViewPagerAdapter.addFragment(MowdigestFragment.newInstance(2), getString(R.string.digest));
+        mowtubeViewPagerAdapter.addFragment(MowdigestFragment.newInstance(1, newsDigest), getString(R.string.training));
+        newsDigestFragment = MowdigestFragment.newInstance(2, newsDigest);
+        mowtubeViewPagerAdapter.addFragment(newsDigestFragment, getString(R.string.digest));
         mowtubeViewPagerAdapter.addFragment(MowtubeListFragment.newInstance(3), getString(R.string.explore));
         viewPager.setAdapter(mowtubeViewPagerAdapter);
 
@@ -102,5 +112,28 @@ public class MowdigestActivity extends AppCompatActivity {
         // use         |     tab1    |     tab2    |
         // instead of  |  tab1  |  tab2  |         |
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrollStateChanged(int arg0) {
+                // TODO
+                if (arg0 == 1) {
+                    newsDigestFragment.loadNewsDigest();
+                }
+            }
+
+            @Override
+            public void onPageScrolled(int arg0, float arg1, int arg2) {
+                // TODO
+            }
+
+            @Override
+            public void onPageSelected(int pos) {
+                // TODO
+                if (pos == 1) {
+                    newsDigestFragment.loadNewsDigest();
+                }
+            }
+        });
     }
 }

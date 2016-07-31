@@ -13,6 +13,7 @@ public class MowdigestSwipe {
     private String abstractString;
     private String section;
     private String published_date;
+    private MowdigestNews news;
 
     public MowdigestSwipe(String image, String title) {
         this.image = image;
@@ -46,6 +47,11 @@ public class MowdigestSwipe {
         this.abstractString = theNews.getAbstractString();
         this.section = theNews.getSection();
         this.published_date = theNews.getPublished_date();
+        this.news = theNews;
+    }
+
+    public MowdigestNews getNews() {
+        return news;
     }
 
     public String getImage() {

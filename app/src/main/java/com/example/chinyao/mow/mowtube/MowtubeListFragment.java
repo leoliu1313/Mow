@@ -48,7 +48,7 @@ public class MowtubeListFragment extends Fragment {
     public static final int MaxPosterTitleLength = 35;
     public static final int MaxPosterSubLength = 120;
 
-    private Handler handler = null;
+    private Handler handler = null; // remember to new Handler(), onDestroy(), removeCallbacksAndMessages()
     private Runnable runnable = null;
     private int mode = 1;
     private SwipeRefreshLayout theSwipeRefreshLayout = null;
@@ -93,6 +93,8 @@ public class MowtubeListFragment extends Fragment {
         return theRootContainer;
     }
 
+    // pull-to-refresh
+    // http://guides.codepath.com/android/Implementing-Pull-to-Refresh-Guide
     private void setupSwipeRefreshLayout() {
         // Setup refresh listener which triggers new data loading
         theSwipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
@@ -242,7 +244,7 @@ public class MowtubeListFragment extends Fragment {
 
         // Since movie data is most likely the same,
         // simply do a fake refresh.
-        // TODO: implement real refresh for fetchTimelineAsync()
+        // TODO: implement real refresh for refreshAsync()
 
         if (runnable != null) {
             handler.removeCallbacks(runnable);
@@ -254,7 +256,7 @@ public class MowtubeListFragment extends Fragment {
                 theSwipeRefreshLayout.setRefreshing(false);
             }
         };
-        handler.postDelayed(runnable, 5000);
+        handler.postDelayed(runnable, 3000);
     }
 
     @Override

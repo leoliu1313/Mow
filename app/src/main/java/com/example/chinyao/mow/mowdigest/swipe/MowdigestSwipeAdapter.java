@@ -34,6 +34,7 @@ public class MowdigestSwipeAdapter extends BaseAdapter {
     private Context context;
     private int offset;
     private boolean lock;
+    private OnAsyncFinishedListener interfaceListenerEvent;
 
     private static int MaxTitleLength = 75;
     private static int MaxAbstractLength = 120;
@@ -137,6 +138,7 @@ public class MowdigestSwipeAdapter extends BaseAdapter {
     void loadMore() {
         if (!lock) {
             lock = true;
+            final int preOffset = offset;
             final Call<MowdigestArticleSearch> call =
                     MowdigestActivity.TheAPIInterface.getSearch("all-sections", "1", Integer.toString(offset), MowdigestActivity.MOST_POPULAR_API_KEY);
             offset += 20;
@@ -155,6 +157,7 @@ public class MowdigestSwipeAdapter extends BaseAdapter {
                         }
                         notifyDataSetChanged();
                         lock = false;
+                        interfaceListenerEvent.onAsyncFinished(preOffset);
                     }
                 }
 
@@ -162,8 +165,17 @@ public class MowdigestSwipeAdapter extends BaseAdapter {
                 public void onFailure(Call<MowdigestArticleSearch> call, Throwable t) {
                     Log.d("MowdigestSwipeAdapter", "onFailure");
                     lock = false;
+                    interfaceListenerEvent.onAsyncFinished(preOffset);
                 }
             });
         }
+    }
+
+    public void setOnAsyncFinishedListener(OnAsyncFinishedListener event) {
+        this.interfaceListenerEvent = event;
+    }
+
+    public interface OnAsyncFinishedListener {
+        void onAsyncFinished(int preOffset);
     }
 }

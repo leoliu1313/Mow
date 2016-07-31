@@ -1,6 +1,7 @@
 package com.example.chinyao.mow.mowdigest;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -14,9 +15,11 @@ import android.view.ViewGroup;
 import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowdigest.model.MowdigestNews;
 import com.example.chinyao.mow.mowdigest.swipe.MowdigestFakeAdapter;
+import com.example.chinyao.mow.mowdigest.swipe.MowdigestSwipeAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,18 +27,30 @@ import butterknife.ButterKnife;
 /**
  * Created by chinyao on 7/29/2016.
  */
-public class MowdigestFragment extends Fragment {
+public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter.OnAsyncFinishedListener {
     // ButterKnife
     // http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife
+    @BindView(R.id.mowtube_swipe_refresh_layout)
+    SwipeRefreshLayout theSwipeRefreshLayout;
     @BindView(R.id.mowtube_recycler_view)
     RecyclerView theRecyclerView;
 
     private int mode = 1;
+    private List<MowdigestNews> newsDigest = null;
+    private MowdigestRecyclerAdapter newsDigestAdapter = null;
+    private Handler handler = null;
+    private Runnable runnable = null; // remember to new Handler(), onDestroy(), removeCallbacksAndMessages()
 
-    public static MowdigestFragment newInstance(int mode) {
+    public static final int NewsContentMode = 2;
+    // 1: debug
+    // 2: nytimes api
+
+    public static MowdigestFragment newInstance(int mode, List<MowdigestNews> newsDigest) {
         MowdigestFragment theFragment = new MowdigestFragment();
 
         theFragment.mode = mode;
+        theFragment.newsDigest = newsDigest;
+        theFragment.handler = new Handler();
 
         return theFragment;
     }
@@ -51,6 +66,8 @@ public class MowdigestFragment extends Fragment {
         ButterKnife.bind(this, theRootContainer);
 
         setupRecyclerView(theRecyclerView);
+
+        setupSwipeRefreshLayout();
 
         // orientation issue
         // http://stackoverflow.com/questions/9727173/support-fragmentpageradapter-holds-reference-to-old-fragments
@@ -71,7 +88,9 @@ public class MowdigestFragment extends Fragment {
             recyclerView.setAdapter(
                     new MowdigestFakeAdapter(
                             getActivity(),
-                            new ArrayList<String>(Arrays.asList(""))
+                            new ArrayList<String>(Arrays.asList("")),
+                            newsDigest,
+                            this
                     )
             );
         }
@@ -79,13 +98,90 @@ public class MowdigestFragment extends Fragment {
             // TODO
             // recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-            recyclerView.setAdapter(
-                    new MowdigestRecyclerAdapter(
-                            getActivity(),
-                            MowdigestNews.debug(),
-                            recyclerView
-                    )
-            );
+            if (NewsContentMode == 1) {
+                recyclerView.setAdapter(
+                        new MowdigestRecyclerAdapter(
+                                getActivity(),
+                                MowdigestNews.debug(),
+                                recyclerView
+                        )
+                );
+            }
+            else if (NewsContentMode == 2) {
+                newsDigestAdapter = new MowdigestRecyclerAdapter(
+                        getActivity(),
+                        newsDigest,
+                        recyclerView
+                );
+                recyclerView.setAdapter(newsDigestAdapter);
+            }
+        }
+    }
+
+    void loadNewsDigest() {
+        newsDigestAdapter.notifyDataSetChanged();
+    }
+
+    // pull-to-refresh
+    // http://guides.codepath.com/android/Implementing-Pull-to-Refresh-Guide
+    private void setupSwipeRefreshLayout() {
+        // Setup refresh listener which triggers new data loading
+        theSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                refreshAsync();
+            }
+        });
+        // Configure the refreshing colors
+        theSwipeRefreshLayout.setColorSchemeResources(
+                R.color.mowtubeColorAccent,
+                R.color.mowtubeColorAccentLightLight
+        );
+    }
+
+    public void refreshAsync() {
+        // Send the network request to fetch the updated data
+        // `client` here is an instance of Android Async HTTP
+
+        // Since movie data is most likely the same,
+        // simply do a fake refresh.
+        // TODO: implement real refresh for refreshAsync()
+
+        setupRecyclerView(theRecyclerView);
+
+        if (runnable != null) {
+            handler.removeCallbacks(runnable);
+            runnable = null;
+        }
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                theSwipeRefreshLayout.setRefreshing(false);
+            }
+        };
+        handler.postDelayed(runnable, 3000);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // avoid memory leak
+        // https://techblog.badoo.com/blog/2014/08/28/android-handler-memory-leaks/
+        // http://stackoverflow.com/questions/8430805/clicking-the-back-button-twice-to-exit-an-activity
+        if (handler != null) {
+            // remove all the callbacks
+            handler.removeCallbacksAndMessages(null);
+        }
+    }
+
+    @Override
+    public void onAsyncFinished(int preOffset) {
+        if (preOffset == 0) {
+            theSwipeRefreshLayout.setRefreshing(false);
         }
     }
 }
