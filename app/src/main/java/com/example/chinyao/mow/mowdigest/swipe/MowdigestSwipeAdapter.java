@@ -79,6 +79,13 @@ public class MowdigestSwipeAdapter extends BaseAdapter {
         Glide.with(context)
                 .load(theSwipe.getImage())
                 .centerCrop()
+                /*
+                // TODO: cannot have beautiful top round corners
+                // import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+                .bitmapTransform(new RoundedCornersTransformation(
+                        context, 30, 10,
+                        RoundedCornersTransformation.CornerType.TOP))
+                */
                 .placeholder(R.drawable.mediumthreebytwo440)
                 .error(R.drawable.mediumthreebytwo440)
                 .into(viewHolder.item_swipe_image);
