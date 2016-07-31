@@ -139,7 +139,7 @@ public class MowdigestActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int arg0) {
                 // TODO
                 if (arg0 == 1) {
-                    newsDigestFragment.loadNewsDigest();
+                    newsDigestFragment.notifyNewsDigest();
                 }
             }
 
@@ -152,7 +152,7 @@ public class MowdigestActivity extends AppCompatActivity {
             public void onPageSelected(int pos) {
                 // TODO
                 if (pos == 1) {
-                    newsDigestFragment.loadNewsDigest();
+                    newsDigestFragment.notifyNewsDigest();
                 }
             }
         });
@@ -203,7 +203,7 @@ public class MowdigestActivity extends AppCompatActivity {
                             for (MowdigestSearchNews theNews : theSearch.getResponse().getDocs()) {
                                 newsDigest.add(MowdigestPopularNews.fromSearchNews(theNews));
                             }
-                            newsDigestFragment.loadNewsDigest();
+                            newsDigestFragment.notifyNewsDigest();
                             newsDigestFragment.theSwipeRefreshLayout.setRefreshing(false);
                             need_clear = true;
                             newsDigestFragment.query = query;

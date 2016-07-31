@@ -173,7 +173,7 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
                         for (MowdigestSearchNews theNews : theSearch.getResponse().getDocs()) {
                             newsDigest.add(MowdigestPopularNews.fromSearchNews(theNews));
                         }
-                        loadNewsDigest();
+                        notifyNewsDigest();
                         lock = false;
                     }
                 }
@@ -187,7 +187,7 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
         }
     }
 
-    void loadNewsDigest() {
+    void notifyNewsDigest() {
         newsDigestAdapter.notifyDataSetChanged();
     }
 
@@ -195,16 +195,27 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
     // http://guides.codepath.com/android/Implementing-Pull-to-Refresh-Guide
     private void setupSwipeRefreshLayout() {
         // Setup refresh listener which triggers new data loading
-        theSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                // Your code to refresh the list here.
-                // Make sure you call swipeContainer.setRefreshing(false)
-                // once the network request has completed successfully.
-                newsDigest.clear();
-                refreshAsync();
-            }
-        });
+        if (mode == 1) {
+            theSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    // Your code to refresh the list here.
+                    // Make sure you call swipeContainer.setRefreshing(false)
+                    // once the network request has completed successfully.
+                    newsDigest.clear(); // avoid crash here if mode == 2
+                    refreshAsync();
+                }
+            });
+        }
+        else if (mode == 2) {
+            theSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    // newsDigest.clear(); // avoid crash here if mode == 2
+                    refreshAsync();
+                }
+            });
+        }
         // Configure the refreshing colors
         theSwipeRefreshLayout.setColorSchemeResources(
                 R.color.mowtubeColorAccent,

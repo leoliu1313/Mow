@@ -44,10 +44,10 @@ public class MowdigestPopularNews {
     public static MowdigestPopularNews fromSearchNews(MowdigestSearchNews theSearchNews) {
         MowdigestPopularNews thePopularNews = new MowdigestPopularNews();
         thePopularNews.url = theSearchNews.getWeb_url();
-        thePopularNews.title = theSearchNews.getSnippet();
+        thePopularNews.title = theSearchNews.getHeadline().getMain();
         thePopularNews.section = theSearchNews.getSection_name();
         thePopularNews.published_date = theSearchNews.getPub_date().substring(0, 10);
-        thePopularNews.abstractString = "";
+        thePopularNews.abstractString = theSearchNews.getSnippet();
         thePopularNews.media = new ArrayList<>();
         MowdigestMedia theMedia = new MowdigestMedia();
         theMedia.mediaMetadata = theSearchNews.getMultimedia();

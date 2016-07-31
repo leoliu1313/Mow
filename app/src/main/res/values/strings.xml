@@ -4,7 +4,7 @@
     <string name="mowtube_app_name">MowTube</string>
     <string name="mowdigest_app_name">Mow Digest</string>
 
-    <string name="app_version">1607280605</string>
+    <string name="app_version">1607310849</string>
     <!--
     we need to update this when data model changes
     update this with

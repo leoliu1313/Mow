@@ -7,10 +7,10 @@ import java.util.List;
  */
 public class MowdigestSearchNews {
     String web_url;
-    String snippet; // title
+    MowdigestHeadline headline; // title
     String section_name;
     String pub_date;
-    /* no abstract */
+    String snippet; // abstract
     List<MowdigestImage> multimedia;
 
     public List<MowdigestImage> getMultimedia() {
@@ -27,6 +27,10 @@ public class MowdigestSearchNews {
 
     public String getSnippet() {
         return snippet;
+    }
+
+    public MowdigestHeadline getHeadline() {
+        return headline;
     }
 
     public String getWeb_url() {
