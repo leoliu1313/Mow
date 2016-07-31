@@ -3,6 +3,7 @@ package com.example.chinyao.mow.mowdigest;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,14 +29,12 @@ public class MowdigestRecyclerAdapter
 
     private Context context;
     private List<MowdigestPopularNews> newsDigest;
-    private RecyclerView recyclerView;
 
     public MowdigestRecyclerAdapter(Context theContext, List<MowdigestPopularNews> theNewsDigest, RecyclerView theRecyclerView) {
         // context.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
         // mBackground = mTypedValue.resourceId;
         context = theContext;
         newsDigest = theNewsDigest;
-        recyclerView = theRecyclerView;
     }
 
     public class ViewHolder
@@ -61,11 +60,9 @@ public class MowdigestRecyclerAdapter
 
     @Override
     public MowdigestRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewHolder output = null;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View theView = inflater.inflate(R.layout.mowdigest_card_view, parent, false);
-        output = new ViewHolder(theView);
-        return output;
+        return new ViewHolder(theView);
     }
 
     @Override
@@ -85,14 +82,6 @@ public class MowdigestRecyclerAdapter
             }
         }
         else if (MowdigestFragment.NewsContentMode == 2) {
-            StaggeredGridLayoutManager.LayoutParams layoutParams =
-                    (StaggeredGridLayoutManager.LayoutParams) holder.view.getLayoutParams();
-            if (position % 5 == 0) {
-                layoutParams.setFullSpan(true);
-            }
-            else {
-                layoutParams.setFullSpan(false);
-            }
             MowdigestPopularNews theNews = newsDigest.get(position);
             String image = null;
             boolean found_sfSpan = false;
@@ -121,6 +110,19 @@ public class MowdigestRecyclerAdapter
                     found = true;
                     // keep searching
                 }
+            }
+            StaggeredGridLayoutManager.LayoutParams layoutParams =
+                    (StaggeredGridLayoutManager.LayoutParams) holder.view.getLayoutParams();
+            if (image != null && position % 5 == 0) {
+                layoutParams.setFullSpan(true);
+                int dimensionInDp = (int) TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP, 200, context.getResources().getDisplayMetrics());
+                holder.card_image.getLayoutParams().height = dimensionInDp;
+                holder.card_image.getLayoutParams().width = dimensionInDp;
+                holder.card_image.requestLayout();
+            }
+            else {
+                layoutParams.setFullSpan(false);
             }
             if (image == null) {
                 holder.card_image.setVisibility(View.GONE);

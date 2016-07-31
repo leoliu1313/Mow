@@ -144,15 +144,10 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
     }
 
     public void refreshAsync() {
-        // Send the network request to fetch the updated data
-        // `client` here is an instance of Android Async HTTP
-
-        // Since movie data is most likely the same,
-        // simply do a fake refresh.
-        // TODO: implement real refresh for refreshAsync()
-
+        // this is real
         setupRecyclerView(theRecyclerView);
 
+        // this is fake
         if (runnable != null) {
             handler.removeCallbacks(runnable);
             runnable = null;

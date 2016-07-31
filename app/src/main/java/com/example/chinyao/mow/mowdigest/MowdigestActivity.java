@@ -164,6 +164,10 @@ public class MowdigestActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // perform query here
+                // viewPager.setCurrentItem(1);
+                viewPager.setCurrentItem(1, true);
+                newsDigestFragment.theSwipeRefreshLayout.setRefreshing(true);
+                newsDigest.clear();
                 final Call<MowdigestSearchResult> call =
                         MowdigestActivity.TheAPIInterface.search(
                                 query,
@@ -187,6 +191,8 @@ public class MowdigestActivity extends AppCompatActivity {
                             for (MowdigestSearchNews theNews : theSearch.getResponse().getDocs()) {
                                 newsDigest.add(MowdigestPopularNews.fromSearchNews(theNews));
                             }
+                            newsDigestFragment.loadNewsDigest();
+                            newsDigestFragment.theSwipeRefreshLayout.setRefreshing(false);
                         }
                     }
 
