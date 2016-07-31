@@ -14,8 +14,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowdigest.MowdigestActivity;
-import com.example.chinyao.mow.mowdigest.model.MowdigestArticleSearch;
-import com.example.chinyao.mow.mowdigest.model.MowdigestNews;
+import com.example.chinyao.mow.mowdigest.model.MowdigestPopularResult;
+import com.example.chinyao.mow.mowdigest.model.MowdigestPopularNews;
 
 import java.util.List;
 
@@ -139,20 +139,24 @@ public class MowdigestSwipeAdapter extends BaseAdapter {
         if (!lock) {
             lock = true;
             final int preOffset = offset;
-            final Call<MowdigestArticleSearch> call =
-                    MowdigestActivity.TheAPIInterface.getSearch("all-sections", "1", Integer.toString(offset), MowdigestActivity.MOST_POPULAR_API_KEY);
+            final Call<MowdigestPopularResult> call =
+                    MowdigestActivity.TheAPIInterface.getPopular(
+                            "all-sections",
+                            "1",
+                            Integer.toString(offset),
+                            MowdigestActivity.API_KEY);
             offset += 20;
-            call.enqueue(new Callback<MowdigestArticleSearch>() {
+            call.enqueue(new Callback<MowdigestPopularResult>() {
                 @Override
-                public void onResponse(Call<MowdigestArticleSearch> call, Response<MowdigestArticleSearch> response) {
+                public void onResponse(Call<MowdigestPopularResult> call, Response<MowdigestPopularResult> response) {
                     Log.d("MowdigestSwipeAdapter", "onResponse");
                     Log.d("MowdigestSwipeAdapter",
                             "statusCode " + response.code());
-                    MowdigestArticleSearch theSearch = response.body();
+                    MowdigestPopularResult theSearch = response.body();
                     if (theSearch != null) {
                         Log.d("MowdigestSwipeAdapter",
                                 "theSearch.getResults().size() " + theSearch.getResults().size());
-                        for (MowdigestNews theNews : theSearch.getResults()) {
+                        for (MowdigestPopularNews theNews : theSearch.getResults()) {
                             theSwipes.add(new MowdigestSwipe(theNews));
                         }
                         notifyDataSetChanged();
@@ -162,7 +166,7 @@ public class MowdigestSwipeAdapter extends BaseAdapter {
                 }
 
                 @Override
-                public void onFailure(Call<MowdigestArticleSearch> call, Throwable t) {
+                public void onFailure(Call<MowdigestPopularResult> call, Throwable t) {
                     Log.d("MowdigestSwipeAdapter", "onFailure");
                     lock = false;
                     interfaceListenerEvent.onAsyncFinished(preOffset);

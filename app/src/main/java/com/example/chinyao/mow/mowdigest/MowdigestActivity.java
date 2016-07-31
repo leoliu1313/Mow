@@ -9,13 +9,16 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.chinyao.mow.R;
-import com.example.chinyao.mow.mowdigest.model.MowdigestNews;
+import com.example.chinyao.mow.mowdigest.model.MowdigestPopularNews;
+import com.example.chinyao.mow.mowdigest.model.MowdigestSearchNews;
+import com.example.chinyao.mow.mowdigest.model.MowdigestSearchResult;
 import com.example.chinyao.mow.mowtube.MowtubeListFragment;
 import com.example.chinyao.mow.mowtube.MowtubeViewPagerAdapter;
 import com.facebook.stetho.Stetho;
@@ -27,6 +30,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -42,15 +48,16 @@ public class MowdigestActivity extends AppCompatActivity {
     @BindView(R.id.m_view_pager)
     ViewPager viewPager;
 
-    private List<MowdigestNews> newsDigest;
+    private List<MowdigestPopularNews> newsDigest;
     private MowdigestFragment newsDigestFragment;
 
     public static OkHttpClient TheOkHttpClient = null;
     public static MowdigestAPIInterface TheAPIInterface = null;
 
+    public static final String API_KEY = "fb2092b45dc44c299ecf5098b9b1209d";
     public static final String BASE_URL = "http://api.nytimes.com";
     public static final String MOST_POPULAR = "/svc/mostpopular/v2/mostviewed"; /* /all-sections/1.json */
-    public static final String MOST_POPULAR_API_KEY = "fb2092b45dc44c299ecf5098b9b1209d";
+    public static final String ARTICALE_SEARCH = "/svc/search/v2/articlesearch.json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,6 +164,37 @@ public class MowdigestActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // perform query here
+                final Call<MowdigestSearchResult> call =
+                        MowdigestActivity.TheAPIInterface.search(
+                                query,
+                                null,
+                                "newest",
+                                null,
+                                null,
+                                API_KEY);
+                call.enqueue(new Callback<MowdigestSearchResult>() {
+                    @Override
+                    public void onResponse(Call<MowdigestSearchResult> call, Response<MowdigestSearchResult> response) {
+                        Log.d("MowdigestActivity", "onResponse");
+                        Log.d("MowdigestActivity",
+                                "statusCode " + response.code());
+                        MowdigestSearchResult theSearch = response.body();
+                        if (theSearch != null
+                                && theSearch.getResponse() != null
+                                && theSearch.getResponse().getDocs() != null) {
+                            Log.d("MowdigestActivity",
+                                    "theSearch.getResponse().getDocs().size() " + theSearch.getResponse().getDocs().size());
+                            for (MowdigestSearchNews theNews : theSearch.getResponse().getDocs()) {
+                                newsDigest.add(MowdigestPopularNews.fromSearchNews(theNews));
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<MowdigestSearchResult> call, Throwable t) {
+                        Log.d("MowdigestSwipeAdapter", "onFailure");
+                    }
+                });
 
                 // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
                 // see https://code.google.com/p/android/issues/detail?id=24599

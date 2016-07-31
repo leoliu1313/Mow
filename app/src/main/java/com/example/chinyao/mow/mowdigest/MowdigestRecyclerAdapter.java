@@ -2,6 +2,7 @@ package com.example.chinyao.mow.mowdigest;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowdigest.model.MowdigestImage;
-import com.example.chinyao.mow.mowdigest.model.MowdigestNews;
+import com.example.chinyao.mow.mowdigest.model.MowdigestPopularNews;
 
 import java.util.List;
 
@@ -26,10 +27,10 @@ public class MowdigestRecyclerAdapter
         extends RecyclerView.Adapter<MowdigestRecyclerAdapter.ViewHolder> {
 
     private Context context;
-    private List<MowdigestNews> newsDigest;
+    private List<MowdigestPopularNews> newsDigest;
     private RecyclerView recyclerView;
 
-    public MowdigestRecyclerAdapter(Context theContext, List<MowdigestNews> theNewsDigest, RecyclerView theRecyclerView) {
+    public MowdigestRecyclerAdapter(Context theContext, List<MowdigestPopularNews> theNewsDigest, RecyclerView theRecyclerView) {
         // context.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
         // mBackground = mTypedValue.resourceId;
         context = theContext;
@@ -84,35 +85,56 @@ public class MowdigestRecyclerAdapter
             }
         }
         else if (MowdigestFragment.NewsContentMode == 2) {
-            MowdigestNews theNews = newsDigest.get(position);
-            // TODO: default image
-            String image = "";
+            StaggeredGridLayoutManager.LayoutParams layoutParams =
+                    (StaggeredGridLayoutManager.LayoutParams) holder.view.getLayoutParams();
+            if (position % 5 == 0) {
+                layoutParams.setFullSpan(true);
+            }
+            else {
+                layoutParams.setFullSpan(false);
+            }
+            MowdigestPopularNews theNews = newsDigest.get(position);
+            String image = null;
+            boolean found_sfSpan = false;
             boolean found = false;
             for (MowdigestImage theImage : theNews.getMedia().get(0).getMediaMetadata()) {
                 // also change Glide placeholder() and error() in MowdigestSwipeAdapter.java
-                // square320
-                // mediumThreeByTwo440
-                if (theImage.getFormat().equals("mediumThreeByTwo440")) {
+                // square: square320
+                // not square: mediumThreeByTwo440 sfSpan
+                if (theImage.getFormat() != null
+                        && theImage.getFormat().equals("mediumThreeByTwo440")) {
                     image = theImage.getUrl();
                     break;
+                    // stop searching
+                    // this size is ideal
                 }
                 // in case the above is not there
-                if (!found && theImage.getFormat().equals("sfSpan")) {
+                if (!found_sfSpan
+                        && theImage.getFormat() != null
+                        && theImage.getFormat().equals("sfSpan")) {
                     image = theImage.getUrl();
-                    found = true;
+                    found_sfSpan = true;
                     // keep searching
                 }
                 if (!found) {
                     image = theImage.getUrl();
+                    found = true;
                     // keep searching
                 }
             }
-            Glide.with(context)
-                    .load(image)
-                    .centerCrop()
-                    .placeholder(R.drawable.mediumthreebytwo440)
-                    .error(R.drawable.mediumthreebytwo440)
-                    .into(holder.card_image);
+            if (image == null) {
+                holder.card_image.setVisibility(View.GONE);
+            }
+            else {
+                holder.card_image.setVisibility(View.INVISIBLE);
+                Glide.with(context)
+                        .load(image)
+                        .centerCrop()
+                        .placeholder(R.drawable.mediumthreebytwo440)
+                        .error(R.drawable.mediumthreebytwo440)
+                        .into(holder.card_image);
+                holder.card_image.setVisibility(View.VISIBLE);
+            }
             holder.card_title.setText(theNews.getTitle());
             holder.card_section.setText(theNews.getSection());
             holder.card_published_date.setText(theNews.getPublished_date());

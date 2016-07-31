@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.chinyao.mow.R;
-import com.example.chinyao.mow.mowdigest.model.MowdigestNews;
+import com.example.chinyao.mow.mowdigest.model.MowdigestPopularNews;
 import com.example.chinyao.mow.mowdigest.swipe.MowdigestFakeAdapter;
 import com.example.chinyao.mow.mowdigest.swipe.MowdigestSwipeAdapter;
 
@@ -36,7 +36,7 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
     RecyclerView theRecyclerView;
 
     private int mode = 1;
-    private List<MowdigestNews> newsDigest = null;
+    private List<MowdigestPopularNews> newsDigest = null;
     private MowdigestRecyclerAdapter newsDigestAdapter = null;
     private Handler handler = null;
     private Runnable runnable = null; // remember to new Handler(), onDestroy(), removeCallbacksAndMessages()
@@ -45,7 +45,7 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
     // 1: debug
     // 2: nytimes api
 
-    public static MowdigestFragment newInstance(int mode, List<MowdigestNews> newsDigest) {
+    public static MowdigestFragment newInstance(int mode, List<MowdigestPopularNews> newsDigest) {
         MowdigestFragment theFragment = new MowdigestFragment();
 
         theFragment.mode = mode;
@@ -102,7 +102,7 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
                 recyclerView.setAdapter(
                         new MowdigestRecyclerAdapter(
                                 getActivity(),
-                                MowdigestNews.debug(),
+                                MowdigestPopularNews.debug(),
                                 recyclerView
                         )
                 );

@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowdigest.MowdigestActivity;
 import com.example.chinyao.mow.mowdigest.MowdigestFragment;
-import com.example.chinyao.mow.mowdigest.model.MowdigestArticleSearch;
-import com.example.chinyao.mow.mowdigest.model.MowdigestNews;
+import com.example.chinyao.mow.mowdigest.model.MowdigestPopularResult;
+import com.example.chinyao.mow.mowdigest.model.MowdigestPopularNews;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -35,7 +35,7 @@ public class MowdigestFakeAdapter
 
     private List<String> items;
     private Context context;
-    private List<MowdigestNews> newsDigest;
+    private List<MowdigestPopularNews> newsDigest;
     private MowdigestFragment fragment;
 
     private ArrayList<MowdigestSwipe> theSwipes;
@@ -63,7 +63,7 @@ public class MowdigestFakeAdapter
 
     public MowdigestFakeAdapter(Context theContext,
                                 List<String> theItems,
-                                List<MowdigestNews> theNewsDigest,
+                                List<MowdigestPopularNews> theNewsDigest,
                                 MowdigestFragment theFragment) {
         context = theContext;
         items = theItems;
@@ -112,7 +112,7 @@ public class MowdigestFakeAdapter
                 // client.setLoggingEnabled(false);
                 String url = MowdigestActivity.BASE_URL + MowdigestActivity.MOST_POPULAR + "/all-sections/1.json";
                 RequestParams params = new RequestParams();
-                params.put("api-key", MowdigestActivity.MOST_POPULAR_API_KEY);
+                params.put("api-key", MowdigestActivity.API_KEY);
                 Log.d("MowdigestFragment", "url " + url);
                 client.get(url, params, new JsonHttpResponseHandler() {
                             @Override
@@ -120,7 +120,7 @@ public class MowdigestFakeAdapter
                                 Log.d("MowdigestFragment", "onSuccess HTTP_Mode " + HTTP_Mode);
                                 Log.d("MowdigestFragment",
                                         "statusCode " + statusCode);
-                                MowdigestArticleSearch theSearch = MowdigestArticleSearch.parseJSON(response.toString());
+                                MowdigestPopularResult theSearch = MowdigestPopularResult.parseJSON(response.toString());
                                 Log.d("MowdigestFragment",
                                         "theSearch.getResults().size() " + theSearch.getResults().size());
                             }
@@ -156,7 +156,7 @@ public class MowdigestFakeAdapter
             @Override
             public void onRightCardExit(Object dataObject) {
                 // TODO increase the interest on the section
-                MowdigestNews theNews = theSwipes.get(0).getNews();
+                MowdigestPopularNews theNews = theSwipes.get(0).getNews();
                 newsDigest.add(theNews);
                 // fix bug: no need to reload cards
                 theSwipes.remove(0);

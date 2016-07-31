@@ -1,7 +1,7 @@
 package com.example.chinyao.mow.mowdigest.swipe;
 
 import com.example.chinyao.mow.mowdigest.model.MowdigestImage;
-import com.example.chinyao.mow.mowdigest.model.MowdigestNews;
+import com.example.chinyao.mow.mowdigest.model.MowdigestPopularNews;
 
 /**
  * Created by chinyao on 7/29/2016.
@@ -13,14 +13,14 @@ public class MowdigestSwipe {
     private String abstractString;
     private String section;
     private String published_date;
-    private MowdigestNews news;
+    private MowdigestPopularNews news;
 
     public MowdigestSwipe(String image, String title) {
         this.image = image;
         this.title = title;
     }
 
-    public MowdigestSwipe(MowdigestNews theNews) {
+    public MowdigestSwipe(MowdigestPopularNews theNews) {
         // TODO: default image
         this.image = "";
         boolean found = false;
@@ -50,7 +50,7 @@ public class MowdigestSwipe {
         this.news = theNews;
     }
 
-    public MowdigestNews getNews() {
+    public MowdigestPopularNews getNews() {
         return news;
     }
 
