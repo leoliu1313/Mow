@@ -5,7 +5,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -74,14 +73,6 @@ public class MowdigestActivity extends AppCompatActivity {
         setupNetwork();
 
         setSupportActionBar(toolbar);
-
-        ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-            // up right menu button
-            ab.setHomeAsUpIndicator(R.drawable.ic_menu);
-            // up left drawer button
-            // ab.setDisplayHomeAsUpEnabled(true);
-        }
 
         setupViewPager();
 
@@ -166,8 +157,26 @@ public class MowdigestActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.mowdigest_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
+        final MenuItem searchItem2 = menu.findItem(R.id.action_filter);
+        searchItem2.setVisible(false);
         newsTrainingFragment.searchItem = searchItem;
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
+        // http://stackoverflow.com/questions/9327826/searchviews-oncloselistener-doesnt-work
+        MenuItemCompat.setOnActionExpandListener(searchItem,
+                new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                searchItem2.setVisible(true);
+                return true; // true to expand
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                searchItem2.setVisible(false);
+                return true; // true to collapse
+            }
+        });
 
         // Now we need to hook up a listener for when a search is performed:
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
