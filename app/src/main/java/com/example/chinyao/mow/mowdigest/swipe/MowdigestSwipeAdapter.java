@@ -2,6 +2,7 @@ package com.example.chinyao.mow.mowdigest.swipe;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +13,17 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.chinyao.mow.R;
+import com.example.chinyao.mow.mowdigest.MowdigestActivity;
+import com.example.chinyao.mow.mowdigest.model.MowdigestArticleSearch;
+import com.example.chinyao.mow.mowdigest.model.MowdigestNews;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by chinyao on 7/29/2016.
@@ -25,6 +32,8 @@ public class MowdigestSwipeAdapter extends BaseAdapter {
 
     private List<MowdigestSwipe> theSwipes;
     private Context context;
+    private int offset;
+    private boolean lock;
 
     private static int MaxTitleLength = 75;
     private static int MaxAbstractLength = 120;
@@ -32,6 +41,8 @@ public class MowdigestSwipeAdapter extends BaseAdapter {
     public MowdigestSwipeAdapter(List<MowdigestSwipe> swipes, Context context) {
         this.theSwipes = swipes;
         this.context = context;
+        this.offset = 0;
+        this.lock = false;
     }
 
     @Override
@@ -113,6 +124,39 @@ public class MowdigestSwipeAdapter extends BaseAdapter {
 
             // ButterKnife
             ButterKnife.bind(this, view);
+        }
+    }
+
+    void loadMore() {
+        if (!lock) {
+            lock = true;
+            final Call<MowdigestArticleSearch> call =
+                    MowdigestActivity.TheAPIInterface.getSearch("all-sections", "1", Integer.toString(offset), MowdigestActivity.MOST_POPULAR_API_KEY);
+            offset += 20;
+            call.enqueue(new Callback<MowdigestArticleSearch>() {
+                @Override
+                public void onResponse(Call<MowdigestArticleSearch> call, Response<MowdigestArticleSearch> response) {
+                    Log.d("MowdigestSwipeAdapter", "onResponse");
+                    Log.d("MowdigestSwipeAdapter",
+                            "statusCode " + response.code());
+                    MowdigestArticleSearch theSearch = response.body();
+                    if (theSearch != null) {
+                        Log.d("MowdigestSwipeAdapter",
+                                "theSearch.getResults().size() " + theSearch.getResults().size());
+                        for (MowdigestNews theNews : theSearch.getResults()) {
+                            theSwipes.add(new MowdigestSwipe(theNews));
+                        }
+                        notifyDataSetChanged();
+                        lock = false;
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<MowdigestArticleSearch> call, Throwable t) {
+                    Log.d("MowdigestSwipeAdapter", "onFailure");
+                    lock = false;
+                }
+            });
         }
     }
 }

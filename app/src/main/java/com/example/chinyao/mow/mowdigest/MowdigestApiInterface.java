@@ -26,7 +26,7 @@ public interface MowdigestAPIInterface {
     // GET Retrofit.Builder().baseUrl() + the following link filled with @Path + ?@Query=
     // time_period from 1 to unknown
     // offset from 0, 20, 40...
-    @GET(MowdigestFragment.MOST_POPULAR + "/{section}/{time_period}.json")
+    @GET(MowdigestActivity.MOST_POPULAR + "/{section}/{time_period}.json")
     Call<MowdigestArticleSearch> getSearch(@Path("section") String section,
                                            @Path("time_period") String time_period,
                                            @Query("offset") String offset,

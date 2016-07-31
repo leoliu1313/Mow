@@ -18,6 +18,8 @@ import com.facebook.stetho.okhttp3.StethoInterceptor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MowdigestActivity extends AppCompatActivity {
     // ButterKnife
@@ -31,7 +33,12 @@ public class MowdigestActivity extends AppCompatActivity {
     @BindView(R.id.m_view_pager)
     ViewPager viewPager;
 
-    public static OkHttpClient okClient = null;
+    public static OkHttpClient TheOkHttpClient = null;
+    public static MowdigestAPIInterface TheAPIInterface = null;
+
+    public static final String BASE_URL = "http://api.nytimes.com";
+    public static final String MOST_POPULAR = "/svc/mostpopular/v2/mostviewed"; /* /all-sections/1.json */
+    public static final String MOST_POPULAR_API_KEY = "fb2092b45dc44c299ecf5098b9b1209d";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,13 +48,7 @@ public class MowdigestActivity extends AppCompatActivity {
         // ButterKnife
         ButterKnife.bind(this);
 
-        // chrome://inspect/#devices
-        Stetho.initializeWithDefaults(this);
-        // add a Facebook StethoInterceptor to the OkHttpClient's list of network interceptors
-        okClient = new OkHttpClient.Builder()
-                .addNetworkInterceptor(new StethoInterceptor())
-                .build();
-        // set up a breakpoint below for early network calls
+        setupNetwork();
 
         setSupportActionBar(toolbar);
 
@@ -65,6 +66,23 @@ public class MowdigestActivity extends AppCompatActivity {
                 getResources().getString(R.string.app_version),
                 Toast.LENGTH_SHORT)
                 .show();
+    }
+
+    private void setupNetwork() {
+        // chrome://inspect/#devices
+        Stetho.initializeWithDefaults(this);
+        // add a Facebook StethoInterceptor to the OkHttpClient's list of network interceptors
+        TheOkHttpClient = new OkHttpClient.Builder()
+                .addNetworkInterceptor(new StethoInterceptor())
+                .build();
+        // set up a breakpoint below for early network calls
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .client(MowdigestActivity.TheOkHttpClient)
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        TheAPIInterface = retrofit.create(MowdigestAPIInterface.class);
     }
 
     private void setupViewPager() {

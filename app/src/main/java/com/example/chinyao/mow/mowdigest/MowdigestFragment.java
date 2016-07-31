@@ -32,10 +32,6 @@ public class MowdigestFragment extends Fragment {
 
     private int mode = 1;
 
-    public static final String BASE_URL = "http://api.nytimes.com";
-    public static final String MOST_POPULAR = "/svc/mostpopular/v2/mostviewed"; /* /all-sections/1.json */
-    public static final String MOST_POPULAR_API_KEY = "fb2092b45dc44c299ecf5098b9b1209d";
-
     public static MowdigestFragment newInstance(int mode) {
         MowdigestFragment theFragment = new MowdigestFragment();
 

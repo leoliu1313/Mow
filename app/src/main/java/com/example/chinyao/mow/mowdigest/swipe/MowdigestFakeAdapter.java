@@ -9,10 +9,7 @@ import android.view.ViewGroup;
 
 import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowdigest.MowdigestActivity;
-import com.example.chinyao.mow.mowdigest.MowdigestAPIInterface;
-import com.example.chinyao.mow.mowdigest.MowdigestFragment;
 import com.example.chinyao.mow.mowdigest.model.MowdigestArticleSearch;
-import com.example.chinyao.mow.mowdigest.model.MowdigestNews;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -24,11 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by chinyao on 7/23/2016.
@@ -44,7 +36,6 @@ public class MowdigestFakeAdapter
 
     private ArrayList<MowdigestSwipe> theSwipes;
     private MowdigestSwipeAdapter theSwipeAdapter;
-    private MowdigestAPIInterface apiService;
 
     private static final int HTTP_Mode = 2;
     // 1: android-async-http
@@ -109,9 +100,9 @@ public class MowdigestFakeAdapter
                 AsyncHttpClient client = new AsyncHttpClient();
                 // Turn off Debug Log
                 // client.setLoggingEnabled(false);
-                String url = MowdigestFragment.BASE_URL + MowdigestFragment.MOST_POPULAR + "/all-sections/1.json";
+                String url = MowdigestActivity.BASE_URL + MowdigestActivity.MOST_POPULAR + "/all-sections/1.json";
                 RequestParams params = new RequestParams();
-                params.put("api-key", MowdigestFragment.MOST_POPULAR_API_KEY);
+                params.put("api-key", MowdigestActivity.MOST_POPULAR_API_KEY);
                 Log.d("MowdigestFragment", "url " + url);
                 client.get(url, params, new JsonHttpResponseHandler() {
                             @Override
@@ -133,33 +124,7 @@ public class MowdigestFakeAdapter
                 );
             }
             else if (HTTP_Mode == 2) {
-                Retrofit retrofit = new Retrofit.Builder()
-                        .client(MowdigestActivity.okClient)
-                        .baseUrl(MowdigestFragment.BASE_URL)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-                apiService = retrofit.create(MowdigestAPIInterface.class);
-                final Call<MowdigestArticleSearch> call = apiService.getSearch("all-sections", "1", "0", MowdigestFragment.MOST_POPULAR_API_KEY);
-                call.enqueue(new Callback<MowdigestArticleSearch>() {
-                    @Override
-                    public void onResponse(Call<MowdigestArticleSearch> call, Response<MowdigestArticleSearch> response) {
-                        Log.d("MowdigestFragment", "onResponse HTTP_Mode " + HTTP_Mode);
-                        Log.d("MowdigestFragment",
-                                "statusCode " + response.code());
-                        MowdigestArticleSearch theSearch = response.body();
-                        Log.d("MowdigestFragment",
-                                "theSearch.getResults().size() " + theSearch.getResults().size());
-                        for (MowdigestNews theNews : theSearch.getResults()) {
-                            theSwipes.add(new MowdigestSwipe(theNews));
-                        }
-                        theSwipeAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onFailure(Call<MowdigestArticleSearch> call, Throwable t) {
-                        Log.d("MowdigestFragment", "HTTP_Mode " + HTTP_Mode);
-                    }
-                });
+                theSwipeAdapter.loadMore();
             }
         }
 
@@ -192,7 +157,9 @@ public class MowdigestFakeAdapter
                     theSwipes.add(new MowdigestSwipe(link3, "More"));
                     theSwipeAdapter.notifyDataSetChanged();
                 }
-                // TODO: fetch
+                else if (MowdigestContentMode == 2) {
+                    theSwipeAdapter.loadMore();
+                }
             }
 
             @Override

@@ -22,6 +22,7 @@ public class MowdigestSwipe {
     public MowdigestSwipe(MowdigestNews theNews) {
         // TODO: default image
         this.image = "";
+        boolean found = false;
         for (MowdigestImage theImage : theNews.getMedia().get(0).getMediaMetadata()) {
             // also change Glide placeholder() and error() in MowdigestSwipeAdapter.java
             // square320
@@ -29,6 +30,16 @@ public class MowdigestSwipe {
             if (theImage.getFormat().equals("mediumThreeByTwo440")) {
                 this.image = theImage.getUrl();
                 break;
+            }
+            // in case the above is not there
+            if (!found && theImage.getFormat().equals("sfSpan")) {
+                this.image = theImage.getUrl();
+                found = true;
+                // keep searching
+            }
+            if (!found) {
+                this.image = theImage.getUrl();
+                // keep searching
             }
         }
         this.title = theNews.getTitle();
