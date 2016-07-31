@@ -85,4 +85,12 @@
     <string name="training">Training</string>
     <string name="digest">Digest</string>
     <string name="explore">Explore</string>
+    <string name="signalStrength">Signal strength</string>
+    <string name="excellent">Excellent</string>
+    <string name="ssid">SSID</string>
+    <string name="ssidLit">Material Dialogs</string>
+    <string name="security">Security</string>
+    <string name="securityType">802.1x EAP</string>
+    <string name="password">Password</string>
+    <string name="showPassword">Show password</string>
 </resources>

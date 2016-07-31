@@ -5,4 +5,8 @@
         <item>Mid Priority</item>
         <item>Low Priority</item>
     </string-array>
+    <string-array name="sort">
+        <item>Sort by Newest First</item>
+        <item>Sort by Oldest First</item>
+    </string-array>
 </resources>

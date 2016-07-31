@@ -1,6 +1,7 @@
 package com.example.chinyao.mow.mowdigest;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.MenuItemCompat;
@@ -8,12 +9,25 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.borax12.materialdaterangepicker.date.DatePickerDialog;
 import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowdigest.model.MowdigestPopularNews;
 import com.example.chinyao.mow.mowdigest.model.MowdigestSearchNews;
@@ -24,6 +38,7 @@ import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -35,7 +50,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MowdigestActivity extends AppCompatActivity {
+public class MowdigestActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
     // ButterKnife
     // http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife
     @BindView(R.id.m_app_bar_layout)
@@ -50,6 +65,12 @@ public class MowdigestActivity extends AppCompatActivity {
     private List<MowdigestPopularNews> newsDigest;
     private MowdigestFragment newsTrainingFragment;
     private MowdigestFragment newsDigestFragment;
+    private int preselectedIndex = 0;
+    private EditText passwordInput;
+    private View positiveAction;
+    Spinner spinner;
+    Button theButton;
+    CheckBox checkbox;
 
     public static OkHttpClient TheOkHttpClient = null;
     public static MowdigestAPIInterface TheAPIInterface = null;
@@ -156,29 +177,15 @@ public class MowdigestActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.mowdigest_menu, menu);
+
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        final MenuItem searchItem2 = menu.findItem(R.id.action_filter);
-        searchItem2.setVisible(false);
         newsTrainingFragment.searchItem = searchItem;
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
-        // http://stackoverflow.com/questions/9327826/searchviews-oncloselistener-doesnt-work
-        MenuItemCompat.setOnActionExpandListener(searchItem,
-                new MenuItemCompat.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                searchItem2.setVisible(true);
-                return true; // true to expand
-            }
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                searchItem2.setVisible(false);
-                return true; // true to collapse
-            }
-        });
+        final MenuItem filterItem = menu.findItem(R.id.action_filter);
+        filterItem.setVisible(false);
 
         // Now we need to hook up a listener for when a search is performed:
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(final String query) {
@@ -240,9 +247,155 @@ public class MowdigestActivity extends AppCompatActivity {
         });
 
         // Expand the search view and request focus on the start up or anytime
-        // searchItem.expandActionView();
-        // searchView.requestFocus();
+        /*
+        searchItem.expandActionView();
+        searchView.requestFocus();
+        */
+
+        // http://stackoverflow.com/questions/9327826/searchviews-oncloselistener-doesnt-work
+        MenuItemCompat.setOnActionExpandListener(
+                searchItem,
+                new MenuItemCompat.OnActionExpandListener() {
+                    @Override
+                    public boolean onMenuItemActionExpand(MenuItem item) {
+                        filterItem.setVisible(true);
+                        return true; // true to expand
+                    }
+
+                    @Override
+                    public boolean onMenuItemActionCollapse(MenuItem item) {
+                        filterItem.setVisible(false);
+                        return true; // true to collapse
+                    }
+                }
+        );
+
+        filterItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                showMaterialDialog();
+                Toast.makeText(getApplicationContext(),
+                        getResources().getString(R.string.app_version),
+                        Toast.LENGTH_SHORT)
+                        .show();
+                return false;
+            }
+        });
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    void showMaterialDialog() {
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
+                .title("Filter")
+                .customView(R.layout.mowdigest_filter, true)
+                .positiveText(getString(R.string.save_button))
+                .negativeText(android.R.string.cancel)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        String value = spinner.getSelectedItem().toString();
+                        Toast.makeText(getApplicationContext(),
+                                "Password: " + passwordInput.getText().toString() +
+                                "spinner: " + value,
+                                Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                }).build();
+        positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
+        View view = dialog.getCustomView();
+
+        if (view != null) {
+            theButton = (Button) view.findViewById(R.id.button);
+            spinner = (Spinner) view.findViewById(R.id.mySpinner);
+            passwordInput = (EditText) dialog.getCustomView().findViewById(R.id.password);
+            checkbox = (CheckBox) dialog.getCustomView().findViewById(R.id.showPassword);
+        }
+
+        theButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar now = Calendar.getInstance();
+                DatePickerDialog dpd =
+                        com.borax12.materialdaterangepicker.date.DatePickerDialog.newInstance(
+                        MowdigestActivity.this,
+                        now.get(Calendar.YEAR),
+                        now.get(Calendar.MONTH),
+                        now.get(Calendar.DAY_OF_MONTH)
+                );
+                dpd.show(getFragmentManager(), "Datepickerdialog");
+            }
+        });
+
+        //noinspection ConstantConditions
+        passwordInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                positiveAction.setEnabled(s.toString().trim().length() > 0);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        // Toggling the show password CheckBox will mask or unmask the password input EditText
+        checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                passwordInput.setInputType(!isChecked ? InputType.TYPE_TEXT_VARIATION_PASSWORD : InputType.TYPE_CLASS_TEXT);
+                passwordInput.setTransformationMethod(!isChecked ? PasswordTransformationMethod.getInstance() : null);
+            }
+        });
+        dialog.show();
+        positiveAction.setEnabled(false); // disabled by default
+
+        /*
+        new MaterialDialog.Builder(MowdigestActivity.this)
+                .items(R.array.sort)
+                .itemsCallbackSingleChoice(preselectedIndex,
+                        new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog,
+                                                       View view,
+                                                       int which,
+                                                       CharSequence text) {
+                                if (which == 0) {
+                                    Toast.makeText(getApplicationContext(),
+                                            "000",
+                                            Toast.LENGTH_SHORT)
+                                            .show();
+                                }
+                                else if (which == 1) {
+                                    Toast.makeText(getApplicationContext(),
+                                            "111",
+                                            Toast.LENGTH_SHORT)
+                                            .show();
+                                }
+                                return true; // allow selection
+                            }
+                        })
+                .positiveText(getString(R.string.save_button))
+                .show();
+                */
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog view,
+                          int year, int monthOfYear, int dayOfMonth,
+                          int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
+        Toast.makeText(getApplicationContext(),
+                        " year: " + year
+                        + " month: " + (monthOfYear + 1)
+                        + " day\n: " + dayOfMonth
+                        + " year: " + yearEnd
+                        + " month: " + (monthOfYearEnd + 1)
+                        + " day: " + dayOfMonthEnd
+                ,
+                Toast.LENGTH_SHORT)
+                .show();
     }
 }

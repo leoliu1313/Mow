@@ -16,7 +16,8 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-        maven { url "https://jitpack.io" }
+        // properratingbar
+        // maven { url "https://jitpack.io" }
     }
 }
 
