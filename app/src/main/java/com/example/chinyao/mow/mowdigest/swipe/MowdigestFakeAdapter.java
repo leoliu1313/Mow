@@ -156,6 +156,11 @@ public class MowdigestFakeAdapter
             @Override
             public void onRightCardExit(Object dataObject) {
                 // TODO increase the interest on the section
+                if (fragment.need_clear) {
+                    fragment.need_clear = false;
+                    newsDigest.clear();
+                    fragment.searchItem.collapseActionView();
+                }
                 MowdigestPopularNews theNews = theSwipes.get(0).getNews();
                 newsDigest.add(theNews);
                 // fix bug: no need to reload cards

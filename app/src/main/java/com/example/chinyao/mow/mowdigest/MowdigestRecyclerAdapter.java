@@ -3,7 +3,6 @@ package com.example.chinyao.mow.mowdigest;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,10 +57,52 @@ public class MowdigestRecyclerAdapter
         }
     }
 
+    // Heterogenous-Layouts-inside-RecyclerView
+    @Override
+    public int getItemViewType(int position) {
+        if (position < newsDigest.size()) {
+            boolean do_full_span = true;
+            if (position - 1 >= 0) {
+                if (newsDigest.get(position - 1).getMowdigestFullSpan()) {
+                    do_full_span = false;
+                }
+            }
+            if (position - 2 >= 0) {
+                if (newsDigest.get(position - 2).getMowdigestFullSpan()) {
+                    do_full_span = false;
+                }
+            }
+            if (position - 3 >= 0) {
+                if (newsDigest.get(position - 3).getMowdigestFullSpan()) {
+                    do_full_span = false;
+                }
+            }
+            if (position - 4 >= 0) {
+                if (newsDigest.get(position - 4).getMowdigestFullSpan()) {
+                    do_full_span = false;
+                }
+            }
+            if (do_full_span) {
+                if (newsDigest.get(position).getMedia().get(0).getMediaMetadata().size() > 0) {
+                    newsDigest.get(position).setMowdigestFullSpan(true);
+                    return 1;
+                }
+            }
+        }
+        return 0;
+    }
+
     @Override
     public MowdigestRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View theView = inflater.inflate(R.layout.mowdigest_card_view, parent, false);
+        View theView = null;
+        // Heterogenous-Layouts-inside-RecyclerView
+        if (viewType == 0) {
+            theView = inflater.inflate(R.layout.mowdigest_card_view, parent, false);
+        }
+        else if (viewType == 1) {
+            theView = inflater.inflate(R.layout.mowdigest_card_view_full_span, parent, false);
+        }
         return new ViewHolder(theView);
     }
 
@@ -113,15 +154,18 @@ public class MowdigestRecyclerAdapter
             }
             StaggeredGridLayoutManager.LayoutParams layoutParams =
                     (StaggeredGridLayoutManager.LayoutParams) holder.view.getLayoutParams();
-            if (image != null && position % 5 == 0) {
+            // Heterogenous-Layouts-inside-RecyclerView
+            if (holder.getItemViewType() == 1) {
                 layoutParams.setFullSpan(true);
+                /*
                 int dimensionInDp = (int) TypedValue.applyDimension(
                         TypedValue.COMPLEX_UNIT_DIP, 200, context.getResources().getDisplayMetrics());
                 holder.card_image.getLayoutParams().height = dimensionInDp;
                 holder.card_image.getLayoutParams().width = dimensionInDp;
                 holder.card_image.requestLayout();
+                */
             }
-            else {
+            else if (holder.getItemViewType() == 0) {
                 layoutParams.setFullSpan(false);
             }
             if (image == null) {
@@ -151,6 +195,11 @@ public class MowdigestRecyclerAdapter
 
     @Override
     public int getItemCount() {
-        return newsDigest.size();
+        if (newsDigest != null) {
+            return newsDigest.size();
+        }
+        else {
+            return 0;
+        }
     }
 }

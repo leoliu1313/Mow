@@ -49,6 +49,7 @@ public class MowdigestActivity extends AppCompatActivity {
     ViewPager viewPager;
 
     private List<MowdigestPopularNews> newsDigest;
+    private MowdigestFragment newsTraining;
     private MowdigestFragment newsDigestFragment;
 
     public static OkHttpClient TheOkHttpClient = null;
@@ -113,12 +114,17 @@ public class MowdigestActivity extends AppCompatActivity {
         // TODO
         // people on stackoverflow said this is bad implementation
         // use getView() instead?
-        MowtubeViewPagerAdapter mowtubeViewPagerAdapter = new MowtubeViewPagerAdapter(getSupportFragmentManager());
-        mowtubeViewPagerAdapter.addFragment(MowdigestFragment.newInstance(1, newsDigest), getString(R.string.training));
+        MowtubeViewPagerAdapter theAdapter = new MowtubeViewPagerAdapter(getSupportFragmentManager());
+
+        newsTraining = MowdigestFragment.newInstance(1, newsDigest);
+        theAdapter.addFragment(newsTraining, getString(R.string.training));
+
         newsDigestFragment = MowdigestFragment.newInstance(2, newsDigest);
-        mowtubeViewPagerAdapter.addFragment(newsDigestFragment, getString(R.string.digest));
-        mowtubeViewPagerAdapter.addFragment(MowtubeListFragment.newInstance(3), getString(R.string.explore));
-        viewPager.setAdapter(mowtubeViewPagerAdapter);
+        theAdapter.addFragment(newsDigestFragment, getString(R.string.digest));
+
+        theAdapter.addFragment(MowtubeListFragment.newInstance(3), getString(R.string.explore));
+
+        viewPager.setAdapter(theAdapter);
 
         tabLayout.setupWithViewPager(viewPager);
         // use         |     tab1    |     tab2    |
@@ -157,6 +163,7 @@ public class MowdigestActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.mowdigest_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
+        newsTraining.searchItem = searchItem;
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
         // Now we need to hook up a listener for when a search is performed:
@@ -164,6 +171,7 @@ public class MowdigestActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // perform query here
+                newsTraining.need_clear = true;
                 // viewPager.setCurrentItem(1);
                 viewPager.setCurrentItem(1, true);
                 newsDigestFragment.theSwipeRefreshLayout.setRefreshing(true);
@@ -193,6 +201,7 @@ public class MowdigestActivity extends AppCompatActivity {
                             }
                             newsDigestFragment.loadNewsDigest();
                             newsDigestFragment.theSwipeRefreshLayout.setRefreshing(false);
+                            newsTraining.need_clear = true;
                         }
                     }
 

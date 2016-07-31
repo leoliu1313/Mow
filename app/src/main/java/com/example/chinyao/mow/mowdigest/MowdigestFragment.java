@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -35,6 +36,9 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
     @BindView(R.id.mowtube_recycler_view)
     RecyclerView theRecyclerView;
 
+    public boolean need_clear = false;
+    public MenuItem searchItem;
+
     private int mode = 1;
     private List<MowdigestPopularNews> newsDigest = null;
     private MowdigestRecyclerAdapter newsDigestAdapter = null;
@@ -49,7 +53,7 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
         MowdigestFragment theFragment = new MowdigestFragment();
 
         theFragment.mode = mode;
-        theFragment.newsDigest = newsDigest;
+        theFragment.newsDigest = newsDigest; // avoid java.lang.NullPointerException at getItemCount()
         theFragment.handler = new Handler();
 
         return theFragment;
@@ -88,7 +92,7 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
             recyclerView.setAdapter(
                     new MowdigestFakeAdapter(
                             getActivity(),
-                            new ArrayList<String>(Arrays.asList("")),
+                            new ArrayList<>(Arrays.asList("")),
                             newsDigest,
                             this
                     )
@@ -144,9 +148,10 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
     }
 
     public void refreshAsync() {
-        // this is real
-        setupRecyclerView(theRecyclerView);
-
+        if (mode == 1) {
+            // this is real
+            setupRecyclerView(theRecyclerView);
+        }
         // this is fake
         if (runnable != null) {
             handler.removeCallbacks(runnable);
