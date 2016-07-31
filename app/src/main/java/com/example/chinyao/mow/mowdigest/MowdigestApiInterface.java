@@ -10,7 +10,7 @@ import retrofit2.http.Query;
 /**
  * Created by chinyao on 7/30/2016.
  */
-public interface MowdigestApiInterface {
+public interface MowdigestAPIInterface {
     // OkHttp is better than android-async-http
     // http://guides.codepath.com/android/Using-Android-Async-Http-Client
     // http://guides.codepath.com/android/Using-OkHttp
@@ -24,9 +24,12 @@ public interface MowdigestApiInterface {
     // chrome://inspect/#devices
 
     // GET Retrofit.Builder().baseUrl() + the following link filled with @Path + ?@Query=
+    // time_period from 1 to unknown
+    // offset from 0, 20, 40...
     @GET(MowdigestFragment.MOST_POPULAR + "/{section}/{time_period}.json")
     Call<MowdigestArticleSearch> getSearch(@Path("section") String section,
                                            @Path("time_period") String time_period,
+                                           @Query("offset") String offset,
                                            @Query("api-key") String api_key
     );
 }

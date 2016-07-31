@@ -5,15 +5,11 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
     android:gravity="center"
     >
 
     <com.lorentzos.flingswipe.SwipeFlingAdapterView
-        android:id="@+id/m1_swipe"
+        android:id="@+id/swipe_in_fake_recycler_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />

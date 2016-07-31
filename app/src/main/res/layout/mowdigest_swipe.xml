@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:layout_marginBottom="80dp"
+    android:layout_marginBottom="60dp"
     android:layout_marginLeft="20dp"
     android:layout_marginRight="20dp"
-    android:layout_marginTop="40dp">
+    android:layout_marginTop="40dp"
+    >
 
     <FrameLayout
-        android:id="@+id/background"
+        android:id="@+id/item_swipe_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -35,51 +38,95 @@
 
     </FrameLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="18dp"
         android:background="@drawable/shape"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
+        >
 
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/item_swipe_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="content description"
+            android:src="@drawable/mediumthreebytwo440"
+            tools:src="@drawable/blobb"
+            />
 
-            <ImageView
-                android:id="@+id/cardImage"
-                android:layout_width="300dp"
-                android:layout_height="200dp"
-                android:padding="4dp"
-                android:scaleType="centerCrop" />
+        <TextView
+            android:id="@+id/item_swipe_title"
+            android:layout_below="@+id/item_swipe_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:textSize="20sp"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:textColor="@color/mowtubeColorDateDarkDark"
+            android:text="Manu Ginobili explains why he nearly left San Antonio this offseason"
+            tools:text="Manu Ginobili explains why he nearly left San Antonio this offseason"
+            />
 
-        </FrameLayout>
+        <TextView
+            android:id="@+id/item_swipe_abstract"
+            android:layout_below="@+id/item_swipe_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="4"
+            android:textSize="16sp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:textColor="@color/mowtubeColorDateDarkDark"
+            android:text="Manu Ginobili explains why he nearly left San Antonio this offseason"
+            tools:text="Manu Ginobili explains why he nearly left San Antonio this offseason"
+            />
 
         <LinearLayout
+            android:layout_below="@+id/item_swipe_abstract"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="top|center_horizontal"
-            android:orientation="horizontal">
-
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/bookText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:padding="4dp"
-                    android:textColor="#787878"
-                    android:textSize="16sp"
-                    />
-            </ScrollView>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum = "2"
+            >
+            <TextView
+                android:id="@+id/item_swipe_section"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:paddingTop="4dp"
+                android:paddingBottom="16dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:textColor="@color/mowtubeColorDate"
+                android:text="Sports"
+                tools:text="Sports"
+                />
+            <TextView
+                android:id="@+id/item_swipe_published_date"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:textSize="12sp"
+                android:paddingTop="4dp"
+                android:paddingBottom="16dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:textColor="@color/mowtubeColorDate"
+                android:text="2016-07-30"
+                tools:text="2016-07-30"
+                />
 
         </LinearLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <View
         android:id="@+id/item_swipe_left_indicator"

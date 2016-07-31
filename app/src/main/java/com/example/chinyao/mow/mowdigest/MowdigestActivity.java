@@ -75,7 +75,7 @@ public class MowdigestActivity extends AppCompatActivity {
         // people on stackoverflow said this is bad implementation
         // use getView() instead?
         MowtubeViewPagerAdapter mowtubeViewPagerAdapter = new MowtubeViewPagerAdapter(getSupportFragmentManager());
-        mowtubeViewPagerAdapter.addFragment(MowdigestFragment.newInstance(1), getString(R.string.learning));
+        mowtubeViewPagerAdapter.addFragment(MowdigestFragment.newInstance(1), getString(R.string.training));
         mowtubeViewPagerAdapter.addFragment(MowdigestFragment.newInstance(2), getString(R.string.digest));
         mowtubeViewPagerAdapter.addFragment(MowtubeListFragment.newInstance(3), getString(R.string.explore));
         viewPager.setAdapter(mowtubeViewPagerAdapter);

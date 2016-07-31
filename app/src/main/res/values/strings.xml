@@ -82,7 +82,7 @@
     <string name="on_popular">on popular movies</string>
     <string name="autoplay_always">always</string>
 
-    <string name="learning">Learning</string>
+    <string name="training">Training</string>
     <string name="digest">Digest</string>
     <string name="explore">Explore</string>
 </resources>

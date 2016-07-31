@@ -1,6 +1,7 @@
 package com.example.chinyao.mow.mowdigest.swipe;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,23 +15,28 @@ import com.example.chinyao.mow.R;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by chinyao on 7/29/2016.
  */
 public class MowdigestSwipeAdapter extends BaseAdapter {
 
-    private List<MowdigestSwipe> parkingList;
+    private List<MowdigestSwipe> theSwipes;
     private Context context;
-    private static ViewHolder viewHolder;
 
-    public MowdigestSwipeAdapter(List<MowdigestSwipe> apps, Context context) {
-        this.parkingList = apps;
+    private static int MaxTitleLength = 75;
+    private static int MaxAbstractLength = 120;
+
+    public MowdigestSwipeAdapter(List<MowdigestSwipe> swipes, Context context) {
+        this.theSwipes = swipes;
         this.context = context;
     }
 
     @Override
     public int getCount() {
-        return parkingList.size();
+        return theSwipes.size();
     }
 
     @Override
@@ -45,32 +51,68 @@ public class MowdigestSwipeAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        View rowView = convertView;
-
-        if (rowView == null) {
+        ViewHolder viewHolder;
+        if (convertView == null) {
             // getLayoutInflater();
             LayoutInflater inflater = LayoutInflater.from(context);
-            rowView = inflater.inflate(R.layout.mowdigest_swipe, parent, false);
+            convertView = inflater.inflate(R.layout.mowdigest_swipe, parent, false);
             // configure view holder
-            viewHolder = new ViewHolder();
-            viewHolder.DataText = (TextView) rowView.findViewById(R.id.bookText);
-            viewHolder.background = (FrameLayout) rowView.findViewById(R.id.background);
-            viewHolder.cardImage = (ImageView) rowView.findViewById(R.id.cardImage);
-            rowView.setTag(viewHolder);
-
-        } else {
+            viewHolder = new ViewHolder(convertView);
+            convertView.setTag(viewHolder);
+        }
+        else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.DataText.setText(parkingList.get(position).getDescription() + "");
 
-        Glide.with(context).load(parkingList.get(position).getImagePath()).into(viewHolder.cardImage);
+        MowdigestSwipe theSwipe = theSwipes.get(position);
+        Glide.with(context)
+                .load(theSwipe.getImage())
+                .centerCrop()
+                .placeholder(R.drawable.mediumthreebytwo440)
+                .error(R.drawable.mediumthreebytwo440)
+                .into(viewHolder.item_swipe_image);
+        String input;
+        input = theSwipe.getTitle();
+        if (input.length() > MaxTitleLength) {
+            input = input.substring(0, MaxTitleLength) + "...";
+        }
+        viewHolder.item_swipe_title.setText(input);
+        input = theSwipe.getAbstractString();
+        if (input.length() > MaxAbstractLength) {
+            input = input.substring(0, MaxAbstractLength) + "...";
+        }
+        viewHolder.item_swipe_abstract.setText(input);
+        viewHolder.item_swipe_section.setText(theSwipe.getSection());
+        viewHolder.item_swipe_published_date.setText(theSwipe.getPublished_date());
 
-        return rowView;
+        return convertView;
     }
 
-    public static class ViewHolder {
-        public static FrameLayout background;
-        public TextView DataText;
-        public ImageView cardImage;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        // ButterKnife
+        // http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife
+        @BindView(R.id.item_swipe_background)
+        FrameLayout item_swipe_background;
+        @BindView(R.id.item_swipe_image)
+        ImageView item_swipe_image;
+        @BindView(R.id.item_swipe_title)
+        TextView item_swipe_title;
+        @BindView(R.id.item_swipe_abstract)
+        TextView item_swipe_abstract;
+        @BindView(R.id.item_swipe_section)
+        TextView item_swipe_section;
+        @BindView(R.id.item_swipe_published_date)
+        TextView item_swipe_published_date;
+        @BindView(R.id.item_swipe_right_indicator)
+        View item_swipe_right_indicator;
+        @BindView(R.id.item_swipe_left_indicator)
+        View item_swipe_left_indicator;
+
+        public ViewHolder(View view) {
+            super(view);
+
+            // ButterKnife
+            ButterKnife.bind(this, view);
+        }
     }
 }

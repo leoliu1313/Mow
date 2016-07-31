@@ -1,5 +1,7 @@
 package com.example.chinyao.mow.mowdigest.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +9,7 @@ import java.util.List;
  * Created by chinyao on 7/30/2016.
  */
 public class MowdigestMedia {
+    @SerializedName("media-metadata")
     List<MowdigestImage> mediaMetadata;
 
     // public constructor is necessary for collections

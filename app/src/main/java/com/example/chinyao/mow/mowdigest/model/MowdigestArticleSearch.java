@@ -1,6 +1,5 @@
 package com.example.chinyao.mow.mowdigest.model;
 
-import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -19,8 +18,12 @@ public class MowdigestArticleSearch {
     }
 
     public static MowdigestArticleSearch parseJSON(String response) {
+        // This is not a stable solution.
+        // Instead, use default with @SerializedName("_some-field-name")
         // LOWER_CASE_WITH_DASHES translate "_some-field-name" to "_someFieldName"
-        GsonBuilder gsonBuilder = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES);
+        // GsonBuilder gsonBuilder = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES);
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
         // register type adapters here, specify field naming policy, etc.
         Gson gson = gsonBuilder.create();
         MowdigestArticleSearch theSearch = gson.fromJson(response, MowdigestArticleSearch.class);

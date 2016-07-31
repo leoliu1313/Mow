@@ -1,5 +1,7 @@
 package com.example.chinyao.mow.mowdigest.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +13,8 @@ public class MowdigestNews {
     String title;
     String section;
     String published_date;
+    @SerializedName("abstract")
+    String abstractString;
     List<MowdigestMedia> media;
 
     // public constructor is necessary for collections
@@ -36,6 +40,10 @@ public class MowdigestNews {
 
     public List<MowdigestMedia> getMedia() {
         return media;
+    }
+
+    public String getAbstractString() {
+        return abstractString;
     }
 
     public String getPublished_date() {

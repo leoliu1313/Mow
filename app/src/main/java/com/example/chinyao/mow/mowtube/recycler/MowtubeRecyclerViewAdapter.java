@@ -257,7 +257,10 @@ public class MowtubeRecyclerViewAdapter
         public ViewHolder(View view) {
             super(view);
             mView = view;
+
+            // ButterKnife
             ButterKnife.bind(this, view);
+
             mImageButton.setOnClickListener(this);
         }
 

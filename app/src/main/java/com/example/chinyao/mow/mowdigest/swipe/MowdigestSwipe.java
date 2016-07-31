@@ -1,24 +1,59 @@
 package com.example.chinyao.mow.mowdigest.swipe;
 
+import com.example.chinyao.mow.mowdigest.model.MowdigestImage;
+import com.example.chinyao.mow.mowdigest.model.MowdigestNews;
+
 /**
  * Created by chinyao on 7/29/2016.
  */
 public class MowdigestSwipe {
 
-    private String description;
+    private String image;
+    private String title;
+    private String abstractString;
+    private String section;
+    private String published_date;
 
-    private String imagePath;
-
-    public MowdigestSwipe(String imagePath, String description) {
-        this.imagePath = imagePath;
-        this.description = description;
+    public MowdigestSwipe(String image, String title) {
+        this.image = image;
+        this.title = title;
     }
 
-    public String getDescription() {
-        return description;
+    public MowdigestSwipe(MowdigestNews theNews) {
+        // TODO: default image
+        this.image = "";
+        for (MowdigestImage theImage : theNews.getMedia().get(0).getMediaMetadata()) {
+            // also change Glide placeholder() and error() in MowdigestSwipeAdapter.java
+            // square320
+            // mediumThreeByTwo440
+            if (theImage.getFormat().equals("mediumThreeByTwo440")) {
+                this.image = theImage.getUrl();
+                break;
+            }
+        }
+        this.title = theNews.getTitle();
+        this.abstractString = theNews.getAbstractString();
+        this.section = theNews.getSection();
+        this.published_date = theNews.getPublished_date();
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public String getImage() {
+        return image;
+    }
+
+    public String getPublished_date() {
+        return published_date;
+    }
+
+    public String getSection() {
+        return section;
+    }
+
+    public String getAbstractString() {
+        return abstractString;
+    }
+
+    public String getTitle() {
+        return title;
     }
 }
