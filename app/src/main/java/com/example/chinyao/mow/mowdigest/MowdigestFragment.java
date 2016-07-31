@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +16,8 @@ import android.view.ViewGroup;
 
 import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowdigest.model.MowdigestPopularNews;
+import com.example.chinyao.mow.mowdigest.model.MowdigestSearchNews;
+import com.example.chinyao.mow.mowdigest.model.MowdigestSearchResult;
 import com.example.chinyao.mow.mowdigest.swipe.MowdigestFakeAdapter;
 import com.example.chinyao.mow.mowdigest.swipe.MowdigestSwipeAdapter;
 
@@ -24,6 +27,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by chinyao on 7/29/2016.
@@ -36,14 +42,16 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
     @BindView(R.id.mowtube_recycler_view)
     RecyclerView theRecyclerView;
 
-    public boolean need_clear = false;
     public MenuItem searchItem;
+    public String query = null;
+    public int page = 1;
 
     private int mode = 1;
     private List<MowdigestPopularNews> newsDigest = null;
     private MowdigestRecyclerAdapter newsDigestAdapter = null;
     private Handler handler = null;
     private Runnable runnable = null; // remember to new Handler(), onDestroy(), removeCallbacksAndMessages()
+    private boolean lock = false;
 
     public static final int NewsContentMode = 2;
     // 1: debug
@@ -101,7 +109,9 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
         else if (mode == 2){
             // TODO
             // recyclerView.setHasFixedSize(true);
-            recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+            StaggeredGridLayoutManager layoutManager =
+                    new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+            recyclerView.setLayoutManager(layoutManager);
             if (NewsContentMode == 1) {
                 recyclerView.setAdapter(
                         new MowdigestRecyclerAdapter(
@@ -112,6 +122,19 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
                 );
             }
             else if (NewsContentMode == 2) {
+                // Endless-Scrolling-with-AdapterViews-and-RecyclerView
+                // http://guides.codepath.com/android/Endless-Scrolling-with-AdapterViews-and-RecyclerView#troubleshooting
+                // https://gist.github.com/nesquena/d09dc68ff07e845cc622
+                recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+                    @Override
+                    public void onLoadMore(int page, int totalItemsCount) {
+                        // Triggered only when new data needs to be appended to the list
+                        // Add whatever code is needed to append new items to the bottom of the list
+                        if (MowdigestActivity.need_clear) {
+                            customLoadMoreDataFromApi();
+                        }
+                    }
+                });
                 newsDigestAdapter = new MowdigestRecyclerAdapter(
                         getActivity(),
                         newsDigest,
@@ -119,6 +142,48 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
                 );
                 recyclerView.setAdapter(newsDigestAdapter);
             }
+        }
+    }
+
+    private void customLoadMoreDataFromApi() {
+        if (!lock) {
+            lock = true;
+            page++;
+            final Call<MowdigestSearchResult> call =
+                    MowdigestActivity.TheAPIInterface.articleSearch(
+                            query,
+                            null,
+                            "newest",
+                            null,
+                            null,
+                            page,
+                            MowdigestActivity.API_KEY);
+            call.enqueue(new Callback<MowdigestSearchResult>() {
+                @Override
+                public void onResponse(Call<MowdigestSearchResult> call, Response<MowdigestSearchResult> response) {
+                    Log.d("MowdigestFragment", "onResponse");
+                    Log.d("MowdigestFragment",
+                            "statusCode " + response.code());
+                    MowdigestSearchResult theSearch = response.body();
+                    if (theSearch != null
+                            && theSearch.getResponse() != null
+                            && theSearch.getResponse().getDocs() != null) {
+                        Log.d("MowdigestFragment",
+                                "theSearch.getResponse().getDocs().size() " + theSearch.getResponse().getDocs().size());
+                        for (MowdigestSearchNews theNews : theSearch.getResponse().getDocs()) {
+                            newsDigest.add(MowdigestPopularNews.fromSearchNews(theNews));
+                        }
+                        loadNewsDigest();
+                        lock = false;
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<MowdigestSearchResult> call, Throwable t) {
+                    lock = false;
+                    Log.d("MowdigestFragment", "onFailure");
+                }
+            });
         }
     }
 

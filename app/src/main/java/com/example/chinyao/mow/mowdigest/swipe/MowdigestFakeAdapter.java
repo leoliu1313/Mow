@@ -156,8 +156,8 @@ public class MowdigestFakeAdapter
             @Override
             public void onRightCardExit(Object dataObject) {
                 // TODO increase the interest on the section
-                if (fragment.need_clear) {
-                    fragment.need_clear = false;
+                if (MowdigestActivity.need_clear) {
+                    MowdigestActivity.need_clear = false;
                     newsDigest.clear();
                     fragment.searchItem.collapseActionView();
                 }

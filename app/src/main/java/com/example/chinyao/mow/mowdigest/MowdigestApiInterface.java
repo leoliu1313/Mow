@@ -40,14 +40,16 @@ public interface MowdigestAPIInterface {
     // sort=newest or oldest
     // begin_date=20160101
     // end_date=20160631
+    // page=2
     // if null, then skip and ignore this Query Parameter.
     // https://futurestud.io/blog/retrofit-optional-query-parameters
     @GET(MowdigestActivity.ARTICALE_SEARCH)
-    Call<MowdigestSearchResult> search(@Query("q") String q,
+    Call<MowdigestSearchResult> articleSearch(@Query("q") String q,
                                        @Query("fq") String fq,
                                        @Query("sort") String sort,
                                        @Query("begin_date") String begin_date,
                                        @Query("end_date") String end_date,
+                                       @Query("page") int page,
                                        @Query("api-key") String api_key
     );
 }

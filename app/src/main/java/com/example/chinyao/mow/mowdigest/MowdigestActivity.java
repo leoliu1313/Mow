@@ -49,11 +49,14 @@ public class MowdigestActivity extends AppCompatActivity {
     ViewPager viewPager;
 
     private List<MowdigestPopularNews> newsDigest;
-    private MowdigestFragment newsTraining;
+    private MowdigestFragment newsTrainingFragment;
     private MowdigestFragment newsDigestFragment;
 
     public static OkHttpClient TheOkHttpClient = null;
     public static MowdigestAPIInterface TheAPIInterface = null;
+
+    // TODO: avoid this?
+    public static boolean need_clear = false;
 
     public static final String API_KEY = "fb2092b45dc44c299ecf5098b9b1209d";
     public static final String BASE_URL = "http://api.nytimes.com";
@@ -116,8 +119,8 @@ public class MowdigestActivity extends AppCompatActivity {
         // use getView() instead?
         MowtubeViewPagerAdapter theAdapter = new MowtubeViewPagerAdapter(getSupportFragmentManager());
 
-        newsTraining = MowdigestFragment.newInstance(1, newsDigest);
-        theAdapter.addFragment(newsTraining, getString(R.string.training));
+        newsTrainingFragment = MowdigestFragment.newInstance(1, newsDigest);
+        theAdapter.addFragment(newsTrainingFragment, getString(R.string.training));
 
         newsDigestFragment = MowdigestFragment.newInstance(2, newsDigest);
         theAdapter.addFragment(newsDigestFragment, getString(R.string.digest));
@@ -163,26 +166,27 @@ public class MowdigestActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.mowdigest_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        newsTraining.searchItem = searchItem;
+        newsTrainingFragment.searchItem = searchItem;
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
         // Now we need to hook up a listener for when a search is performed:
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
+            public boolean onQueryTextSubmit(final String query) {
                 // perform query here
-                newsTraining.need_clear = true;
+                need_clear = true;
                 // viewPager.setCurrentItem(1);
                 viewPager.setCurrentItem(1, true);
                 newsDigestFragment.theSwipeRefreshLayout.setRefreshing(true);
                 newsDigest.clear();
                 final Call<MowdigestSearchResult> call =
-                        MowdigestActivity.TheAPIInterface.search(
+                        MowdigestActivity.TheAPIInterface.articleSearch(
                                 query,
                                 null,
                                 "newest",
                                 null,
                                 null,
+                                1,
                                 API_KEY);
                 call.enqueue(new Callback<MowdigestSearchResult>() {
                     @Override
@@ -201,7 +205,9 @@ public class MowdigestActivity extends AppCompatActivity {
                             }
                             newsDigestFragment.loadNewsDigest();
                             newsDigestFragment.theSwipeRefreshLayout.setRefreshing(false);
-                            newsTraining.need_clear = true;
+                            need_clear = true;
+                            newsDigestFragment.query = query;
+                            newsDigestFragment.page = 1;
                         }
                     }
 
