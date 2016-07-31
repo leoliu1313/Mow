@@ -73,6 +73,7 @@ public class MowdigestSwipeAdapter extends BaseAdapter {
             convertView.setTag(viewHolder);
         }
         else {
+            // TODO: never go to here. bug?
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
