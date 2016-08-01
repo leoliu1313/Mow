@@ -24,6 +24,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".mowdigest.detail.YahooParallaxActivity"
+            android:taskAffinity="mowdigest.MowdigestActivity"
+            android:icon="@mipmap/ic_launcher_mowdigest"
+            android:label="@string/mowdigest_app_name"
+            android:theme="@style/MowdigestTheme"
+            >
+        </activity>
 
         <!-- Mowtube -->
         <activity

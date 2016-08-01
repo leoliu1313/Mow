@@ -54,4 +54,6 @@
     <!-- title -->
     <color name="mowtubeColorBackground">#FFFFFF</color>
     <!-- background -->
+
+    <color name="comfort_white">#FAFAFA</color>
 </resources>

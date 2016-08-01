@@ -51,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop"
-            android:contentDescription="content description"
+            android:contentDescription="@string/contentDescription"
             android:src="@drawable/mediumthreebytwo440"
             tools:src="@drawable/blobb"
             />
@@ -68,8 +68,8 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:textColor="@color/mowtubeColorDateDarkDark"
-            android:text="Manu Ginobili explains why he nearly left San Antonio this offseason"
-            tools:text="Manu Ginobili explains why he nearly left San Antonio this offseason"
+            android:text="@string/fake_title"
+            tools:text="@string/fake_title"
             />
 
         <TextView
@@ -84,8 +84,8 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:textColor="@color/mowtubeColorDateDarkDark"
-            android:text="Manu Ginobili explains why he nearly left San Antonio this offseason"
-            tools:text="Manu Ginobili explains why he nearly left San Antonio this offseason"
+            android:text="@string/fake_title"
+            tools:text="@string/fake_title"
             />
 
         <LinearLayout
@@ -106,8 +106,8 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:textColor="@color/mowtubeColorDate"
-                android:text="Sports"
-                tools:text="Sports"
+                android:text="@string/fake_section"
+                tools:text="@string/fake_section"
                 />
             <TextView
                 android:id="@+id/item_swipe_published_date"
@@ -121,8 +121,8 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:textColor="@color/mowtubeColorDate"
-                android:text="2016-07-30"
-                tools:text="2016-07-30"
+                android:text="@string/fake_date"
+                tools:text="@string/fake_date"
                 />
 
         </LinearLayout>
@@ -141,7 +141,7 @@
         android:id="@+id/item_swipe_right_indicator"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_gravity="right"
+        android:layout_gravity="end"
         android:alpha="0"
         android:background="@drawable/nope"
         />

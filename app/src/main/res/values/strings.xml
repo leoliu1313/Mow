@@ -114,4 +114,10 @@
     <string name="us_section">U.S.</string>
     <string name="world_section">World</string>
     <string name="money_section">Money</string>
+    <string name="lorm_ipsum">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.dolor sit amet, consectetur adipisicing elit</string>
+    <string name="contentDescription">loading...</string>
+    <string name="fake_title">Manu Ginobili explains why he nearly left San Antonio this offseason</string>
+    <string name="fake_section">The Upshot</string>
+    <string name="fake_date">2016-07-30</string>
+
 </resources>

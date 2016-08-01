@@ -19,7 +19,7 @@
             android:id="@+id/card_image"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:contentDescription="content description"
+            android:contentDescription="@string/contentDescription"
             android:scaleType="centerCrop"
             tools:src="@drawable/coffee_23"
             />
@@ -35,8 +35,8 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:textColor="@color/mowtubeColorDateDarkDark"
-            android:text="Manu Ginobili explains why he nearly left San Antonio this offseason"
-            tools:text="Manu Ginobili explains why he nearly left San Antonio this offseason"
+            android:text="@string/fake_title"
+            tools:text="@string/fake_title"
             />
 
         <LinearLayout
@@ -56,10 +56,12 @@
                 android:paddingTop="4dp"
                 android:paddingBottom="16dp"
                 android:paddingLeft="16dp"
+                android:paddingStart="16dp"
                 android:paddingRight="0dp"
+                android:paddingEnd="0dp"
                 android:textColor="@color/mowtubeColorDate"
-                android:text="The Upshot"
-                tools:text="The Upshot"
+                android:text="@string/fake_section"
+                tools:text="@string/fake_section"
             />
             <TextView
                 android:id="@+id/card_published_date"
@@ -72,10 +74,12 @@
                 android:paddingTop="4dp"
                 android:paddingBottom="16dp"
                 android:paddingLeft="0dp"
+                android:paddingStart="0dp"
                 android:paddingRight="16dp"
+                android:paddingEnd="16dp"
                 android:textColor="@color/mowtubeColorDate"
-                android:text="2016-07-30"
-                tools:text="2016-07-30"
+                android:text="@string/fake_date"
+                tools:text="@string/fake_date"
                 />
 
         </LinearLayout>

@@ -1,6 +1,8 @@
 package com.example.chinyao.mow.mowdigest;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
@@ -12,6 +14,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.chinyao.mow.R;
+import com.example.chinyao.mow.mowdigest.detail.BundleKey;
+import com.example.chinyao.mow.mowdigest.detail.YahooParallaxActivity;
 import com.example.chinyao.mow.mowdigest.model.MowdigestImage;
 import com.example.chinyao.mow.mowdigest.model.MowdigestPopularNews;
 
@@ -188,6 +192,12 @@ public class MowdigestRecyclerAdapter
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(context, "Clicked Position = " + position, Toast.LENGTH_SHORT).show();
+
+                    Bundle bundle = new Bundle();
+                    bundle.putFloat(BundleKey.PARALLAX_SPEED, 0.6f);
+                    Intent intent = new Intent(context, YahooParallaxActivity.class);
+                    intent.putExtra(BundleKey.TYPE_YAHOO, bundle);
+                    context.startActivity(intent);
                 }
             });
         }
