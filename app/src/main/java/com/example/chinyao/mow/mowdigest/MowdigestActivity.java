@@ -9,7 +9,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,8 +25,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.borax12.materialdaterangepicker.date.DatePickerDialog;
 import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowdigest.model.MowdigestPopularNews;
-import com.example.chinyao.mow.mowdigest.model.MowdigestSearchNews;
-import com.example.chinyao.mow.mowdigest.model.MowdigestSearchResult;
 import com.example.chinyao.mow.mowtube.MowtubeViewPagerAdapter;
 import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
@@ -39,9 +36,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.OkHttpClient;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -64,14 +58,11 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
     private TextView date_range_textview;
     private CheckBox art_checkbox;
 
-    public static OkHttpClient TheOkHttpClient = null;
-    public static MowdigestAPIInterface TheAPIInterface = null;
-
     // TODO: avoid this?
     public static boolean need_clear = false;
-    public static String begin_date = null;
-    public static String end_date = null;
-    public static int sort_spinner_mode = 0;
+
+    public static OkHttpClient TheOkHttpClient = null;
+    public static MowdigestAPIInterface TheAPIInterface = null;
 
     public static final String API_KEY = "fb2092b45dc44c299ecf5098b9b1209d";
     public static final String BASE_URL = "http://api.nytimes.com";
@@ -86,9 +77,12 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
         // ButterKnife
         ButterKnife.bind(this);
 
+        // chrome://inspect/#devices
         setupNetwork();
 
         setSupportActionBar(toolbar);
+
+        setupData();
 
         setupViewPager();
 
@@ -96,6 +90,10 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
                 getResources().getString(R.string.app_version),
                 Toast.LENGTH_SHORT)
                 .show();
+    }
+
+    private void setupData() {
+        newsDigest = new ArrayList<>();
     }
 
     private void setupNetwork() {
@@ -116,8 +114,6 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
     }
 
     private void setupViewPager() {
-        newsDigest = new ArrayList<>();
-
         // 3 tabs so set it to 2
         viewPager.setOffscreenPageLimit(2);
 
@@ -126,10 +122,10 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
         // use getView() instead?
         MowtubeViewPagerAdapter theAdapter = new MowtubeViewPagerAdapter(getSupportFragmentManager());
 
-        newsTrainingFragment = MowdigestFragment.newInstance(1, newsDigest);
+        newsTrainingFragment = MowdigestFragment.newInstance(1, newsDigest, viewPager);
         theAdapter.addFragment(newsTrainingFragment, getString(R.string.training));
 
-        newsDigestFragment = MowdigestFragment.newInstance(2, newsDigest);
+        newsDigestFragment = MowdigestFragment.newInstance(2, newsDigest, viewPager);
         theAdapter.addFragment(newsDigestFragment, getString(R.string.digest));
 
         // theAdapter.addFragment(MowtubeListFragment.newInstance(3), getString(R.string.explore));
@@ -184,7 +180,7 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                doArticleSearch(query);
+                newsDigestFragment.doArticleSearch(query);
 
                 // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
                 // see https://code.google.com/p/android/issues/detail?id=24599
@@ -234,52 +230,6 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void doArticleSearch(final String query) {
-        // perform query here
-        need_clear = true;
-        // viewPager.setCurrentItem(1);
-        viewPager.setCurrentItem(1, true);
-        newsDigestFragment.theSwipeRefreshLayout.setRefreshing(true);
-        newsDigest.clear();
-        final Call<MowdigestSearchResult> call =
-                MowdigestActivity.TheAPIInterface.articleSearch(
-                        query,
-                        null,
-                        sort_spinner_mode == 0 ? "newest" : "oldest",
-                        begin_date,
-                        end_date,
-                        1,
-                        API_KEY);
-        call.enqueue(new Callback<MowdigestSearchResult>() {
-            @Override
-            public void onResponse(Call<MowdigestSearchResult> call, Response<MowdigestSearchResult> response) {
-                Log.d("MowdigestActivity", "onResponse");
-                Log.d("MowdigestActivity",
-                        "statusCode " + response.code());
-                MowdigestSearchResult theSearch = response.body();
-                if (theSearch != null
-                        && theSearch.getResponse() != null
-                        && theSearch.getResponse().getDocs() != null) {
-                    Log.d("MowdigestActivity",
-                            "theSearch.getResponse().getDocs().size() " + theSearch.getResponse().getDocs().size());
-                    for (MowdigestSearchNews theNews : theSearch.getResponse().getDocs()) {
-                        newsDigest.add(MowdigestPopularNews.fromSearchNews(theNews));
-                    }
-                    newsDigestFragment.notifyNewsDigest();
-                    newsDigestFragment.theSwipeRefreshLayout.setRefreshing(false);
-                    need_clear = true;
-                    newsDigestFragment.query = query;
-                    newsDigestFragment.page = 1;
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MowdigestSearchResult> call, Throwable t) {
-                Log.d("MowdigestSwipeAdapter", "onFailure");
-            }
-        });
-    }
-
     public static String getDateString(int begin_year, int begin_month, int begin_date) {
         if (begin_year == 0 || begin_month == 0 || begin_date == 0) {
             return null;
@@ -323,8 +273,8 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
         }
 
         // read current filter
-        if (begin_date != null && end_date != null) {
-            String input = begin_date + " ~ " + end_date;
+        if (newsDigestFragment.begin_date != null && newsDigestFragment.end_date != null) {
+            String input = newsDigestFragment.begin_date + " ~ " + newsDigestFragment.end_date;
             date_range_textview.setText(input);
         }
 
@@ -345,13 +295,13 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
         });
 
         // sort
-        sort_spinner.setSelection(sort_spinner_mode);
+        sort_spinner.setSelection(newsDigestFragment.sort_spinner_mode);
         sort_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                        int arg2, long arg3) {
                 // TODO Auto-generated method stub
-                sort_spinner_mode = sort_spinner.getSelectedItemPosition();
+                newsDigestFragment.sort_spinner_mode = sort_spinner.getSelectedItemPosition();
                 /*
                 String msupplier = sort_spinner.getSelectedItem().toString();
                 Toast.makeText(getApplicationContext(),
@@ -387,9 +337,9 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
     public void onDateSet(DatePickerDialog view,
                           int year, int monthOfYear, int dayOfMonth,
                           int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
-        begin_date = getDateString(year, monthOfYear + 1, dayOfMonth);
-        end_date = getDateString(yearEnd, monthOfYearEnd + 1, dayOfMonthEnd);
-        String input = begin_date + " ~ " + end_date;
+        newsDigestFragment.begin_date = getDateString(year, monthOfYear + 1, dayOfMonth);
+        newsDigestFragment.end_date = getDateString(yearEnd, monthOfYearEnd + 1, dayOfMonthEnd);
+        String input = newsDigestFragment.begin_date + " ~ " + newsDigestFragment.end_date;
         date_range_textview.setText(input);
         /*
         Toast.makeText(getApplicationContext(),
