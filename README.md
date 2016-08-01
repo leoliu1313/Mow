@@ -12,7 +12,7 @@ The following **required** functionality is completed:
 * [x] User can click on "settings" which allows selection of **advanced search options** to filter results
 * [x] User can configure advanced search filters such as:
   * [x] Begin Date (using a date picker)
-  * [ ] News desk values (Arts, Fashion & Style, Sports)
+  * [x] News desk values (Arts, Fashion & Style, Sports)
   * [x] Sort order (oldest or newest)
 * [x] Subsequent searches have any filters applied to the search results
 * [ ] User can tap on any image in results to see the full text of article **full-screen**

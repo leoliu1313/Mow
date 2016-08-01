@@ -52,7 +52,7 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
     private Handler handler = null;
     private Runnable runnable = null; // remember to new Handler(), onDestroy(), removeCallbacksAndMessages()
     private boolean lock = false;
-    public String query = null;
+    private String query = null;
     private int page = 1;
 
     public MenuItem searchItem = null;
@@ -60,6 +60,7 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
     public String end_date = null;
     public int sort_spinner_mode = 0;
     public boolean[] sections = null;
+    public String fq = null;
 
     public static final int NewsContentMode = 2;
     // 1: debug
@@ -166,7 +167,7 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
             final Call<MowdigestSearchResult> call =
                     MowdigestActivity.TheAPIInterface.articleSearch(
                             query,
-                            null,
+                            fq,
                             sort_spinner_mode == 0 ? "newest" : "oldest",
                             begin_date,
                             end_date,
@@ -301,7 +302,7 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
             final Call<MowdigestSearchResult> call =
                     MowdigestActivity.TheAPIInterface.articleSearch(
                             theQuery,
-                            null,
+                            fq,
                             sort_spinner_mode == 0 ? "newest" : "oldest",
                             begin_date,
                             end_date,

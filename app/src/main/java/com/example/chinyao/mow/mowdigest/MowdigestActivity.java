@@ -260,6 +260,22 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        String input = "";
+                        if (newsDigestFragment.sections[0]) {
+                            input += " Arts";
+                        }
+                        if (newsDigestFragment.sections[4]) {
+                            input += " Style";
+                        }
+                        if (newsDigestFragment.sections[12]) {
+                            input += " Sports";
+                        }
+                        if (input.equals("")) {
+                            newsDigestFragment.fq = null;
+                        }
+                        else {
+                            newsDigestFragment.fq = "section_name.contains:(\"" + input + "\")";
+                        }
                         searchView.clearFocus();
                         newsDigestFragment.doArticleSearch();
                         /*
