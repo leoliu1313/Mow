@@ -87,11 +87,11 @@ Or, the following screenshots:
 http://imgur.com/a/9AtDo
 <br>
 
-<img src='http://i.imgur.com/t9LD8Hm.jpg' title='Screenshot' width="300" alt='Screenshot' /><br><br>
+<img src='http://i.imgur.com/t9LD8Hm.jpg' title='Screenshot' width="300" alt='Screenshot' />
 <img src='http://i.imgur.com/5we10fZ.jpg' title='Screenshot' width="300" alt='Screenshot' /><br><br>
-<img src='http://i.imgur.com/t1BfeXe.jpg' title='Screenshot' width="300" alt='Screenshot' /><br><br>
+<img src='http://i.imgur.com/t1BfeXe.jpg' title='Screenshot' width="300" alt='Screenshot' />
 <img src='http://i.imgur.com/yUAZ3Qe.jpg' title='Screenshot' width="300" alt='Screenshot' /><br><br>
-<img src='http://i.imgur.com/ln8Eb2w.jpg' title='Screenshot' width="300" alt='Screenshot' /><br><br>
+<img src='http://i.imgur.com/ln8Eb2w.jpg' title='Screenshot' width="300" alt='Screenshot' />
 <img src='http://i.imgur.com/6TlqeQK.jpg' title='Screenshot' width="300" alt='Screenshot' /><br><br>
 
 Video created with Android Studio and FFmpeg.
