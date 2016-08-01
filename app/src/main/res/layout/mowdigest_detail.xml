@@ -60,7 +60,7 @@
             android:layout_below="@id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/lorm_ipsum"
+            android:text="@string/fake_content"
             android:layout_marginTop="8dp"
             android:textSize="16sp"
             android:lineSpacingExtra="2dp"
@@ -73,9 +73,10 @@
             android:layout_alignLeft="@id/title"
             android:layout_alignStart="@id/title"
             android:textSize="16sp"
-            android:text="@string/lorm_ipsum"
+            android:text="@string/fake_content"
             android:layout_marginTop="5dp"
             android:lineSpacingExtra="6dp"
+            android:padding="6dp"
             />
     </RelativeLayout>
 </com.example.chinyao.mow.mowdigest.detail.NotifyingScrollView>

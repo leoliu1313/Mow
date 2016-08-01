@@ -195,6 +195,14 @@ public class MowdigestRecyclerAdapter
 
                     Bundle bundle = new Bundle();
                     bundle.putFloat(BundleKey.PARALLAX_SPEED, 0.6f);
+                    bundle.putString("first_image",
+                            newsDigest.get(position).getMedia().get(0).getMediaMetadata().get(0).getUrl());
+                    bundle.putString("first_title",
+                            newsDigest.get(position).getTitle());
+                    bundle.putString("first_section",
+                            newsDigest.get(position).getSection());
+                    bundle.putString("first_abstract",
+                            newsDigest.get(position).getAbstractString());
                     Intent intent = new Intent(context, YahooParallaxActivity.class);
                     intent.putExtra(BundleKey.TYPE_YAHOO, bundle);
                     context.startActivity(intent);

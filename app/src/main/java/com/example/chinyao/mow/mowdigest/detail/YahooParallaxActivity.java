@@ -2,7 +2,6 @@ package com.example.chinyao.mow.mowdigest.detail;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,7 +15,7 @@ import com.example.chinyao.mow.R;
 public class YahooParallaxActivity extends AppCompatActivity {
 
     private ViewPager mPager;
-    private PagerAdapter mPagerAdapter;
+    private SlidePagerAdapter mPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +27,17 @@ public class YahooParallaxActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getBundleExtra(BundleKey.TYPE_YAHOO);
         float speed = bundle.getFloat(BundleKey.PARALLAX_SPEED);
+        String first_image = bundle.getString("first_image");
+        String first_title = bundle.getString("first_title");
+        String first_section = bundle.getString("first_section");
+        String first_abstract = bundle.getString("first_abstract");
 
         mPager = (ViewPager) findViewById(R.id.pager);
-        mPagerAdapter = new SlidePagerAdapter(getSupportFragmentManager());
+        mPagerAdapter = new SlidePagerAdapter(getSupportFragmentManager(), 3);
+        mPagerAdapter.first_image = first_image;
+        mPagerAdapter.first_title = first_title;
+        mPagerAdapter.first_section = first_section;
+        mPagerAdapter.first_abstract = first_abstract;
         mPager.setAdapter(mPagerAdapter);
         int[] resId = {R.id.cover_img};
         mPager.setPageTransformer(true, new ParallaxTransformer(speed, 0, resId, true));

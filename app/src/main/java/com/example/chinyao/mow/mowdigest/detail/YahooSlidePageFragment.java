@@ -8,7 +8,9 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.chinyao.mow.R;
 
 /**
@@ -19,6 +21,10 @@ public class YahooSlidePageFragment extends Fragment {
     private ImageView mCoverImageView;
     private int mCoverImageHeight;
     private float mVerticalParalllaxSpeed = 0.3f;
+    public String first_image;
+    public String first_title;
+    public String first_section;
+    public String first_abstract;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -28,14 +34,33 @@ public class YahooSlidePageFragment extends Fragment {
         ((NotifyingScrollView) rootView.findViewById(R.id.scroll_view))
                 .setOnScrollChangedListener(mOnScrollChangedListener);
         mCoverImageView = (ImageView) rootView.findViewById(R.id.cover_img);
+        TextView section = (TextView) rootView.findViewById(R.id.section);
+        TextView title = (TextView) rootView.findViewById(R.id.title);
+        TextView content_text = (TextView) rootView.findViewById(R.id.content_text);
 
         int index = getArguments().getInt(BundleKey.PAGE_INDEX,0);
         switch (index){
+            case 0:
+                Glide.with(this)
+                        .load(first_image)
+                        .centerCrop()
+                        /*
+                        .placeholder(R.drawable.mediumthreebytwo440)
+                        .error(R.drawable.mediumthreebytwo440)
+                        */
+                        .into(mCoverImageView);
+                section.setText(first_section);
+                title.setText(first_title);
+                content_text.setText(first_abstract);
+                break;
             case 1:
-                mCoverImageView.setImageResource(R.drawable.p2);
+                mCoverImageView.setImageResource(R.drawable.ginobili);
                 break;
             case 2:
-                mCoverImageView.setImageResource(R.drawable.p3);
+                mCoverImageView.setImageResource(R.drawable.ginobili_fake);
+                section.setText("Sports");
+                title.setText("Manu Ginobili hasn't decided if he will retire this summer.");
+                content_text.setText("Similar to Tim Duncan, Ginobili has a player option for the 2016-17 season but will take his time this summer before making a decision. Ginobili will be 39 years old in July and averaged 9.6 points, 3.1 assists, 2.5 boards, 1.1 steals and 1.2 3-pointers in 19.6 minutes in 58 regular-season appearances.");
                 break;
         }
 
