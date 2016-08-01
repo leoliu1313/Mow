@@ -52,13 +52,14 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
     private Handler handler = null;
     private Runnable runnable = null; // remember to new Handler(), onDestroy(), removeCallbacksAndMessages()
     private boolean lock = false;
-    private String query = null;
+    public String query = null;
     private int page = 1;
 
     public MenuItem searchItem = null;
     public String begin_date = null;
     public String end_date = null;
     public int sort_spinner_mode = 0;
+    public boolean[] sections = null;
 
     public static final int NewsContentMode = 2;
     // 1: debug
@@ -166,9 +167,9 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
                     MowdigestActivity.TheAPIInterface.articleSearch(
                             query,
                             null,
-                            "newest",
-                            null,
-                            null,
+                            sort_spinner_mode == 0 ? "newest" : "oldest",
+                            begin_date,
+                            end_date,
                             page,
                             MowdigestActivity.API_KEY);
             call.enqueue(new Callback<MowdigestSearchResult>() {
@@ -187,14 +188,14 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
                             newsDigest.add(MowdigestPopularNews.fromSearchNews(theNews));
                         }
                         notifyNewsDigest();
-                        lock = false;
                     }
+                    lock = false;
                 }
 
                 @Override
                 public void onFailure(Call<MowdigestSearchResult> call, Throwable t) {
-                    lock = false;
                     Log.d("MowdigestFragment", "onFailure");
+                    lock = false;
                 }
             });
         }
@@ -277,49 +278,58 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
         }
     }
 
-    public  void doArticleSearch(final String theQuery) {
-        // perform query here
-        option.need_clear = true;
-        // viewPager.setCurrentItem(1);
-        viewPager.setCurrentItem(1, true);
-        theSwipeRefreshLayout.setRefreshing(true);
-        newsDigest.clear();
-        final Call<MowdigestSearchResult> call =
-                MowdigestActivity.TheAPIInterface.articleSearch(
-                        theQuery,
-                        null,
-                        sort_spinner_mode == 0 ? "newest" : "oldest",
-                        begin_date,
-                        end_date,
-                        1,
-                        MowdigestActivity.API_KEY);
-        call.enqueue(new Callback<MowdigestSearchResult>() {
-            @Override
-            public void onResponse(Call<MowdigestSearchResult> call, Response<MowdigestSearchResult> response) {
-                Log.d("MowdigestActivity", "onResponse");
-                Log.d("MowdigestActivity",
-                        "statusCode " + response.code());
-                MowdigestSearchResult theSearch = response.body();
-                if (theSearch != null
-                        && theSearch.getResponse() != null
-                        && theSearch.getResponse().getDocs() != null) {
-                    Log.d("MowdigestActivity",
-                            "theSearch.getResponse().getDocs().size() " + theSearch.getResponse().getDocs().size());
-                    for (MowdigestSearchNews theNews : theSearch.getResponse().getDocs()) {
-                        newsDigest.add(MowdigestPopularNews.fromSearchNews(theNews));
-                    }
-                    notifyNewsDigest();
-                    theSwipeRefreshLayout.setRefreshing(false);
-                    option.need_clear = true;
-                    query = theQuery;
-                    page = 1;
-                }
-            }
+    public void doArticleSearch() {
+        doArticleSearch(query);
+    }
 
-            @Override
-            public void onFailure(Call<MowdigestSearchResult> call, Throwable t) {
-                Log.d("MowdigestSwipeAdapter", "onFailure");
-            }
-        });
+    public void doArticleSearch(final String theQuery) {
+        if (!lock) {
+            lock = true;
+            // perform query here
+            option.need_clear = true;
+            // viewPager.setCurrentItem(1);
+            viewPager.setCurrentItem(1, true);
+            theSwipeRefreshLayout.setRefreshing(true);
+            newsDigest.clear();
+            final Call<MowdigestSearchResult> call =
+                    MowdigestActivity.TheAPIInterface.articleSearch(
+                            theQuery,
+                            null,
+                            sort_spinner_mode == 0 ? "newest" : "oldest",
+                            begin_date,
+                            end_date,
+                            1,
+                            MowdigestActivity.API_KEY);
+            call.enqueue(new Callback<MowdigestSearchResult>() {
+                @Override
+                public void onResponse(Call<MowdigestSearchResult> call, Response<MowdigestSearchResult> response) {
+                    Log.d("MowdigestActivity", "onResponse");
+                    Log.d("MowdigestActivity",
+                            "statusCode " + response.code());
+                    MowdigestSearchResult theSearch = response.body();
+                    if (theSearch != null
+                            && theSearch.getResponse() != null
+                            && theSearch.getResponse().getDocs() != null) {
+                        Log.d("MowdigestActivity",
+                                "theSearch.getResponse().getDocs().size() " + theSearch.getResponse().getDocs().size());
+                        for (MowdigestSearchNews theNews : theSearch.getResponse().getDocs()) {
+                            newsDigest.add(MowdigestPopularNews.fromSearchNews(theNews));
+                        }
+                        notifyNewsDigest();
+                        theSwipeRefreshLayout.setRefreshing(false);
+                        option.need_clear = true;
+                        query = theQuery;
+                        page = 1;
+                    }
+                    lock = false;
+                }
+
+                @Override
+                public void onFailure(Call<MowdigestSearchResult> call, Throwable t) {
+                    Log.d("MowdigestSwipeAdapter", "onFailure");
+                    lock = false;
+                }
+            });
+        }
     }
 }

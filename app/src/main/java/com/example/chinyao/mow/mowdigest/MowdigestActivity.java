@@ -59,6 +59,8 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
     private Spinner sort_spinner;
     private TextView date_range_textview;
     private CheckBox art_checkbox;
+    private CheckBox style_checkbox;
+    private CheckBox sports_checkbox;
 
     public static OkHttpClient TheOkHttpClient = null;
     public static MowdigestAPIInterface TheAPIInterface = null;
@@ -126,6 +128,7 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
         theAdapter.addFragment(newsTrainingFragment, getString(R.string.training));
 
         newsDigestFragment = MowdigestFragment.newInstance(2, newsDigest, viewPager, option);
+        newsDigestFragment.sections = new boolean[20];
         theAdapter.addFragment(newsDigestFragment, getString(R.string.digest));
 
         // theAdapter.addFragment(MowtubeListFragment.newInstance(3), getString(R.string.explore));
@@ -222,7 +225,7 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
         filterItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                showMaterialDialog();
+                showMaterialDialog(searchView);
                 return false;
             }
         });
@@ -248,7 +251,7 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
         }
     }
 
-    void showMaterialDialog() {
+    void showMaterialDialog(final SearchView searchView) {
         // init
         MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .title("Filter")
@@ -257,11 +260,15 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        searchView.clearFocus();
+                        newsDigestFragment.doArticleSearch();
+                        /*
                         String value = sort_spinner.getSelectedItem().toString();
                         Toast.makeText(getApplicationContext(),
                                 "sort_spinner: " + value,
                                 Toast.LENGTH_LONG)
                                 .show();
+                                */
                     }
                 }).build();
         // View positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
@@ -270,12 +277,23 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
             date_range_textview = (TextView) view.findViewById(R.id.datae_range_textview);
             sort_spinner = (Spinner) view.findViewById(R.id.sort_spinner);
             art_checkbox = (CheckBox) view.findViewById(R.id.art_checkbox);
+            style_checkbox = (CheckBox) view.findViewById(R.id.style_checkbox);
+            sports_checkbox = (CheckBox) view.findViewById(R.id.sports_checkbox);
         }
 
         // read current filter
         if (newsDigestFragment.begin_date != null && newsDigestFragment.end_date != null) {
             String input = newsDigestFragment.begin_date + " ~ " + newsDigestFragment.end_date;
             date_range_textview.setText(input);
+        }
+        if (newsDigestFragment.sections[0]) {
+            art_checkbox.setChecked(true);
+        }
+        if (newsDigestFragment.sections[4]) {
+            style_checkbox.setChecked(true);
+        }
+        if (newsDigestFragment.sections[12]) {
+            sports_checkbox.setChecked(true);
         }
 
         // set up callback
@@ -321,10 +339,25 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
         art_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                newsDigestFragment.sections[0] = isChecked;
+                /*
                 Toast.makeText(getApplicationContext(),
                         "art_checkbox isChecked: " + isChecked,
-                        Toast.LENGTH_LONG)
+                        Toast.LENGTH_SHORT)
                         .show();
+                        */
+            }
+        });
+        style_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                newsDigestFragment.sections[4] = isChecked;
+            }
+        });
+        sports_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                newsDigestFragment.sections[12] = isChecked;
             }
         });
 
