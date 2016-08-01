@@ -46,6 +46,8 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
     private int mode = 1;
     private List<MowdigestPopularNews> newsDigest = null;
     private ViewPager viewPager = null;
+    public MowdigestOption option = null;
+
     private MowdigestRecyclerAdapter newsDigestAdapter = null;
     private Handler handler = null;
     private Runnable runnable = null; // remember to new Handler(), onDestroy(), removeCallbacksAndMessages()
@@ -64,12 +66,15 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
 
     public static MowdigestFragment newInstance(int mode,
                                                 List<MowdigestPopularNews> newsDigest,
-                                                ViewPager viewPager) {
+                                                ViewPager viewPager,
+                                                MowdigestOption option) {
         MowdigestFragment theFragment = new MowdigestFragment();
 
         theFragment.mode = mode;
         theFragment.newsDigest = newsDigest; // avoid java.lang.NullPointerException at getItemCount()
         theFragment.viewPager = viewPager;
+        theFragment.option = option;
+
         theFragment.handler = new Handler();
 
         return theFragment;
@@ -138,7 +143,7 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
                     public void onLoadMore(int page, int totalItemsCount) {
                         // Triggered only when new data needs to be appended to the list
                         // Add whatever code is needed to append new items to the bottom of the list
-                        if (MowdigestActivity.need_clear) {
+                        if (option.need_clear) {
                             customLoadMoreDataFromApi();
                         }
                     }
@@ -274,7 +279,7 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
 
     public  void doArticleSearch(final String theQuery) {
         // perform query here
-        MowdigestActivity.need_clear = true;
+        option.need_clear = true;
         // viewPager.setCurrentItem(1);
         viewPager.setCurrentItem(1, true);
         theSwipeRefreshLayout.setRefreshing(true);
@@ -305,7 +310,7 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
                     }
                     notifyNewsDigest();
                     theSwipeRefreshLayout.setRefreshing(false);
-                    MowdigestActivity.need_clear = true;
+                    option.need_clear = true;
                     query = theQuery;
                     page = 1;
                 }

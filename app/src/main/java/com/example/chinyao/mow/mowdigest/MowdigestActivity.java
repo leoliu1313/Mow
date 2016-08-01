@@ -52,14 +52,13 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
     ViewPager viewPager;
 
     private List<MowdigestPopularNews> newsDigest;
+    private MowdigestOption option;
+
     private MowdigestFragment newsTrainingFragment;
     private MowdigestFragment newsDigestFragment;
     private Spinner sort_spinner;
     private TextView date_range_textview;
     private CheckBox art_checkbox;
-
-    // TODO: avoid this?
-    public static boolean need_clear = false;
 
     public static OkHttpClient TheOkHttpClient = null;
     public static MowdigestAPIInterface TheAPIInterface = null;
@@ -94,6 +93,7 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
 
     private void setupData() {
         newsDigest = new ArrayList<>();
+        option = new MowdigestOption();
     }
 
     private void setupNetwork() {
@@ -122,10 +122,10 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
         // use getView() instead?
         MowtubeViewPagerAdapter theAdapter = new MowtubeViewPagerAdapter(getSupportFragmentManager());
 
-        newsTrainingFragment = MowdigestFragment.newInstance(1, newsDigest, viewPager);
+        newsTrainingFragment = MowdigestFragment.newInstance(1, newsDigest, viewPager, option);
         theAdapter.addFragment(newsTrainingFragment, getString(R.string.training));
 
-        newsDigestFragment = MowdigestFragment.newInstance(2, newsDigest, viewPager);
+        newsDigestFragment = MowdigestFragment.newInstance(2, newsDigest, viewPager, option);
         theAdapter.addFragment(newsDigestFragment, getString(R.string.digest));
 
         // theAdapter.addFragment(MowtubeListFragment.newInstance(3), getString(R.string.explore));
@@ -230,7 +230,7 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
         return super.onCreateOptionsMenu(menu);
     }
 
-    public static String getDateString(int begin_year, int begin_month, int begin_date) {
+    private String getDateString(int begin_year, int begin_month, int begin_date) {
         if (begin_year == 0 || begin_month == 0 || begin_date == 0) {
             return null;
         }
