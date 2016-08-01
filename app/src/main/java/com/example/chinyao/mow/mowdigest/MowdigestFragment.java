@@ -86,15 +86,7 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Note that this can have more than RecyclerView
-        SwipeRefreshLayout theRootContainer =
-                (SwipeRefreshLayout) inflater.inflate(R.layout.mowtube_stream_fragment, container, false);
-
-        // ButterKnife
-        ButterKnife.bind(this, theRootContainer);
-
-        setupRecyclerView(theRecyclerView);
-
-        setupSwipeRefreshLayout();
+        View view = inflater.inflate(R.layout.mowtube_stream_fragment, container, false);
 
         // orientation issue
         // http://stackoverflow.com/questions/9727173/support-fragmentpageradapter-holds-reference-to-old-fragments
@@ -104,9 +96,23 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
         // https://github.com/codepath/android_guides/wiki/ViewPager-with-FragmentPagerAdapter
         // http://guides.codepath.com/android/Handling-Configuration-Changes
         // http://guides.codepath.com/android/Understanding-App-Resources
+        // http://android-er.blogspot.com/2013/05/how-setretaininstancetrue-affect.html
         setRetainInstance(true);
 
-        return theRootContainer;
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // ButterKnife
+        // http://stackoverflow.com/questions/27002200/butterknife-fragment-rotation-giving-nullpointer
+        ButterKnife.bind(this, view);
+
+        setupRecyclerView(theRecyclerView);
+
+        setupSwipeRefreshLayout();
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
@@ -203,7 +209,9 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
     }
 
     void notifyNewsDigest() {
-        newsDigestAdapter.notifyDataSetChanged();
+        if (newsDigestAdapter != null) {
+            newsDigestAdapter.notifyDataSetChanged();
+        }
     }
 
     // pull-to-refresh
@@ -258,7 +266,9 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
                 runnable = new Runnable() {
                     @Override
                     public void run() {
-                        theSwipeRefreshLayout.setRefreshing(false);
+                        if (theSwipeRefreshLayout != null) {
+                            theSwipeRefreshLayout.setRefreshing(false);
+                        }
                     }
                 };
                 handler.postDelayed(runnable, 1000);
@@ -282,7 +292,9 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
     @Override
     public void onAsyncFinished(int preOffset) {
         if (preOffset == 0) {
-            theSwipeRefreshLayout.setRefreshing(false);
+            if (theSwipeRefreshLayout != null) {
+                theSwipeRefreshLayout.setRefreshing(false);
+            }
         }
     }
 
@@ -297,7 +309,9 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
             option.search_view_mode = true;
             // viewPager.setCurrentItem(1);
             viewPager.setCurrentItem(1, true);
-            theSwipeRefreshLayout.setRefreshing(true);
+            if (theSwipeRefreshLayout != null) {
+                theSwipeRefreshLayout.setRefreshing(true);
+            }
             newsDigest.clear();
             final Call<MowdigestSearchResult> call =
                     MowdigestActivity.TheAPIInterface.articleSearch(
@@ -324,19 +338,22 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
                             newsDigest.add(MowdigestPopularNews.fromSearchNews(theNews));
                         }
                         notifyNewsDigest();
-                        theSwipeRefreshLayout.setRefreshing(false);
                         option.search_view_mode = true;
                         query = theQuery;
                         page = 1;
                     }
-                    theSwipeRefreshLayout.setRefreshing(false);
+                    if (theSwipeRefreshLayout != null) {
+                        theSwipeRefreshLayout.setRefreshing(false);
+                    }
                     lock = false;
                 }
 
                 @Override
                 public void onFailure(Call<MowdigestSearchResult> call, Throwable t) {
                     Log.d("MowdigestSwipeAdapter", "onFailure");
-                    theSwipeRefreshLayout.setRefreshing(false);
+                    if (theSwipeRefreshLayout != null) {
+                        theSwipeRefreshLayout.setRefreshing(false);
+                    }
                     lock = false;
                 }
             });

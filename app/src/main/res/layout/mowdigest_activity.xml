@@ -24,7 +24,12 @@
             android:id="@+id/m_tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:tabMaxWidth="0dp"
             app:tabTextAppearance="@style/TabCapsFalse" />
+        <!--
+        rotation/orientation needs this app:tabMaxWidth="0dp"
+        http://stackoverflow.com/questions/30843775/tab-not-taking-full-width-on-tablet-device-using-android-support-design-widget
+        -->
 
     </android.support.design.widget.AppBarLayout>
 
