@@ -21,7 +21,7 @@ public class YahooParallaxActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_yahoo_parallax);
+        setContentView(R.layout.mowdigest_detail_parallax);
 
         setupToolbar();
         handleStatusBar();

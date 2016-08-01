@@ -24,7 +24,7 @@ public class YahooSlidePageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(
-                R.layout.yahoo_page, container, false);
+                R.layout.mowdigest_detail, container, false);
         ((NotifyingScrollView) rootView.findViewById(R.id.scroll_view))
                 .setOnScrollChangedListener(mOnScrollChangedListener);
         mCoverImageView = (ImageView) rootView.findViewById(R.id.cover_img);

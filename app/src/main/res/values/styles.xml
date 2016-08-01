@@ -19,9 +19,9 @@
 
     <style name="MowdigestTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">#673AB7</item>
-        <item name="colorPrimaryDark">#512DA8</item>
-        <item name="colorAccent">#18C6A4</item>
+        <item name="colorPrimary">@color/mowdigestColorPrimary</item>
+        <item name="colorPrimaryDark">@color/mowdigestColorPrimaryDark</item>
+        <item name="colorAccent">@color/mowdigestColorAccent</item>
     </style>
 
     <style name="DateTheme" parent="BetterPickersRadialTimePickerDialog">

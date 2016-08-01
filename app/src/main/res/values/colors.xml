@@ -55,5 +55,8 @@
     <color name="mowtubeColorBackground">#FFFFFF</color>
     <!-- background -->
 
+    <color name="mowdigestColorPrimary">#673AB7</color>
+    <color name="mowdigestColorPrimaryDark">#512DA8</color>
+    <color name="mowdigestColorAccent">#18C6A4</color>
     <color name="comfort_white">#FAFAFA</color>
 </resources>

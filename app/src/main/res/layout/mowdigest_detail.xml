@@ -26,16 +26,32 @@
             android:layout_marginTop="-120dp"
             />
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/section"
             android:layout_alignTop="@id/sharp_rect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fake_section"
+            tools:text="@string/fake_section"
+            android:layout_marginTop="55dp"
+            android:layout_marginLeft="9dp"
+            android:layout_marginStart="9dp"
+            android:textSize="24sp"
+            android:textColor="@color/mowdigestColorAccent"
+            android:padding="6dp"
+            />
+        <TextView
+            android:id="@+id/title"
+            android:layout_alignLeft="@id/section"
+            android:layout_alignStart="@id/section"
+            android:layout_below="@id/section"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/fake_title"
             tools:text="@string/fake_title"
-            android:layout_marginTop="55dp"
-            android:layout_marginLeft="9dp"
-            android:layout_marginStart="9dp"
+            android:layout_marginTop="8dp"
             android:textSize="28sp"
+            android:padding="6dp"
+            android:textColor="@color/mowtubeColorDateDarkDark"
             />
         <TextView
             android:id="@+id/content_text"
