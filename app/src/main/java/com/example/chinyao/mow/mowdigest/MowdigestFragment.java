@@ -144,7 +144,7 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
                     public void onLoadMore(int page, int totalItemsCount) {
                         // Triggered only when new data needs to be appended to the list
                         // Add whatever code is needed to append new items to the bottom of the list
-                        if (option.need_clear) {
+                        if (option.search_view_mode) {
                             customLoadMoreDataFromApi();
                         }
                     }
@@ -207,6 +207,7 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
 
     // pull-to-refresh
     // http://guides.codepath.com/android/Implementing-Pull-to-Refresh-Guide
+    // theSwipeRefreshLayout.setRefreshing(false)
     private void setupSwipeRefreshLayout() {
         // Setup refresh listener which triggers new data loading
         if (mode == 1) {
@@ -243,18 +244,24 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
             setupRecyclerView(theRecyclerView);
         }
         else if (mode == 2) {
-            // this is fake
-            if (runnable != null) {
-                handler.removeCallbacks(runnable);
-                runnable = null;
+            if (option.search_view_mode) {
+                // this is real
+                doArticleSearch();
             }
-            runnable = new Runnable() {
-                @Override
-                public void run() {
-                    theSwipeRefreshLayout.setRefreshing(false);
+            else {
+                // this is fake
+                if (runnable != null) {
+                    handler.removeCallbacks(runnable);
+                    runnable = null;
                 }
-            };
-            handler.postDelayed(runnable, 1000);
+                runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        theSwipeRefreshLayout.setRefreshing(false);
+                    }
+                };
+                handler.postDelayed(runnable, 1000);
+            }
         }
     }
 
@@ -286,7 +293,7 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
         if (!lock) {
             lock = true;
             // perform query here
-            option.need_clear = true;
+            option.search_view_mode = true;
             // viewPager.setCurrentItem(1);
             viewPager.setCurrentItem(1, true);
             theSwipeRefreshLayout.setRefreshing(true);
@@ -317,16 +324,18 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
                         }
                         notifyNewsDigest();
                         theSwipeRefreshLayout.setRefreshing(false);
-                        option.need_clear = true;
+                        option.search_view_mode = true;
                         query = theQuery;
                         page = 1;
                     }
+                    theSwipeRefreshLayout.setRefreshing(false);
                     lock = false;
                 }
 
                 @Override
                 public void onFailure(Call<MowdigestSearchResult> call, Throwable t) {
                     Log.d("MowdigestSwipeAdapter", "onFailure");
+                    theSwipeRefreshLayout.setRefreshing(false);
                     lock = false;
                 }
             });
