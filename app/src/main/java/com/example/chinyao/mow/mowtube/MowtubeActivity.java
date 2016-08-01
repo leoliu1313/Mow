@@ -534,6 +534,7 @@ public class MowtubeActivity extends AppCompatActivity {
         return false;
     }
 
+    // rotation orientation
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
         // Save custom values into the bundle
@@ -548,6 +549,7 @@ public class MowtubeActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
     }
 
+    // rotation orientation
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         // Always call the superclass so it can restore the view hierarchy

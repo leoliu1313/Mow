@@ -46,7 +46,6 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
     private int mode = 1;
     private List<MowdigestPopularNews> newsDigest = null;
     private ViewPager viewPager = null;
-    public MowdigestOption option = null;
 
     private MowdigestRecyclerAdapter newsDigestAdapter = null;
     private Handler handler = null;
@@ -54,7 +53,9 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
     private boolean lock = false;
     private String query = null;
     private int page = 1;
+    private boolean first_time = true;
 
+    public MowdigestOption option = null;
     public MenuItem searchItem = null;
     public String begin_date = null;
     public String end_date = null;
@@ -128,7 +129,6 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
             );
         }
         else if (mode == 2){
-            // TODO
             // recyclerView.setHasFixedSize(true);
             StaggeredGridLayoutManager layoutManager =
                     new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
@@ -162,6 +162,12 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
                         recyclerView
                 );
                 recyclerView.setAdapter(newsDigestAdapter);
+                // rotation orientation
+                if (first_time) {
+                    // avoid reloading
+                    first_time = false;
+                    doArticleSearch();
+                }
             }
         }
     }
