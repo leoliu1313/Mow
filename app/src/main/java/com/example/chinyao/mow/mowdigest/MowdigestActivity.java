@@ -9,20 +9,16 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
-import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -32,7 +28,6 @@ import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowdigest.model.MowdigestPopularNews;
 import com.example.chinyao.mow.mowdigest.model.MowdigestSearchNews;
 import com.example.chinyao.mow.mowdigest.model.MowdigestSearchResult;
-import com.example.chinyao.mow.mowtube.MowtubeListFragment;
 import com.example.chinyao.mow.mowtube.MowtubeViewPagerAdapter;
 import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
@@ -65,18 +60,18 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
     private List<MowdigestPopularNews> newsDigest;
     private MowdigestFragment newsTrainingFragment;
     private MowdigestFragment newsDigestFragment;
-    private int preselectedIndex = 0;
-    private EditText passwordInput;
-    private View positiveAction;
-    Spinner spinner;
-    Button theButton;
-    CheckBox checkbox;
+    private Spinner sort_spinner;
+    private TextView date_range_textview;
+    private CheckBox art_checkbox;
 
     public static OkHttpClient TheOkHttpClient = null;
     public static MowdigestAPIInterface TheAPIInterface = null;
 
     // TODO: avoid this?
     public static boolean need_clear = false;
+    public static String begin_date = null;
+    public static String end_date = null;
+    public static int sort_spinner_mode = 0;
 
     public static final String API_KEY = "fb2092b45dc44c299ecf5098b9b1209d";
     public static final String BASE_URL = "http://api.nytimes.com";
@@ -137,7 +132,7 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
         newsDigestFragment = MowdigestFragment.newInstance(2, newsDigest);
         theAdapter.addFragment(newsDigestFragment, getString(R.string.digest));
 
-        theAdapter.addFragment(MowtubeListFragment.newInstance(3), getString(R.string.explore));
+        // theAdapter.addFragment(MowtubeListFragment.newInstance(3), getString(R.string.explore));
 
         viewPager.setAdapter(theAdapter);
 
@@ -188,50 +183,8 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(final String query) {
-                // perform query here
-                need_clear = true;
-                // viewPager.setCurrentItem(1);
-                viewPager.setCurrentItem(1, true);
-                newsDigestFragment.theSwipeRefreshLayout.setRefreshing(true);
-                newsDigest.clear();
-                final Call<MowdigestSearchResult> call =
-                        MowdigestActivity.TheAPIInterface.articleSearch(
-                                query,
-                                null,
-                                "newest",
-                                null,
-                                null,
-                                1,
-                                API_KEY);
-                call.enqueue(new Callback<MowdigestSearchResult>() {
-                    @Override
-                    public void onResponse(Call<MowdigestSearchResult> call, Response<MowdigestSearchResult> response) {
-                        Log.d("MowdigestActivity", "onResponse");
-                        Log.d("MowdigestActivity",
-                                "statusCode " + response.code());
-                        MowdigestSearchResult theSearch = response.body();
-                        if (theSearch != null
-                                && theSearch.getResponse() != null
-                                && theSearch.getResponse().getDocs() != null) {
-                            Log.d("MowdigestActivity",
-                                    "theSearch.getResponse().getDocs().size() " + theSearch.getResponse().getDocs().size());
-                            for (MowdigestSearchNews theNews : theSearch.getResponse().getDocs()) {
-                                newsDigest.add(MowdigestPopularNews.fromSearchNews(theNews));
-                            }
-                            newsDigestFragment.notifyNewsDigest();
-                            newsDigestFragment.theSwipeRefreshLayout.setRefreshing(false);
-                            need_clear = true;
-                            newsDigestFragment.query = query;
-                            newsDigestFragment.page = 1;
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<MowdigestSearchResult> call, Throwable t) {
-                        Log.d("MowdigestSwipeAdapter", "onFailure");
-                    }
-                });
+            public boolean onQueryTextSubmit(String query) {
+                doArticleSearch(query);
 
                 // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
                 // see https://code.google.com/p/android/issues/detail?id=24599
@@ -274,10 +227,6 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 showMaterialDialog();
-                Toast.makeText(getApplicationContext(),
-                        getResources().getString(R.string.app_version),
-                        Toast.LENGTH_SHORT)
-                        .show();
                 return false;
             }
         });
@@ -285,108 +234,164 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
         return super.onCreateOptionsMenu(menu);
     }
 
+    private void doArticleSearch(final String query) {
+        // perform query here
+        need_clear = true;
+        // viewPager.setCurrentItem(1);
+        viewPager.setCurrentItem(1, true);
+        newsDigestFragment.theSwipeRefreshLayout.setRefreshing(true);
+        newsDigest.clear();
+        final Call<MowdigestSearchResult> call =
+                MowdigestActivity.TheAPIInterface.articleSearch(
+                        query,
+                        null,
+                        sort_spinner_mode == 0 ? "newest" : "oldest",
+                        begin_date,
+                        end_date,
+                        1,
+                        API_KEY);
+        call.enqueue(new Callback<MowdigestSearchResult>() {
+            @Override
+            public void onResponse(Call<MowdigestSearchResult> call, Response<MowdigestSearchResult> response) {
+                Log.d("MowdigestActivity", "onResponse");
+                Log.d("MowdigestActivity",
+                        "statusCode " + response.code());
+                MowdigestSearchResult theSearch = response.body();
+                if (theSearch != null
+                        && theSearch.getResponse() != null
+                        && theSearch.getResponse().getDocs() != null) {
+                    Log.d("MowdigestActivity",
+                            "theSearch.getResponse().getDocs().size() " + theSearch.getResponse().getDocs().size());
+                    for (MowdigestSearchNews theNews : theSearch.getResponse().getDocs()) {
+                        newsDigest.add(MowdigestPopularNews.fromSearchNews(theNews));
+                    }
+                    newsDigestFragment.notifyNewsDigest();
+                    newsDigestFragment.theSwipeRefreshLayout.setRefreshing(false);
+                    need_clear = true;
+                    newsDigestFragment.query = query;
+                    newsDigestFragment.page = 1;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MowdigestSearchResult> call, Throwable t) {
+                Log.d("MowdigestSwipeAdapter", "onFailure");
+            }
+        });
+    }
+
+    public static String getDateString(int begin_year, int begin_month, int begin_date) {
+        if (begin_year == 0 || begin_month == 0 || begin_date == 0) {
+            return null;
+        }
+        else {
+            String year = Integer.toString(begin_year);
+            String month = Integer.toString(begin_month);
+            if (month.length() == 1) {
+                month = "0" + month;
+            }
+            String date = Integer.toString(begin_date);
+            if (date.length() == 1) {
+                date = "0" + date;
+            }
+            return year + month + date;
+        }
+    }
+
     void showMaterialDialog() {
+        // init
         MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .title("Filter")
                 .customView(R.layout.mowdigest_filter, true)
-                .positiveText(getString(R.string.save_button))
-                .negativeText(android.R.string.cancel)
+                .positiveText(android.R.string.ok)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        String value = spinner.getSelectedItem().toString();
+                        String value = sort_spinner.getSelectedItem().toString();
                         Toast.makeText(getApplicationContext(),
-                                "Password: " + passwordInput.getText().toString() +
-                                "spinner: " + value,
-                                Toast.LENGTH_SHORT)
+                                "sort_spinner: " + value,
+                                Toast.LENGTH_LONG)
                                 .show();
                     }
                 }).build();
-        positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
+        // View positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
         View view = dialog.getCustomView();
-
         if (view != null) {
-            theButton = (Button) view.findViewById(R.id.button);
-            spinner = (Spinner) view.findViewById(R.id.mySpinner);
-            passwordInput = (EditText) dialog.getCustomView().findViewById(R.id.password);
-            checkbox = (CheckBox) dialog.getCustomView().findViewById(R.id.showPassword);
+            date_range_textview = (TextView) view.findViewById(R.id.datae_range_textview);
+            sort_spinner = (Spinner) view.findViewById(R.id.sort_spinner);
+            art_checkbox = (CheckBox) view.findViewById(R.id.art_checkbox);
         }
 
-        theButton.setOnClickListener(new View.OnClickListener() {
+        // read current filter
+        if (begin_date != null && end_date != null) {
+            String input = begin_date + " ~ " + end_date;
+            date_range_textview.setText(input);
+        }
+
+        // set up callback
+        date_range_textview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Calendar now = Calendar.getInstance();
                 DatePickerDialog dpd =
                         com.borax12.materialdaterangepicker.date.DatePickerDialog.newInstance(
-                        MowdigestActivity.this,
-                        now.get(Calendar.YEAR),
-                        now.get(Calendar.MONTH),
-                        now.get(Calendar.DAY_OF_MONTH)
-                );
+                                MowdigestActivity.this,
+                                now.get(Calendar.YEAR),
+                                now.get(Calendar.MONTH),
+                                now.get(Calendar.DAY_OF_MONTH)
+                        );
                 dpd.show(getFragmentManager(), "Datepickerdialog");
             }
         });
 
-        //noinspection ConstantConditions
-        passwordInput.addTextChangedListener(new TextWatcher() {
+        // sort
+        sort_spinner.setSelection(sort_spinner_mode);
+        sort_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                       int arg2, long arg3) {
+                // TODO Auto-generated method stub
+                sort_spinner_mode = sort_spinner.getSelectedItemPosition();
+                /*
+                String msupplier = sort_spinner.getSelectedItem().toString();
+                Toast.makeText(getApplicationContext(),
+                        "msupplier: " + msupplier,
+                        Toast.LENGTH_LONG)
+                        .show();
+                        */
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                positiveAction.setEnabled(s.toString().trim().length() > 0);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
             }
         });
-        // Toggling the show password CheckBox will mask or unmask the password input EditText
-        checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+        // section
+        art_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                passwordInput.setInputType(!isChecked ? InputType.TYPE_TEXT_VARIATION_PASSWORD : InputType.TYPE_CLASS_TEXT);
-                passwordInput.setTransformationMethod(!isChecked ? PasswordTransformationMethod.getInstance() : null);
+                Toast.makeText(getApplicationContext(),
+                        "art_checkbox isChecked: " + isChecked,
+                        Toast.LENGTH_LONG)
+                        .show();
             }
         });
-        dialog.show();
-        positiveAction.setEnabled(false); // disabled by default
 
-        /*
-        new MaterialDialog.Builder(MowdigestActivity.this)
-                .items(R.array.sort)
-                .itemsCallbackSingleChoice(preselectedIndex,
-                        new MaterialDialog.ListCallbackSingleChoice() {
-                            @Override
-                            public boolean onSelection(MaterialDialog dialog,
-                                                       View view,
-                                                       int which,
-                                                       CharSequence text) {
-                                if (which == 0) {
-                                    Toast.makeText(getApplicationContext(),
-                                            "000",
-                                            Toast.LENGTH_SHORT)
-                                            .show();
-                                }
-                                else if (which == 1) {
-                                    Toast.makeText(getApplicationContext(),
-                                            "111",
-                                            Toast.LENGTH_SHORT)
-                                            .show();
-                                }
-                                return true; // allow selection
-                            }
-                        })
-                .positiveText(getString(R.string.save_button))
-                .show();
-                */
+        // show
+        dialog.show();
+        // positiveAction.setEnabled(false); // disabled by default
     }
 
     @Override
     public void onDateSet(DatePickerDialog view,
                           int year, int monthOfYear, int dayOfMonth,
                           int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
+        begin_date = getDateString(year, monthOfYear + 1, dayOfMonth);
+        end_date = getDateString(yearEnd, monthOfYearEnd + 1, dayOfMonthEnd);
+        String input = begin_date + " ~ " + end_date;
+        date_range_textview.setText(input);
+        /*
         Toast.makeText(getApplicationContext(),
                         " year: " + year
                         + " month: " + (monthOfYear + 1)
@@ -395,7 +400,8 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
                         + " month: " + (monthOfYearEnd + 1)
                         + " day: " + dayOfMonthEnd
                 ,
-                Toast.LENGTH_SHORT)
+                Toast.LENGTH_LONG)
                 .show();
+        */
     }
 }

@@ -6,7 +6,7 @@
         <item>Low Priority</item>
     </string-array>
     <string-array name="sort">
-        <item>Sort by Newest First</item>
-        <item>Sort by Oldest First</item>
+        <item>Newest First</item>
+        <item>Oldest First</item>
     </string-array>
 </resources>

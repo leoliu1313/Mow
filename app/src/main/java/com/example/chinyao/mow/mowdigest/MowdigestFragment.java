@@ -228,18 +228,20 @@ public class MowdigestFragment extends Fragment implements MowdigestSwipeAdapter
             // this is real
             setupRecyclerView(theRecyclerView);
         }
-        // this is fake
-        if (runnable != null) {
-            handler.removeCallbacks(runnable);
-            runnable = null;
-        }
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                theSwipeRefreshLayout.setRefreshing(false);
+        else if (mode == 2) {
+            // this is fake
+            if (runnable != null) {
+                handler.removeCallbacks(runnable);
+                runnable = null;
             }
-        };
-        handler.postDelayed(runnable, 3000);
+            runnable = new Runnable() {
+                @Override
+                public void run() {
+                    theSwipeRefreshLayout.setRefreshing(false);
+                }
+            };
+            handler.postDelayed(runnable, 1000);
+        }
     }
 
     @Override

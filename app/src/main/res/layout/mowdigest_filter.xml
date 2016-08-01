@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -8,14 +9,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/signalStrength"
+        android:text="@string/powered_by"
         android:textColor="#80000000"
         android:textSize="@dimen/customTitle" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="@string/excellent"
+        android:text="@string/nyt_api"
         android:textColor="#000000"
         android:textSize="@dimen/customEntry" />
 
@@ -23,95 +24,190 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
-        android:text="@string/ssid"
+        android:text="@string/date_range"
         android:textColor="#80000000"
         android:textSize="@dimen/customTitle" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="@string/ssidLit"
+        android:text="All Time"
+        tools:text="20160701 ~ 20160731"
         android:textColor="#000000"
-        android:textSize="@dimen/customEntry" />
+        android:textSize="@dimen/customEntry"
+        android:id="@+id/datae_range_textview" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
-        android:text="@string/security"
-        android:textColor="#80000000"
-        android:textSize="@dimen/customTitle" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="@string/securityType"
-        android:textColor="#000000"
-        android:textSize="@dimen/customEntry" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:text="@string/security"
+        android:text="@string/sort"
         android:textColor="#80000000"
         android:textSize="@dimen/customTitle" />
     <Spinner
-        android:id="@+id/mySpinner"
+        android:id="@+id/sort_spinner"
         android:layout_width="wrap_content"
         android:entries="@array/sort"
-        android:prompt="@string/securityType"
+        android:prompt="@string/nyt_api"
         android:layout_height="wrap_content" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
-        android:text="@string/security"
+        android:text="@string/category"
         android:textColor="#80000000"
         android:textSize="@dimen/customTitle" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="@string/securityType"
-        android:textColor="#000000"
-        android:textSize="@dimen/customEntry" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="@string/securityType"
-        android:textColor="#000000"
-        android:textSize="@dimen/customEntry" />
-    <Button
-        android:background="?android:attr/selectableItemBackground"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/button" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:text="@string/password"
-        android:textColor="#80000000"
-        android:textSize="@dimen/customTitle" />
-    <EditText
-        android:id="@+id/password"
+    <CheckBox
+        android:id="@+id/art_checkbox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:inputType="textPassword"
+        android:layout_marginTop="18dp"
+        android:text="@string/art_section"
         android:textColor="#000000"
         android:textSize="@dimen/customEntry" />
     <CheckBox
-        android:id="@+id/showPassword"
+        android:id="@+id/books_checkbox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
-        android:text="@string/showPassword"
+        android:text="@string/books_section"
+        android:textColor="#000000"
+        android:textSize="@dimen/customEntry" />
+    <CheckBox
+        android:id="@+id/business_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="@string/business_section"
+        android:textColor="#000000"
+        android:textSize="@dimen/customEntry" />
+    <CheckBox
+        android:id="@+id/crosswords_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="@string/crosswords_section"
+        android:textColor="#000000"
+        android:textSize="@dimen/customEntry" />
+    <CheckBox
+        android:id="@+id/style_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="@string/style_section"
+        android:textColor="#000000"
+        android:textSize="@dimen/customEntry" />
+    <CheckBox
+        android:id="@+id/food_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="@string/food_section"
+        android:textColor="#000000"
+        android:textSize="@dimen/customEntry" />
+    <CheckBox
+        android:id="@+id/health_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="@string/health_section"
+        android:textColor="#000000"
+        android:textSize="@dimen/customEntry" />
+    <CheckBox
+        android:id="@+id/magazine_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="@string/magazine_section"
+        android:textColor="#000000"
+        android:textSize="@dimen/customEntry" />
+    <CheckBox
+        android:id="@+id/multimedia_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="@string/multimedia_section"
+        android:textColor="#000000"
+        android:textSize="@dimen/customEntry" />
+    <CheckBox
+        android:id="@+id/movies_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="@string/movies_section"
+        android:textColor="#000000"
+        android:textSize="@dimen/customEntry" />
+    <CheckBox
+        android:id="@+id/opinion_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="@string/opinion_section"
+        android:textColor="#000000"
+        android:textSize="@dimen/customEntry" />
+    <CheckBox
+        android:id="@+id/science_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="@string/science_section"
+        android:textColor="#000000"
+        android:textSize="@dimen/customEntry" />
+    <CheckBox
+        android:id="@+id/sports_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="@string/sports_section"
+        android:textColor="#000000"
+        android:textSize="@dimen/customEntry" />
+    <CheckBox
+        android:id="@+id/technology_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="@string/technology_section"
+        android:textColor="#000000"
+        android:textSize="@dimen/customEntry" />
+    <CheckBox
+        android:id="@+id/upshot_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="@string/upshot_section"
+        android:textColor="#000000"
+        android:textSize="@dimen/customEntry" />
+    <CheckBox
+        android:id="@+id/travel_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="@string/travel_section"
+        android:textColor="#000000"
+        android:textSize="@dimen/customEntry" />
+    <CheckBox
+        android:id="@+id/us_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="@string/us_section"
+        android:textColor="#000000"
+        android:textSize="@dimen/customEntry" />
+    <CheckBox
+        android:id="@+id/world_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="@string/world_section"
+        android:textColor="#000000"
+        android:textSize="@dimen/customEntry" />
+    <CheckBox
+        android:id="@+id/money_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="@string/money_section"
         android:textColor="#000000"
         android:textSize="@dimen/customEntry" />
 </LinearLayout>
