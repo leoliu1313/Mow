@@ -116,10 +116,8 @@ public class MowtweebookActivity extends AppCompatActivity {
         HomeTimelineFragment = MowtweebookFragment.newInstance(1, viewPager, client);
         theAdapter.addFragment(HomeTimelineFragment, getString(R.string.home));
 
-        /*
         UserTimelineFragment = MowtweebookFragment.newInstance(2, viewPager, client);
         theAdapter.addFragment(UserTimelineFragment, getString(R.string.profile));
-        */
 
         // theAdapter.addFragment(MowtubeListFragment.newInstance(3), getString(R.string.explore));
 

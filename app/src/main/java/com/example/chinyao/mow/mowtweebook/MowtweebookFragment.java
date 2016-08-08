@@ -225,38 +225,74 @@ public class MowtweebookFragment extends Fragment {
             }
             tweets.clear();
             if (query == null) {
-                client.getHomeTimeline(1, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                        Log.d("populateTimeline", response.toString());
-                        try {
-                            JSONObject theJSONObject;
-                            for (int i = 0; i < response.length(); i++) {
-                                theJSONObject = response.getJSONObject(i);
-                                tweets.add(MowtweebookTweet.parseJSON(theJSONObject.toString()));
+                if (mode == 1) {
+                    client.getHomeTimeline(1, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                            Log.d("populateTimeline", response.toString());
+                            try {
+                                JSONObject theJSONObject;
+                                for (int i = 0; i < response.length(); i++) {
+                                    theJSONObject = response.getJSONObject(i);
+                                    tweets.add(MowtweebookTweet.parseJSON(theJSONObject.toString()));
+                                }
+                                notifyAdapter();
+                                // TODO
+                                // query = theQuery;
+                                page = 1;
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                            notifyAdapter();
-                            // TODO
-                            // query = theQuery;
-                            page = 1;
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            if (theSwipeRefreshLayout != null) {
+                                theSwipeRefreshLayout.setRefreshing(false);
+                            }
+                            lock = false;
                         }
-                        if (theSwipeRefreshLayout != null) {
-                            theSwipeRefreshLayout.setRefreshing(false);
-                        }
-                        lock = false;
-                    }
 
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                        Log.d("populateTimeline", errorResponse.toString());
-                        if (theSwipeRefreshLayout != null) {
-                            theSwipeRefreshLayout.setRefreshing(false);
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                            Log.d("populateTimeline", errorResponse.toString());
+                            if (theSwipeRefreshLayout != null) {
+                                theSwipeRefreshLayout.setRefreshing(false);
+                            }
+                            lock = false;
                         }
-                        lock = false;
-                    }
-                });
+                    });
+                }
+                else if (mode == 2) {
+                    client.getUserTimeline(new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                            Log.d("populateTimeline", response.toString());
+                            try {
+                                JSONObject theJSONObject;
+                                for (int i = 0; i < response.length(); i++) {
+                                    theJSONObject = response.getJSONObject(i);
+                                    tweets.add(MowtweebookTweet.parseJSON(theJSONObject.toString()));
+                                }
+                                notifyAdapter();
+                                // TODO
+                                // query = theQuery;
+                                page = 1;
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            if (theSwipeRefreshLayout != null) {
+                                theSwipeRefreshLayout.setRefreshing(false);
+                            }
+                            lock = false;
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                            Log.d("populateTimeline", errorResponse.toString());
+                            if (theSwipeRefreshLayout != null) {
+                                theSwipeRefreshLayout.setRefreshing(false);
+                            }
+                            lock = false;
+                        }
+                    });
+                }
             }
         }
     }

@@ -59,4 +59,9 @@
     <color name="mowdigestColorPrimaryDark">#512DA8</color>
     <color name="mowdigestColorAccent">#18C6A4</color>
     <color name="comfort_white">#FAFAFA</color>
+
+
+    <color name="mowtweebookColorPrimary">#55ACEE</color>
+    <color name="mowtweebookColorPrimaryDark">#3B89C3</color>
+    <color name="mowtweebookColorAccent">#18C6A4</color>
 </resources>

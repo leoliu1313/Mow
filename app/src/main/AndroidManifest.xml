@@ -46,7 +46,7 @@
             android:name=".mowtweebook.MowtweebookActivity"
             android:icon="@mipmap/ic_launcher_mowtube"
             android:label="@string/mowtweebook_app_name"
-            android:theme="@style/MowtubeTheme"/>
+            android:theme="@style/MowtweebookTheme"/>
 
         <!-- Mow Digest -->
         <activity

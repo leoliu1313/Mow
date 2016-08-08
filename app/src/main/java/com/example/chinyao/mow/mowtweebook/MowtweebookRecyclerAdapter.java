@@ -181,6 +181,7 @@ public class MowtweebookRecyclerAdapter
             layoutParams.setFullSpan(false);
         }
         if (image == null) {
+            holder.card_image.setImageResource(android.R.color.transparent);
             holder.card_image.setVisibility(View.GONE);
         }
         else {

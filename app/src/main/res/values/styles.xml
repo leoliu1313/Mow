@@ -24,6 +24,13 @@
         <item name="colorAccent">@color/mowdigestColorAccent</item>
     </style>
 
+    <style name="MowtweebookTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/mowtweebookColorPrimary</item>
+        <item name="colorPrimaryDark">@color/mowtweebookColorPrimaryDark</item>
+        <item name="colorAccent">@color/mowtweebookColorAccent</item>
+    </style>
+
     <style name="DateTheme" parent="BetterPickersRadialTimePickerDialog">
         <item name="bpAccentColor">@color/mowColorDate</item>
         <item name="bpTitleColor">@color/mowColorDate</item>
