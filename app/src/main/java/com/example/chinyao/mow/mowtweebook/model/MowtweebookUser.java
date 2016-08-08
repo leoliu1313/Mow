@@ -12,6 +12,16 @@ public class MowtweebookUser {
 	String description;
 	String statuses_count;
 	String friends_count;
+	String screen_name;
+	String name;
+
+	public String getName() {
+		return name;
+	}
+
+	public String getScreen_name() {
+		return screen_name;
+	}
 
 	public String getDescription() {
 		return description;

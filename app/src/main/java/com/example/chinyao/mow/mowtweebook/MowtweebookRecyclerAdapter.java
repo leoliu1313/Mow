@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.chinyao.mow.R;
-import com.example.chinyao.mow.mowdigest.MowdigestFragment;
 import com.example.chinyao.mow.mowdigest.detail.BundleKey;
 import com.example.chinyao.mow.mowdigest.detail.YahooParallaxActivity;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookTweet;
@@ -67,34 +66,40 @@ public class MowtweebookRecyclerAdapter
         if (position < tweets.size()) {
             boolean do_full_span = true;
             if (position - 1 >= 0) {
-                if (tweets.get(position - 1).isFullSpan()) {
+                if (tweets.get(position - 1).isMowtweebookFullSpan()) {
                     do_full_span = false;
                 }
             }
             if (position - 2 >= 0) {
-                if (tweets.get(position - 2).isFullSpan()) {
+                if (tweets.get(position - 2).isMowtweebookFullSpan()) {
                     do_full_span = false;
                 }
             }
             if (position - 3 >= 0) {
-                if (tweets.get(position - 3).isFullSpan()) {
+                if (tweets.get(position - 3).isMowtweebookFullSpan()) {
                     do_full_span = false;
                 }
             }
             if (position - 4 >= 0) {
-                if (tweets.get(position - 4).isFullSpan()) {
+                if (tweets.get(position - 4).isMowtweebookFullSpan()) {
                     do_full_span = false;
                 }
             }
+            MowtweebookTweet theTweet = tweets.get(position);
+            if (tweets.get(position).getRetweeted_status() != null) {
+                theTweet = tweets.get(position).getRetweeted_status();
+            }
+            if (theTweet.getEntities() != null
+                    && theTweet.getEntities().getMedia() != null
+                    && theTweet.getEntities().getMedia().size() > 0) {
+                tweets.get(position).setMowtweebookImageUrl(
+                        theTweet.getEntities().getMedia().get(0).getMedia_url());
+            }
             if (do_full_span) {
-                /*
-                if (tweets.get(position).getUser().getProfile_image_url() > 0) {
-                    tweets.get(position).setMowdigestFullSpan(true);
+                if (tweets.get(position).getMowtweebookImageUrl() != null) {
+                    tweets.get(position).setMowtweebookFullSpan(true);
                     return 1;
                 }
-                */
-                tweets.get(position).setFullSpan(true);
-                return 1;
             }
         }
         return 0;
@@ -116,107 +121,53 @@ public class MowtweebookRecyclerAdapter
 
     @Override
     public void onBindViewHolder(MowtweebookRecyclerAdapter.ViewHolder holder, final int position) {
-        if (MowdigestFragment.NewsContentMode == 1) {
-            //holder.card_title.setText(Integer.toString(position));
-            if (position % 5 == 0) {
-                holder.card_image.setImageResource(R.drawable.coffee_21);
-            } else if (position % 5 == 1) {
-                holder.card_image.setImageResource(R.drawable.coffee_22);
-            } else if (position % 5 == 2) {
-                holder.card_image.setImageResource(R.drawable.coffee_23);
-            } else if (position % 5 == 3) {
-                holder.card_image.setImageResource(R.drawable.blobb);
-            } else if (position % 5 == 4) {
-                holder.card_image.setImageResource(R.drawable.blobb_poster);
-            }
+        MowtweebookTweet theTweet = tweets.get(position);
+        String image = theTweet.getMowtweebookImageUrl();
+        StaggeredGridLayoutManager.LayoutParams layoutParams =
+                (StaggeredGridLayoutManager.LayoutParams) holder.view.getLayoutParams();
+        // Heterogenous-Layouts-inside-RecyclerView
+        if (holder.getItemViewType() == 1) {
+            layoutParams.setFullSpan(true);
         }
-        else if (MowdigestFragment.NewsContentMode == 2) {
-            MowtweebookTweet theTweet = tweets.get(position);
-            String image = null;
-            boolean found_sfSpan = false;
-            boolean found = false;
-            found = true;
-            image = theTweet.getUser().getProfile_image_url();
-            /*
-            for (MowdigestImage theImage : theTweet.getUser().getProfile_image_url()) {
-                // also change Glide placeholder() and error() in MowdigestSwipeAdapter.java
-                // square: square320
-                // not square: mediumThreeByTwo440 sfSpan
-                if (theImage.getFormat() != null
-                        && theImage.getFormat().equals("mediumThreeByTwo440")) {
-                    image = theImage.getUrl();
-                    break;
-                    // stop searching
-                    // this size is ideal
-                }
-                // in case the above is not there
-                if (!found_sfSpan
-                        && theImage.getFormat() != null
-                        && theImage.getFormat().equals("sfSpan")) {
-                    image = theImage.getUrl();
-                    found_sfSpan = true;
-                    // keep searching
-                }
-                if (!found) {
-                    image = theImage.getUrl();
-                    found = true;
-                    // keep searching
-                }
-            }
-            */
-            StaggeredGridLayoutManager.LayoutParams layoutParams =
-                    (StaggeredGridLayoutManager.LayoutParams) holder.view.getLayoutParams();
-            // Heterogenous-Layouts-inside-RecyclerView
-            if (holder.getItemViewType() == 1) {
-                layoutParams.setFullSpan(true);
-                /*
-                int dimensionInDp = (int) TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_DIP, 200, context.getResources().getDisplayMetrics());
-                holder.card_image.getLayoutParams().height = dimensionInDp;
-                holder.card_image.getLayoutParams().width = dimensionInDp;
-                holder.card_image.requestLayout();
-                */
-            }
-            else if (holder.getItemViewType() == 0) {
-                layoutParams.setFullSpan(false);
-            }
-            if (image == null) {
-                holder.card_image.setVisibility(View.GONE);
-            }
-            else {
-                holder.card_image.setVisibility(View.INVISIBLE);
-                Glide.with(context)
-                        .load(image)
-                        .centerCrop()
-                        .placeholder(R.drawable.mediumthreebytwo440)
-                        .error(R.drawable.mediumthreebytwo440)
-                        .into(holder.card_image);
-                holder.card_image.setVisibility(View.VISIBLE);
-            }
-            holder.card_title.setText(theTweet.getText());
-            holder.card_section.setText(theTweet.getText());
-            holder.card_published_date.setText(theTweet.getCreated_at());
-            holder.view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(context, "Clicked Position = " + position, Toast.LENGTH_SHORT).show();
+        else if (holder.getItemViewType() == 0) {
+            layoutParams.setFullSpan(false);
+        }
+        if (image == null) {
+            holder.card_image.setVisibility(View.GONE);
+        }
+        else {
+            holder.card_image.setVisibility(View.INVISIBLE);
+            Glide.with(context)
+                    .load(image)
+                    .centerCrop()
+                    .placeholder(R.drawable.mediumthreebytwo440)
+                    .error(R.drawable.mediumthreebytwo440)
+                    .into(holder.card_image);
+            holder.card_image.setVisibility(View.VISIBLE);
+        }
+        holder.card_title.setText(theTweet.getText());
+        holder.card_section.setText(theTweet.getUser().getScreen_name());
+        holder.card_published_date.setText(theTweet.getCreated_at());
+        holder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "Clicked Position = " + position, Toast.LENGTH_SHORT).show();
 
-                    Bundle bundle = new Bundle();
-                    bundle.putFloat(BundleKey.PARALLAX_SPEED, 0.6f);
-                    bundle.putString("first_image",
-                            tweets.get(position).getUser().getProfile_image_url());
-                    bundle.putString("first_title",
-                            tweets.get(position).getText());
-                    bundle.putString("first_section",
-                            tweets.get(position).getText());
-                    bundle.putString("first_abstract",
-                            tweets.get(position).getText());
-                    Intent intent = new Intent(context, YahooParallaxActivity.class);
-                    intent.putExtra(BundleKey.TYPE_YAHOO, bundle);
-                    context.startActivity(intent);
-                }
-            });
-        }
+                Bundle bundle = new Bundle();
+                bundle.putFloat(BundleKey.PARALLAX_SPEED, 0.6f);
+                bundle.putString("first_image",
+                        tweets.get(position).getMowtweebookImageUrl());
+                bundle.putString("first_title",
+                        tweets.get(position).getText());
+                bundle.putString("first_section",
+                        tweets.get(position).getUser().getScreen_name());
+                bundle.putString("first_abstract",
+                        tweets.get(position).getText());
+                Intent intent = new Intent(context, YahooParallaxActivity.class);
+                intent.putExtra(BundleKey.TYPE_YAHOO, bundle);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

@@ -10,15 +10,18 @@ public class MowtweebookTweet {
 	String created_at;
 	String id_str;
 	String favorited;
-	String text;
-	String retweet_count;
+	String favorite_count;
 	String retweeted;
+	String retweet_count;
+	String text;
 	MowtweebookUser user;
 	MowtweebookEntities entities;
+	MowtweebookTweet retweeted_status;
 
 	// boolean default is false
 	// Boolean default is null
-	boolean fullSpan;
+	boolean mowtweebookFullSpan;
+	String mowtweebookImageUrl;
 
 	public MowtweebookTweet() {
 	}
@@ -29,12 +32,24 @@ public class MowtweebookTweet {
 		return boxOfficeMovieResponse;
 	}
 
-	public boolean isFullSpan() {
-		return fullSpan;
+	public String getMowtweebookImageUrl() {
+		return mowtweebookImageUrl;
 	}
 
-	public void setFullSpan(boolean fullSpan) {
-		this.fullSpan = fullSpan;
+	public void setMowtweebookImageUrl(String mowtweebookImageUrl) {
+		this.mowtweebookImageUrl = mowtweebookImageUrl;
+	}
+
+	public boolean isMowtweebookFullSpan() {
+		return mowtweebookFullSpan;
+	}
+
+	public void setMowtweebookFullSpan(boolean mowtweebookFullSpan) {
+		this.mowtweebookFullSpan = mowtweebookFullSpan;
+	}
+
+	public MowtweebookTweet getRetweeted_status() {
+		return retweeted_status;
 	}
 
 	public MowtweebookEntities getEntities() {
@@ -67,5 +82,9 @@ public class MowtweebookTweet {
 
 	public MowtweebookUser getUser() {
 		return user;
+	}
+
+	public String getFavorite_count() {
+		return favorite_count;
 	}
 }
