@@ -5,11 +5,50 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".mowtweebook.RestApplication"
         android:allowBackup="true"
         android:supportsRtl="true"
         android:icon="@mipmap/ic_launcher_mow"
         android:label="@string/app_name"
         android:theme="@style/MowTheme">
+        <meta-data
+            android:name="AA_DB_NAME"
+            android:value="RestClient.db" />
+        <meta-data
+            android:name="AA_DB_VERSION"
+            android:value="1" />
+
+        <!-- Mow Tweebook -->
+        <activity
+            android:name=".mowtweebook.MowtweebookSplashActivity"
+            android:taskAffinity=".mowtweebook.MowtweebookSplashActivity"
+            android:icon="@mipmap/ic_launcher_mowtube"
+            android:label="@string/mowtweebook_app_name"
+            android:theme="@style/SplashTheme"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="cprest"
+                    android:scheme="oauth" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".mowtweebook.MowtweebookActivity"
+            android:icon="@mipmap/ic_launcher_mowtube"
+            android:label="@string/mowtweebook_app_name"
+            android:theme="@style/MowtubeTheme"/>
+        <activity android:name=".mowtweebook.TimelineActicity"></activity>
+
         <!-- Mow Digest -->
         <activity
             android:name=".mowdigest.MowdigestActivity"

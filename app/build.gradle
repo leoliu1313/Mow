@@ -25,6 +25,12 @@ android {
     }
 }
 
+repositories {
+    jcenter()
+    mavenCentral()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+}
+
 dependencies {
     // http://gradleplease.appspot.com/
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -65,4 +71,8 @@ dependencies {
     compile 'com.facebook.stetho:stetho-okhttp3:1.3.1'
     compile 'jp.wasabeef:glide-transformations:2.0.1'
     compile 'com.borax12.materialdaterangepicker:library:1.6'
+    compile('com.codepath.libraries:android-oauth-handler:1.0.0@aar') {
+        transitive = true
+    }
+    compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
 }
