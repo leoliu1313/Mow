@@ -1,6 +1,6 @@
-# Project 2 - *MowDigest*
+# Project 3 - *Name of App Here*
 
-**MowDigest** is an android app that allows a user to search for articles on web using simple filters. The app utilizes [New York Times Search API](http://developer.nytimes.com/docs/read/article_search_api_v2).
+**Name of your app** is an android app that allows a user to view his Twitter timeline and post a new tweet. The app utilizes [Twitter REST API](https://dev.twitter.com/rest/public).
 
 Time spent: **X** hours spent in total
 
@@ -8,121 +8,73 @@ Time spent: **X** hours spent in total
 
 The following **required** functionality is completed:
 
-* [x] User can **search for news article** by specifying a query and launching a search. Search displays a grid of image results from the New York Times Search API.
-* [x] User can click on "settings" which allows selection of **advanced search options** to filter results
-* [x] User can configure advanced search filters such as:
-  * [x] Begin Date (using a date picker)
-  * [x] News desk values (Arts, Fashion & Style, Sports)
-  * [x] Sort order (oldest or newest)
-* [x] Subsequent searches have any filters applied to the search results
-* [x] User can tap on any image in results to see the full text of article **full-screen**
-* [x] User can **scroll down to see more articles** by Endless-Scrolling-with-AdapterViews-and-RecyclerView. The maximum number of articles is limited by the API search. 
+* [x]	User can **sign in to Twitter** using OAuth login
+* [x]	User can **view tweets from their home timeline**
+  * [ ] User is displayed the username, name, and body for each tweet
+  * [ ] User is displayed the [relative timestamp](https://gist.github.com/nesquena/f786232f5ef72f6e10a7) for each tweet "8m", "7h"
+  * [ ] User can view more tweets as they scroll with [infinite pagination](http://guides.codepath.com/android/Endless-Scrolling-with-AdapterViews-and-RecyclerView). Number of tweets is unlimited.
+    However there are [Twitter Api Rate Limits](https://dev.twitter.com/rest/public/rate-limiting) in place.
+* [ ] User can **compose and post a new tweet**
+  * [ ] User can click a �Compose� icon in the Action Bar on the top right
+  * [ ] User can then enter a new tweet and post this to twitter
+  * [ ] User is taken back to home timeline with **new tweet visible** in timeline
 
 The following **optional** features are implemented:
 
-* [ ] Implements robust error handling, [check if internet is available](http://guides.codepath.com/android/Sending-and-Managing-Network-Requests#checking-for-network-connectivity), handle error cases, network failures
-* [x] Used the **ActionBar SearchView** or custom layout as the query box instead of an EditText
-* [ ] User can **share an article link** to their friends or email it to themselves
-* [x] Replaced Filter Settings Activity with a lightweight modal overlay by DialogFragment
-* [x] Improved the user interface and experiment with image assets and/or styling and coloring
+* [ ] User can **see a counter with total number of characters left for tweet** on compose tweet page
+* [ ] User can **click a link within a tweet body** on tweet details view. The click will launch the web browser with relevant page opened.
+* [ ] User can **pull down to refresh tweets timeline**
+* [ ] User can **open the twitter app offline and see last loaded tweets**. Persisted in SQLite tweets are refreshed on every application launch. While "live data" is displayed when app can get it from Twitter API, it is also saved for use in offline mode.
+* [ ] User can tap a tweet to **open a detailed tweet view**
+* [ ] User can **select "reply" from detail view to respond to a tweet**
+* [ ] Improve the user interface and theme the app to feel "twitter branded"
 
 The following **bonus** features are implemented:
 
-* [x] Use the [RecyclerView](http://guides.codepath.com/android/Using-the-RecyclerView) with the `StaggeredGridLayoutManager` to display improve the grid of image results
-* [x] For different news articles that only have text or only have images, use [Heterogenous Layouts](http://guides.codepath.com/android/Heterogenous-Layouts-inside-RecyclerView) with RecyclerView
-* [x] Apply the popular [Butterknife annotation library](http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife) to reduce view boilerplate.
+* [ ] User can see embedded image media within the tweet detail view
+* [ ] User can watch embedded video within the tweet
+* [ ] Compose tweet functionality is build using modal overlay
 * [ ] Use Parcelable instead of Serializable using the popular [Parceler library](http://guides.codepath.com/android/Using-Parceler).
-* [ ] Leverages the [data binding support module](http://guides.codepath.com/android/Applying-Data-Binding-for-Views) to bind data into layout templates.
+* [ ] Apply the popular [Butterknife annotation library](http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife) to reduce view boilerplate.
+* [ ] [Leverage RecyclerView](http://guides.codepath.com/android/Using-the-RecyclerView) as a replacement for the ListView and ArrayAdapter for all lists of tweets.
+* [ ] Move the "Compose" action to a [FloatingActionButton](https://github.com/codepath/android_guides/wiki/Floating-Action-Buttons) instead of on the AppBar.
 * [ ] Replace all icon drawables and other static image assets with [vector drawables](http://guides.codepath.com/android/Drawables#vector-drawables) where appropriate.
-* [x] Replace Picasso with [Glide](http://inthecheesefactory.com/blog/get-to-know-glide-recommended-by-google/en) for more efficient image rendering.
-* [ ] Uses [retrolambda expressions](http://guides.codepath.com/android/Lambda-Expressions) to cleanup event handling blocks.
-* [x] Leverages the popular [GSON library](http://guides.codepath.com/android/Using-Android-Async-Http-Client#decoding-with-gson-library) to streamline the parsing of JSON data.
-* [x] Leverages the [Retrofit networking library](http://guides.codepath.com/android/Consuming-APIs-with-Retrofit) to access the New York Times API.
+* [ ] Leverages the [data binding support module](http://guides.codepath.com/android/Applying-Data-Binding-for-Views) to bind data into layout templates.
+* [ ] Replace Picasso with [Glide](http://inthecheesefactory.com/blog/get-to-know-glide-recommended-by-google/en) for more efficient image rendering.
 
 The following **additional** features are implemented:
 
-* [x] Users can train this app so that it knows what kind of news the users like to see.
-  * [x] Users see the most popular news trending right now.
-  * [x] Users can swipe right if they like it or swipe left if they don't.
-  * [x] Users see endless news.
-  * [ ] After certain threshold, users get notified it is about time to digest the news.
-* [x] Users can click on digest tab to see digest page, or simply scroll to it.
-  * [x] Users can digest news by clicking on them.
-  * [x] Users see the news they like (swipe right).
-  * [ ] Users see even more news recommended by this app (training only for you).
-  * [ ] Users see endless news.
-* [x] Users can search news.
-  * [x] Users can click on "search" button to start a search.
-  * [x] Users see the endless search result depending on the search criteria.
-  * [x] Users can click on "filter" button to start a search filter.
-  * [x] Users can apply date range.
-  * [x] Users can apply sort order.
-  * [x] Users can apply category.
-  * [ ] Users can click on "reset" button to reset the search filter.
-* [x] When users digest a news, they see a detailed news page.
-  * [x] Users can scroll to another news.
-  * [x] Users see three news.
-  * [ ] Users see endless news.
-  * [ ] Users can click on "share" button to share a news.
-  * [ ] Users can click on "like" button to like or dislike a news.
-* [ ] Users can see a statistics page.
-  * [ ] Users can click on "reset" button to reset it.
+* [ ] List anything else that you can get done to improve the app functionality!
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-https://rawgit.com/leoliu1313/Mowdigest/master/Mowdigest.demo.html
-<br>
+<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
-If the above link doesn't work, please click on the following links.
-
-https://youtu.be/EbcAJ2fvkNI
-<br>
-https://youtu.be/a1IBIMHcNPk
-<br>
-
-Or, the following screenshots:
-
-http://imgur.com/a/9AtDo
-<br>
-
-<img src='http://i.imgur.com/t9LD8Hm.jpg' title='Screenshot' width="300" alt='Screenshot' />
-<img src='http://i.imgur.com/5we10fZ.jpg' title='Screenshot' width="300" alt='Screenshot' /><br><br>
-<img src='http://i.imgur.com/t1BfeXe.jpg' title='Screenshot' width="300" alt='Screenshot' />
-<img src='http://i.imgur.com/yUAZ3Qe.jpg' title='Screenshot' width="300" alt='Screenshot' /><br><br>
-<img src='http://i.imgur.com/ln8Eb2w.jpg' title='Screenshot' width="300" alt='Screenshot' />
-<img src='http://i.imgur.com/6TlqeQK.jpg' title='Screenshot' width="300" alt='Screenshot' /><br><br>
-
-Video created with Android Studio and FFmpeg.
-
-
+GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-GSON found there are two types on the same field name.
-<br>
-http://api.nytimes.com/svc/mostpopular/v2/mostviewed/all-sections/1.json?offset=0&api-key=fb2092b45dc44c299ecf5098b9b1209d
-<br>
-where media could be
-<br>
-[] - List<> array. 99% popular news are this type.
-<br>
-or
-<br>
-"" - String. Note that only one article is like this. It is really rare and my GSON cannot handle it.
-<br>
+Describe any challenges encountered while building the app.
 
 ## Open-source libraries used
 
 - [Android Async HTTP](https://github.com/loopj/android-async-http) - Simple asynchronous HTTP requests with JSON parsing
 - [Picasso](http://square.github.io/picasso/) - Image loading and caching library for Android
-- [bumptech/glide](https://github.com/bumptech/glide) - Image loading and caching library for Android
-- [Butterknife annotation library](http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife) to reduce boilerplate code.
-- [Diolor/Swipecards](https://github.com/Diolor/Swipecards) - SwipeFlingAdapterView is swipeable.
-- [google/gson](https://github.com/google/gson) - Gson fromJson() to Java class.
-- [square/retrofit](https://github.com/square/retrofit) - HTTP client with one interface, many functions, Call<> enqueue() quries. Based on square/okhttp.
-- [facebook/stetho](https://github.com/facebook/stetho) - Debug network activity.
-- [borax12/MaterialDateRangePicker](https://github.com/borax12/MaterialDateRangePicker) - Pick date range by modal overlay. Based on wdullaer/MaterialDateTimePicker.
-- [afollestad/material-dialogs](https://github.com/afollestad/material-dialogs) - Create custom views for lightweight modal overlay. DialogFragment?
-- [qianlvable/ParallaxEffectDemo](https://github.com/qianlvable/ParallaxEffectDemo) - Parallax Effect.
+
+## License
+
+    Copyright [yyyy] [name of copyright owner]
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.

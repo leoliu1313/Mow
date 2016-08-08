@@ -17,6 +17,7 @@ public class MowtweebookTweet {
 	MowtweebookUser user;
 	MowtweebookEntities entities;
 	MowtweebookTweet retweeted_status;
+	MowtweebookUser original_user;
 
 	// boolean default is false
 	// Boolean default is null
@@ -86,5 +87,13 @@ public class MowtweebookTweet {
 
 	public String getFavorite_count() {
 		return favorite_count;
+	}
+
+	public void setOriginal_user(MowtweebookUser original_user) {
+		this.original_user = original_user;
+	}
+
+	public void setText(String text) {
+		this.text = text;
 	}
 }

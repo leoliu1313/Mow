@@ -85,16 +85,28 @@ public class MowtweebookRecyclerAdapter
                     do_full_span = false;
                 }
             }
+
+            // set up RT
             MowtweebookTweet theTweet = tweets.get(position);
-            if (tweets.get(position).getRetweeted_status() != null) {
-                theTweet = tweets.get(position).getRetweeted_status();
+            if (theTweet.getRetweeted_status() != null) {
+                theTweet.getRetweeted_status().setOriginal_user(theTweet.getUser());
+                tweets.set(position, theTweet.getRetweeted_status());
+                theTweet = tweets.get(position);
             }
+
+            // set up image
             if (theTweet.getEntities() != null
                     && theTweet.getEntities().getMedia() != null
                     && theTweet.getEntities().getMedia().size() > 0) {
                 tweets.get(position).setMowtweebookImageUrl(
                         theTweet.getEntities().getMedia().get(0).getMedia_url());
             }
+
+            // set up text
+            String tmp = tweets.get(position).getText();
+            tmp = tmp.replaceAll("https://t.co/.*", "");
+            tweets.get(position).setText(tmp);
+
             if (do_full_span) {
                 if (tweets.get(position).getMowtweebookImageUrl() != null) {
                     tweets.get(position).setMowtweebookFullSpan(true);

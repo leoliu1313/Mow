@@ -1,7 +1,6 @@
 package com.example.chinyao.mow.mowtweebook;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -47,8 +46,6 @@ public class MowtweebookFragment extends Fragment {
     private MowtweebookRecyclerAdapter tweetsAdapter = null;
     MowtweebookRestClient client = null;
 
-    private Handler handler = null;
-    private Runnable runnable = null; // remember to new Handler(), onDestroy(), removeCallbacksAndMessages()
     private boolean lock = false;
     private String query = null;
     private int page = 1;
@@ -75,7 +72,6 @@ public class MowtweebookFragment extends Fragment {
         theFragment.client = client;
 
         theFragment.tweets = new ArrayList<>(); // avoid java.lang.NullPointerException at getItemCount()
-        theFragment.handler = new Handler();
 
         return theFragment;
     }
@@ -198,27 +194,16 @@ public class MowtweebookFragment extends Fragment {
     // theSwipeRefreshLayout.setRefreshing(false)
     private void setupSwipeRefreshLayout() {
         // Setup refresh listener which triggers new data loading
-        if (mode == 1) {
-            theSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    // Your code to refresh the list here.
-                    // Make sure you call swipeContainer.setRefreshing(false)
-                    // once the network request has completed successfully.
-                    tweets.clear(); // avoid crash here if mode == 2
-                    refreshAsync();
-                }
-            });
-        }
-        else if (mode == 2) {
-            theSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    // tweets.clear(); // avoid crash here if mode == 2
-                    refreshAsync();
-                }
-            });
-        }
+        theSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                tweets.clear(); // avoid crash here if mode == 2
+                refreshAsync();
+            }
+        });
         // Configure the refreshing colors
         theSwipeRefreshLayout.setColorSchemeResources(
                 R.color.mowtubeColorAccent,
@@ -227,57 +212,9 @@ public class MowtweebookFragment extends Fragment {
     }
 
     public void refreshAsync() {
-        if (mode == 1) {
-            // this is real
-            setupRecyclerView(theRecyclerView);
-        }
-        else if (mode == 2) {
-            if (true) {
-                // this is real
-                doSearch();
-            }
-            else {
-                // this is fake
-                if (runnable != null) {
-                    handler.removeCallbacks(runnable);
-                    runnable = null;
-                }
-                runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        if (theSwipeRefreshLayout != null) {
-                            theSwipeRefreshLayout.setRefreshing(false);
-                        }
-                    }
-                };
-                handler.postDelayed(runnable, 1000);
-            }
-        }
+        // setupRecyclerView(theRecyclerView);
+        doSearch();
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        // avoid memory leak
-        // https://techblog.badoo.com/blog/2014/08/28/android-handler-memory-leaks/
-        // http://stackoverflow.com/questions/8430805/clicking-the-back-button-twice-to-exit-an-activity
-        if (handler != null) {
-            // remove all the callbacks
-            handler.removeCallbacksAndMessages(null);
-        }
-    }
-
-    /*
-    @Override
-    public void onAsyncFinished(int preOffset) {
-        if (preOffset == 0) {
-            if (theSwipeRefreshLayout != null) {
-                theSwipeRefreshLayout.setRefreshing(false);
-            }
-        }
-    }
-    */
 
     public void doSearch() {
         doSearch(query);
