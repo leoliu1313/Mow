@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".mowtweebook.RestApplication"
+        android:name=".mowtweebook.MowtweebookRestApplication"
         android:allowBackup="true"
         android:supportsRtl="true"
         android:icon="@mipmap/ic_launcher_mow"
@@ -47,7 +47,6 @@
             android:icon="@mipmap/ic_launcher_mowtube"
             android:label="@string/mowtweebook_app_name"
             android:theme="@style/MowtubeTheme"/>
-        <activity android:name=".mowtweebook.TimelineActicity"></activity>
 
         <!-- Mow Digest -->
         <activity

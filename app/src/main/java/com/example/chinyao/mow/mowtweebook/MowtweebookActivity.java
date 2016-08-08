@@ -63,7 +63,7 @@ public class MowtweebookActivity extends AppCompatActivity implements DatePicker
     private CheckBox sports_checkbox;
 
     public static OkHttpClient TheOkHttpClient = null;
-    private RestClient client;
+    private MowtweebookRestClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +93,7 @@ public class MowtweebookActivity extends AppCompatActivity implements DatePicker
     }
 
     private void setupNetwork() {
-        client = RestApplication.getRestClient();
+        client = MowtweebookRestApplication.getRestClient();
         populateTimeline();
     }
 
@@ -390,12 +390,12 @@ public class MowtweebookActivity extends AppCompatActivity implements DatePicker
         client.getHomeTimeline(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                Log.d("TimelineActicity", response.toString());
+                Log.d("populateTimeline", response.toString());
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                Log.d("TimelineActicity", errorResponse.toString());
+                Log.d("populateTimeline", errorResponse.toString());
             }
         });
     }

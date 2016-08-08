@@ -11,7 +11,7 @@ import com.codepath.oauth.OAuthLoginActionBarActivity;
 /**
  * Created by chinyao on 7/28/2016.
  */
-public class MowtweebookSplashActivity extends OAuthLoginActionBarActivity<RestClient> {
+public class MowtweebookSplashActivity extends OAuthLoginActionBarActivity<MowtweebookRestClient> {
     private Handler handler = null;
     private Runnable runnable = null; // remember to new Handler(), onDestroy(), removeCallbacksAndMessages()
 
