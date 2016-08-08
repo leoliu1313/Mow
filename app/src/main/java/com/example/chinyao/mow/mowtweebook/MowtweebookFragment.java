@@ -112,7 +112,7 @@ public class MowtweebookFragment extends Fragment {
     private void setupRecyclerView(RecyclerView recyclerView) {
         // recyclerView.setHasFixedSize(true);
         StaggeredGridLayoutManager layoutManager =
-                new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+                new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         // Endless-Scrolling-with-AdapterViews-and-RecyclerView
         // http://guides.codepath.com/android/Endless-Scrolling-with-AdapterViews-and-RecyclerView#troubleshooting
@@ -140,47 +140,41 @@ public class MowtweebookFragment extends Fragment {
     }
 
     private void customLoadMoreDataFromApi() {
-        /*
         if (!lock) {
             lock = true;
             page++;
-            final Call<MowdigestSearchResult> call =
-                    MowdigestActivity.TheAPIInterface.articleSearch(
-                            query,
-                            fq,
-                            sort_spinner_mode == 0 ? "newest" : "oldest",
-                            begin_date,
-                            end_date,
-                            page,
-                            MowdigestActivity.API_KEY);
-            call.enqueue(new Callback<MowdigestSearchResult>() {
-                @Override
-                public void onResponse(Call<MowdigestSearchResult> call, Response<MowdigestSearchResult> response) {
-                    Log.d("MowdigestFragment", "onResponse");
-                    Log.d("MowdigestFragment",
-                            "statusCode " + response.code());
-                    MowdigestSearchResult theSearch = response.body();
-                    if (theSearch != null
-                            && theSearch.getResponse() != null
-                            && theSearch.getResponse().getDocs() != null) {
-                        Log.d("MowdigestFragment",
-                                "theSearch.getResponse().getDocs().size() " + theSearch.getResponse().getDocs().size());
-                        for (MowdigestSearchNews theNews : theSearch.getResponse().getDocs()) {
-                            tweets.add(MowdigestPopularNews.fromSearchNews(theNews));
+            if (query == null) {
+                client.getHomeTimeline(page, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                        Log.d("populateTimeline", response.toString());
+                        try {
+                            JSONObject theJSONObject;
+                            for (int i = 0; i < response.length(); i++) {
+                                theJSONObject = response.getJSONObject(i);
+                                tweets.add(MowtweebookTweet.parseJSON(theJSONObject.toString()));
+                            }
+                            notifyAdapter();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                        notifyAdapter();
+                        if (theSwipeRefreshLayout != null) {
+                            theSwipeRefreshLayout.setRefreshing(false);
+                        }
+                        lock = false;
                     }
-                    lock = false;
-                }
 
-                @Override
-                public void onFailure(Call<MowdigestSearchResult> call, Throwable t) {
-                    Log.d("MowdigestFragment", "onFailure");
-                    lock = false;
-                }
-            });
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                        Log.d("populateTimeline", errorResponse.toString());
+                        if (theSwipeRefreshLayout != null) {
+                            theSwipeRefreshLayout.setRefreshing(false);
+                        }
+                        lock = false;
+                    }
+                });
+            }
         }
-        */
     }
 
     void notifyAdapter() {
@@ -225,7 +219,7 @@ public class MowtweebookFragment extends Fragment {
             lock = true;
             // perform query here
             // viewPager.setCurrentItem(1);
-            viewPager.setCurrentItem(1, true);
+            // viewPager.setCurrentItem(1, true);
             if (theSwipeRefreshLayout != null) {
                 theSwipeRefreshLayout.setRefreshing(true);
             }
@@ -242,6 +236,9 @@ public class MowtweebookFragment extends Fragment {
                                 tweets.add(MowtweebookTweet.parseJSON(theJSONObject.toString()));
                             }
                             notifyAdapter();
+                            // TODO
+                            // query = theQuery;
+                            page = 1;
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -261,51 +258,39 @@ public class MowtweebookFragment extends Fragment {
                     }
                 });
             }
-            /*
-            final Call<MowdigestSearchResult> call =
-                    MowdigestActivity.TheAPIInterface.articleSearch(
-                            theQuery,
-                            fq,
-                            sort_spinner_mode == 0 ? "newest" : "oldest",
-                            begin_date,
-                            end_date,
-                            1,
-                            MowdigestActivity.API_KEY);
-            call.enqueue(new Callback<MowdigestSearchResult>() {
-                @Override
-                public void onResponse(Call<MowdigestSearchResult> call, Response<MowdigestSearchResult> response) {
-                    Log.d("MowdigestActivity", "onResponse");
-                    Log.d("MowdigestActivity",
-                            "statusCode " + response.code());
-                    MowdigestSearchResult theSearch = response.body();
-                    if (theSearch != null
-                            && theSearch.getResponse() != null
-                            && theSearch.getResponse().getDocs() != null) {
-                        Log.d("MowdigestActivity",
-                                "theSearch.getResponse().getDocs().size() " + theSearch.getResponse().getDocs().size());
-                        for (MowdigestSearchNews theNews : theSearch.getResponse().getDocs()) {
-                            tweets.add(MowdigestPopularNews.fromSearchNews(theNews));
-                        }
-                        notifyAdapter();
-                        query = theQuery;
-                        page = 1;
-                    }
-                    if (theSwipeRefreshLayout != null) {
-                        theSwipeRefreshLayout.setRefreshing(false);
-                    }
-                    lock = false;
-                }
+        }
+    }
 
-                @Override
-                public void onFailure(Call<MowdigestSearchResult> call, Throwable t) {
-                    Log.d("MowdigestSwipeAdapter", "onFailure");
-                    if (theSwipeRefreshLayout != null) {
-                        theSwipeRefreshLayout.setRefreshing(false);
+    public void doTweet(String status) {
+        if (!lock) {
+            lock = true;
+            // perform query here
+            // viewPager.setCurrentItem(1);
+            // viewPager.setCurrentItem(1, true);
+            if (theSwipeRefreshLayout != null) {
+                theSwipeRefreshLayout.setRefreshing(true);
+            }
+            if (query == null) {
+                client.postUpdate(status, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                        Log.d("populateTimeline", response.toString());
+                        if (theSwipeRefreshLayout != null) {
+                            theSwipeRefreshLayout.setRefreshing(false);
+                        }
+                        lock = false;
                     }
-                    lock = false;
-                }
-            });
-            */
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                        Log.d("populateTimeline", errorResponse.toString());
+                        if (theSwipeRefreshLayout != null) {
+                            theSwipeRefreshLayout.setRefreshing(false);
+                        }
+                        lock = false;
+                    }
+                });
+            }
         }
     }
 }

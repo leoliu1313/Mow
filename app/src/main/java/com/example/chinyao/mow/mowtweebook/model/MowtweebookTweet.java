@@ -23,6 +23,7 @@ public class MowtweebookTweet {
 	// Boolean default is null
 	boolean mowtweebookFullSpan;
 	String mowtweebookImageUrl;
+	boolean mowtweebookProcessed;
 
 	public MowtweebookTweet() {
 	}
@@ -95,5 +96,17 @@ public class MowtweebookTweet {
 
 	public void setText(String text) {
 		this.text = text;
+	}
+
+	public void setCreated_at(String created_at) {
+		this.created_at = created_at;
+	}
+
+	public boolean isMowtweebookProcessed() {
+		return mowtweebookProcessed;
+	}
+
+	public void setMowtweebookProcessed(boolean mowtweebookProcessed) {
+		this.mowtweebookProcessed = mowtweebookProcessed;
 	}
 }

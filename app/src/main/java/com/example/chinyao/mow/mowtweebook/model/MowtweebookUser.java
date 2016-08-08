@@ -54,4 +54,8 @@ public class MowtweebookUser {
 	public String getStatuses_count() {
 		return statuses_count;
 	}
+
+	public void setScreen_name(String screen_name) {
+		this.screen_name = screen_name;
+	}
 }

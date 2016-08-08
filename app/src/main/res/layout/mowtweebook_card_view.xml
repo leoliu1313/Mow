@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    card_view:cardUseCompatPadding="true"
+    card_view:cardCornerRadius="8dp"
+    android:layout_marginTop="12dp"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum = "7"
+            android:id="@+id/card_top"
+            >
+            <ImageView
+                android:id="@+id/card_profile_image"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="@string/contentDescription"
+                tools:src="@drawable/profile_image"
+                android:layout_margin="8dp"
+                />
+            <TextView
+                android:id="@+id/card_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:paddingTop="20dp"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:paddingStart="8dp"
+                android:paddingRight="8dp"
+                android:paddingEnd="8dp"
+                android:textColor="@color/mowtubeColorDateDarkDark"
+                android:text="@string/fake_name"
+                tools:text="@string/fake_name"
+                />
+            <TextView
+                android:id="@+id/card_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textSize="12sp"
+                android:paddingTop="20dp"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:paddingStart="8dp"
+                android:paddingRight="8dp"
+                android:paddingEnd="8dp"
+                android:textColor="@color/mowtubeColorDate"
+                android:text="@string/fake_id"
+                tools:text="@string/fake_id"
+                />
+            <TextView
+                android:id="@+id/card_published_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:gravity="end"
+                android:textSize="12sp"
+                android:paddingTop="20dp"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:paddingStart="8dp"
+                android:paddingRight="8dp"
+                android:paddingEnd="8dp"
+                android:textColor="@color/mowtubeColorDate"
+                android:text="@string/fake_relative_date"
+                tools:text="@string/fake_relative_date"
+                />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/card_body"
+            android:layout_below="@+id/card_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:paddingTop="8dp"
+            android:paddingBottom="16dp"
+            android:paddingLeft="16dp"
+            android:paddingStart="16dp"
+            android:paddingRight="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="@color/mowtubeColorDateDarkDark"
+            android:text=""
+            tools:text="@string/fake_title"
+            />
+
+        <ImageView
+            android:id="@+id/card_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:contentDescription="@string/contentDescription"
+            tools:src="@drawable/coffee_23"
+            android:scaleType="centerCrop"
+            android:layout_below="@+id/card_body"
+            />
+
+        <LinearLayout
+            android:layout_below="@+id/card_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum = "2"
+            android:gravity="end"
+            >
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="@string/contentDescription"
+                android:src="@drawable/ic_reply"
+                />
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="@string/contentDescription"
+                android:src="@drawable/ic_retweet"
+                />
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="@string/contentDescription"
+                android:src="@drawable/ic_like"
+                />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

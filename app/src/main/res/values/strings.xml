@@ -122,5 +122,8 @@
 
     <string name="mowtweebook_app_name">Mow Tweebook</string>
     <string name="profile">Profile</string>
+    <string name="fake_name">Demi Lovato</string>
+    <string name="fake_id">\@ddlovato</string>
+    <string name="fake_relative_date">8h</string>
 
 </resources>

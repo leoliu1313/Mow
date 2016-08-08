@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,10 @@ import com.example.chinyao.mow.mowdigest.detail.BundleKey;
 import com.example.chinyao.mow.mowdigest.detail.YahooParallaxActivity;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookTweet;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,14 +46,18 @@ public class MowtweebookRecyclerAdapter
     public class ViewHolder
             extends RecyclerView.ViewHolder
     {
-        @BindView(R.id.card_image)
-        ImageView card_image;
-        @BindView(R.id.card_title)
-        TextView card_title;
-        @BindView(R.id.card_section)
-        TextView card_section;
+        @BindView(R.id.card_profile_image)
+        ImageView card_profile_image;
+        @BindView(R.id.card_name)
+        TextView card_name;
+        @BindView(R.id.card_id)
+        TextView card_id;
         @BindView(R.id.card_published_date)
         TextView card_published_date;
+        @BindView(R.id.card_image)
+        ImageView card_image;
+        @BindView(R.id.card_body)
+        TextView card_body;
 
         public final View view;
 
@@ -85,27 +93,52 @@ public class MowtweebookRecyclerAdapter
                     do_full_span = false;
                 }
             }
-
             // set up RT
             MowtweebookTweet theTweet = tweets.get(position);
-            if (theTweet.getRetweeted_status() != null) {
-                theTweet.getRetweeted_status().setOriginal_user(theTweet.getUser());
-                tweets.set(position, theTweet.getRetweeted_status());
-                theTweet = tweets.get(position);
-            }
+            if (!theTweet.isMowtweebookProcessed()) {
+                if (theTweet.getRetweeted_status() != null) {
+                    theTweet.getRetweeted_status().setOriginal_user(theTweet.getUser());
+                    tweets.set(position, theTweet.getRetweeted_status());
+                    theTweet = tweets.get(position);
+                    // theTweet = theTweet.getRetweeted_status();
+                }
 
-            // set up image
-            if (theTweet.getEntities() != null
-                    && theTweet.getEntities().getMedia() != null
-                    && theTweet.getEntities().getMedia().size() > 0) {
-                tweets.get(position).setMowtweebookImageUrl(
-                        theTweet.getEntities().getMedia().get(0).getMedia_url());
-            }
+                // set up image
+                if (theTweet.getEntities() != null
+                        && theTweet.getEntities().getMedia() != null
+                        && theTweet.getEntities().getMedia().size() > 0) {
+                    tweets.get(position).setMowtweebookImageUrl(
+                            theTweet.getEntities().getMedia().get(0).getMedia_url());
+                }
 
-            // set up text
-            String tmp = tweets.get(position).getText();
-            tmp = tmp.replaceAll("https://t.co/.*", "");
-            tweets.get(position).setText(tmp);
+                // replace
+                String tmp;
+                tmp = tweets.get(position).getText();
+                if (tmp != null) {
+                    tmp = tmp.replaceAll("https://t.co/.*", "");
+                    tweets.get(position).setText(tmp);
+                }
+                tmp = tweets.get(position).getUser().getScreen_name();
+                if (tmp != null) {
+                    tmp = "@" + tmp;
+                    tweets.get(position).getUser().setScreen_name(tmp);
+                }
+                tmp = tweets.get(position).getCreated_at();
+                if (tmp != null) {
+                    tmp = getRelativeTimeAgo(tmp);
+                    tmp = tmp.replaceAll(" minutes ago", "m");
+                    tmp = tmp.replaceAll(" hours ago", "h");
+                    tmp = tmp.replaceAll(" dats ago", "d");
+                    tweets.get(position).setCreated_at(tmp);
+                }
+                tmp = tweets.get(position).getMowtweebookImageUrl();
+                if (tmp != null) {
+                    tmp = tmp.replaceAll("normal", "bigger");
+                    tweets.get(position).setMowtweebookImageUrl(tmp);
+                }
+
+                theTweet.setMowtweebookProcessed(true);
+            }
 
             if (do_full_span) {
                 if (tweets.get(position).getMowtweebookImageUrl() != null) {
@@ -122,12 +155,15 @@ public class MowtweebookRecyclerAdapter
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View theView = null;
         // Heterogenous-Layouts-inside-RecyclerView
+        /*
         if (viewType == 0) {
             theView = inflater.inflate(R.layout.mowdigest_card_view, parent, false);
         }
         else if (viewType == 1) {
             theView = inflater.inflate(R.layout.mowdigest_card_view_full_span, parent, false);
         }
+        */
+        theView = inflater.inflate(R.layout.mowtweebook_card_view, parent, false);
         return new ViewHolder(theView);
     }
 
@@ -157,9 +193,16 @@ public class MowtweebookRecyclerAdapter
                     .into(holder.card_image);
             holder.card_image.setVisibility(View.VISIBLE);
         }
-        holder.card_title.setText(theTweet.getText());
-        holder.card_section.setText(theTweet.getUser().getScreen_name());
+        Glide.with(context)
+                .load(theTweet.getUser().getProfile_image_url())
+                .placeholder(R.drawable.profile_image)
+                .error(R.drawable.profile_image)
+                .into(holder.card_profile_image);
+        holder.card_image.setVisibility(View.VISIBLE);
+        holder.card_name.setText(theTweet.getUser().getName());
+        holder.card_id.setText(theTweet.getUser().getScreen_name());
         holder.card_published_date.setText(theTweet.getCreated_at());
+        holder.card_body.setText(theTweet.getText());
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -190,5 +233,24 @@ public class MowtweebookRecyclerAdapter
         else {
             return 0;
         }
+    }
+
+    // https://gist.github.com/nesquena/f786232f5ef72f6e10a7
+    public String getRelativeTimeAgo(String rawJsonDate) {
+        String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
+        SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
+        sf.setLenient(true);
+
+        String relativeDate;
+        try {
+            long dateMillis = sf.parse(rawJsonDate).getTime();
+            relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
+                    System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            relativeDate = rawJsonDate;
+        }
+
+        return relativeDate;
     }
 }

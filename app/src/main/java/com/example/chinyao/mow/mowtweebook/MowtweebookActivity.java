@@ -1,21 +1,26 @@
 package com.example.chinyao.mow.mowtweebook;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowtube.MowtubeViewPagerAdapter;
 
@@ -34,6 +39,8 @@ public class MowtweebookActivity extends AppCompatActivity {
     TabLayout tabLayout;
     @BindView(R.id.m_view_pager)
     ViewPager viewPager;
+    @BindView(R.id.m_fab)
+    FloatingActionButton fab;
 
     private MowtweebookFragment HomeTimelineFragment;
     private MowtweebookFragment UserTimelineFragment;
@@ -60,6 +67,32 @@ public class MowtweebookActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         setupViewPager();
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MaterialDialog theDialog =
+                        new MaterialDialog.Builder(MowtweebookActivity.this)
+                                .inputType(InputType.TYPE_CLASS_TEXT)
+                                .positiveText(getString(R.string.save_button))
+                                .inputRangeRes(1, 100, R.color.mowColorAccentLight)
+                                .input(null, "", new MaterialDialog.InputCallback() {
+                                    @Override
+                                    public void onInput(@NonNull MaterialDialog dialog,
+                                                        CharSequence input) {
+                                        // Toast.makeText(MowActivity.this,
+                                        //         input.toString(),
+                                        //         Toast.LENGTH_SHORT).show();
+
+                                        HomeTimelineFragment.doTweet(input.toString());
+
+                                        // showMaterialDialog(position_tag);
+                                    }
+                                }).build();
+                theDialog.getInputEditText().setSingleLine(false);
+                theDialog.show();
+            }
+        });
 
         Toast.makeText(this,
                 getResources().getString(R.string.app_version),
