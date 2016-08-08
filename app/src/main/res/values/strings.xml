@@ -121,5 +121,6 @@
     <string name="fake_date">2016-07-30</string>
 
     <string name="mowtweebook_app_name">Mow Tweebook</string>
+    <string name="profile">Profile</string>
 
 </resources>

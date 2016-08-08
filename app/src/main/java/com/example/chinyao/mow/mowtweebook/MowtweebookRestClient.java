@@ -41,7 +41,15 @@ public class MowtweebookRestClient extends OAuthBaseClient {
 	 *    i.e client.post(apiUrl, params, handler);
 	 */
 
-	public void getHomeTimeline(AsyncHttpResponseHandler handler) {
+	public void getHomeTimeline(int page, AsyncHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("statuses/home_timeline.json");
+		RequestParams params = new RequestParams();
+		params.put("count", 25);
+		params.put("since_id", 1);
+		client.get(apiUrl, params, handler);
+	}
+
+	public void getUserTimeline(AsyncHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("statuses/user_timeline.json");
 		RequestParams params = new RequestParams();
 		params.put("count", 25);

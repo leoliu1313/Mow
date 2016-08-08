@@ -6,9 +6,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,11 +17,18 @@ import android.view.ViewGroup;
 import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowdigest.EndlessRecyclerViewScrollListener;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookTweet;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by chinyao on 7/29/2016.
@@ -37,8 +44,9 @@ public class MowtweebookFragment extends Fragment {
     private int mode = 1;
     private List<MowtweebookTweet> tweets = null;
     private ViewPager viewPager = null;
+    private MowtweebookRecyclerAdapter tweetsAdapter = null;
+    MowtweebookRestClient client = null;
 
-    // private MowdigestRecyclerAdapter newsDigestAdapter = null;
     private Handler handler = null;
     private Runnable runnable = null; // remember to new Handler(), onDestroy(), removeCallbacksAndMessages()
     private boolean lock = false;
@@ -58,14 +66,15 @@ public class MowtweebookFragment extends Fragment {
     // 2: nytimes api
 
     public static MowtweebookFragment newInstance(int mode,
-                                                  List<MowtweebookTweet> tweets,
-                                                  ViewPager viewPager) {
+                                                  ViewPager viewPager,
+                                                  MowtweebookRestClient client) {
         MowtweebookFragment theFragment = new MowtweebookFragment();
 
         theFragment.mode = mode;
-        theFragment.tweets = tweets; // avoid java.lang.NullPointerException at getItemCount()
         theFragment.viewPager = viewPager;
+        theFragment.client = client;
 
+        theFragment.tweets = new ArrayList<>(); // avoid java.lang.NullPointerException at getItemCount()
         theFragment.handler = new Handler();
 
         return theFragment;
@@ -105,62 +114,32 @@ public class MowtweebookFragment extends Fragment {
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
-        if (mode == 1) {
-            recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-            /*
-            recyclerView.setAdapter(
-                    new MowdigestFakeAdapter(
-                            getActivity(),
-                            new ArrayList<>(Arrays.asList("")),
-                            tweets,
-                            this
-                    )
-            );
-            */
-        }
-        else if (mode == 2){
-            // recyclerView.setHasFixedSize(true);
-            StaggeredGridLayoutManager layoutManager =
-                    new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-            recyclerView.setLayoutManager(layoutManager);
-            if (NewsContentMode == 1) {
-                /*
-                recyclerView.setAdapter(
-                        new MowdigestRecyclerAdapter(
-                                getActivity(),
-                                MowdigestPopularNews.debug(),
-                                recyclerView
-                        )
-                );
-                */
+        // recyclerView.setHasFixedSize(true);
+        StaggeredGridLayoutManager layoutManager =
+                new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(layoutManager);
+        // Endless-Scrolling-with-AdapterViews-and-RecyclerView
+        // http://guides.codepath.com/android/Endless-Scrolling-with-AdapterViews-and-RecyclerView#troubleshooting
+        // https://gist.github.com/nesquena/d09dc68ff07e845cc622
+        recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                customLoadMoreDataFromApi();
             }
-            else if (NewsContentMode == 2) {
-                // Endless-Scrolling-with-AdapterViews-and-RecyclerView
-                // http://guides.codepath.com/android/Endless-Scrolling-with-AdapterViews-and-RecyclerView#troubleshooting
-                // https://gist.github.com/nesquena/d09dc68ff07e845cc622
-                recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
-                    @Override
-                    public void onLoadMore(int page, int totalItemsCount) {
-                        // Triggered only when new data needs to be appended to the list
-                        // Add whatever code is needed to append new items to the bottom of the list
-                        customLoadMoreDataFromApi();
-                    }
-                });
-                /*
-                newsDigestAdapter = new MowdigestRecyclerAdapter(
-                        getActivity(),
-                        tweets,
-                        recyclerView
-                );
-                recyclerView.setAdapter(newsDigestAdapter);
-                // rotation orientation
-                if (first_time) {
-                    // avoid reloading
-                    first_time = false;
-                    doArticleSearch();
-                }
-                */
-            }
+        });
+        tweetsAdapter = new MowtweebookRecyclerAdapter(
+                getActivity(),
+                tweets
+        );
+        recyclerView.setAdapter(tweetsAdapter);
+        // TODO
+        // rotation orientation
+        if (first_time) {
+            // avoid reloading
+            first_time = false;
+            doSearch();
         }
     }
 
@@ -193,7 +172,7 @@ public class MowtweebookFragment extends Fragment {
                         for (MowdigestSearchNews theNews : theSearch.getResponse().getDocs()) {
                             tweets.add(MowdigestPopularNews.fromSearchNews(theNews));
                         }
-                        notifyNewsDigest();
+                        notifyAdapter();
                     }
                     lock = false;
                 }
@@ -208,12 +187,10 @@ public class MowtweebookFragment extends Fragment {
         */
     }
 
-    void notifyNewsDigest() {
-        /*
-        if (newsDigestAdapter != null) {
-            newsDigestAdapter.notifyDataSetChanged();
+    void notifyAdapter() {
+        if (tweetsAdapter != null) {
+            tweetsAdapter.notifyDataSetChanged();
         }
-        */
     }
 
     // pull-to-refresh
@@ -257,7 +234,7 @@ public class MowtweebookFragment extends Fragment {
         else if (mode == 2) {
             if (true) {
                 // this is real
-                doArticleSearch();
+                doSearch();
             }
             else {
                 // this is fake
@@ -302,11 +279,11 @@ public class MowtweebookFragment extends Fragment {
     }
     */
 
-    public void doArticleSearch() {
-        doArticleSearch(query);
+    public void doSearch() {
+        doSearch(query);
     }
 
-    public void doArticleSearch(final String theQuery) {
+    public void doSearch(final String theQuery) {
         if (!lock) {
             lock = true;
             // perform query here
@@ -316,6 +293,37 @@ public class MowtweebookFragment extends Fragment {
                 theSwipeRefreshLayout.setRefreshing(true);
             }
             tweets.clear();
+            if (query == null) {
+                client.getHomeTimeline(1, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                        Log.d("populateTimeline", response.toString());
+                        try {
+                            JSONObject theJSONObject;
+                            for (int i = 0; i < response.length(); i++) {
+                                theJSONObject = response.getJSONObject(i);
+                                tweets.add(MowtweebookTweet.parseJSON(theJSONObject.toString()));
+                            }
+                            notifyAdapter();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        if (theSwipeRefreshLayout != null) {
+                            theSwipeRefreshLayout.setRefreshing(false);
+                        }
+                        lock = false;
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                        Log.d("populateTimeline", errorResponse.toString());
+                        if (theSwipeRefreshLayout != null) {
+                            theSwipeRefreshLayout.setRefreshing(false);
+                        }
+                        lock = false;
+                    }
+                });
+            }
             /*
             final Call<MowdigestSearchResult> call =
                     MowdigestActivity.TheAPIInterface.articleSearch(
@@ -341,7 +349,7 @@ public class MowtweebookFragment extends Fragment {
                         for (MowdigestSearchNews theNews : theSearch.getResponse().getDocs()) {
                             tweets.add(MowdigestPopularNews.fromSearchNews(theNews));
                         }
-                        notifyNewsDigest();
+                        notifyAdapter();
                         query = theQuery;
                         page = 1;
                     }
