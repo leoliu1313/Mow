@@ -22,7 +22,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.chinyao.mow.R;
-import com.example.chinyao.mow.mowtube.MowtubeViewPagerAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,13 +60,68 @@ public class MowtweebookActivity extends AppCompatActivity {
         // ButterKnife
         ButterKnife.bind(this);
 
-        // chrome://inspect/#devices
         setupNetwork();
 
         setSupportActionBar(toolbar);
 
         setupViewPager();
 
+        setupFAB();
+
+        Toast.makeText(this,
+                getResources().getString(R.string.app_version),
+                Toast.LENGTH_SHORT)
+                .show();
+    }
+
+    private void setupNetwork() {
+        // chrome://inspect/#devices
+        // TODO: square/retrofit with OAuth is hard... try again?
+        client = MowtweebookRestApplication.getRestClient();
+    }
+
+    private void setupViewPager() {
+        // 3 tabs so set it to 2
+        viewPager.setOffscreenPageLimit(2);
+
+        MowtweebookViewPagerAdapter theAdapter =
+                new MowtweebookViewPagerAdapter(
+                        getSupportFragmentManager(),
+                        this, // context
+                        viewPager,
+                        client
+                        );
+
+        HomeTimelineFragment = (MowtweebookFragment) theAdapter.getRegisteredFragment(0);
+        UserTimelineFragment = (MowtweebookFragment) theAdapter.getRegisteredFragment(1);
+
+        viewPager.setAdapter(theAdapter);
+
+        tabLayout.setupWithViewPager(viewPager);
+
+        // use         |     tab1    |     tab2    |
+        // instead of  |  tab1  |  tab2  |         |
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrollStateChanged(int arg0) {
+                // TODO
+            }
+
+            @Override
+            public void onPageScrolled(int arg0, float arg1, int arg2) {
+                // TODO
+            }
+
+            @Override
+            public void onPageSelected(int pos) {
+                // TODO
+            }
+        });
+    }
+
+    private void setupFAB() {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,57 +145,6 @@ public class MowtweebookActivity extends AppCompatActivity {
                                 }).build();
                 theDialog.getInputEditText().setSingleLine(false);
                 theDialog.show();
-            }
-        });
-
-        Toast.makeText(this,
-                getResources().getString(R.string.app_version),
-                Toast.LENGTH_SHORT)
-                .show();
-    }
-
-    private void setupNetwork() {
-        client = MowtweebookRestApplication.getRestClient();
-    }
-
-    private void setupViewPager() {
-        // 3 tabs so set it to 2
-        viewPager.setOffscreenPageLimit(2);
-
-        // TODO
-        // people on stackoverflow said this is bad implementation
-        // use getView() instead?
-        MowtubeViewPagerAdapter theAdapter = new MowtubeViewPagerAdapter(getSupportFragmentManager());
-
-        HomeTimelineFragment = MowtweebookFragment.newInstance(1, viewPager, client);
-        theAdapter.addFragment(HomeTimelineFragment, getString(R.string.home));
-
-        UserTimelineFragment = MowtweebookFragment.newInstance(2, viewPager, client);
-        theAdapter.addFragment(UserTimelineFragment, getString(R.string.profile));
-
-        // theAdapter.addFragment(MowtubeListFragment.newInstance(3), getString(R.string.explore));
-
-        viewPager.setAdapter(theAdapter);
-
-        tabLayout.setupWithViewPager(viewPager);
-        // use         |     tab1    |     tab2    |
-        // instead of  |  tab1  |  tab2  |         |
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrollStateChanged(int arg0) {
-                // TODO
-            }
-
-            @Override
-            public void onPageScrolled(int arg0, float arg1, int arg2) {
-                // TODO
-            }
-
-            @Override
-            public void onPageSelected(int pos) {
-                // TODO
             }
         });
     }
