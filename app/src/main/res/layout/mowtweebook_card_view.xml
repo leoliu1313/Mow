@@ -96,7 +96,15 @@
             android:textColor="@color/mowtubeColorDateDarkDark"
             android:text=""
             tools:text="@string/fake_title"
+            android:autoLink="all"
+            android:linksClickable="true"
             />
+        <!--
+            android:autoLink="all"
+            android:linksClickable="true"
+            User can **click a link within a tweet body** on tweet details view.
+            The click will launch the web browser with relevant page opened.
+        -->
 
         <ImageView
             android:id="@+id/card_image"

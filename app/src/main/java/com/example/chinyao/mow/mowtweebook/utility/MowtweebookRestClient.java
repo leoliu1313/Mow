@@ -1,4 +1,4 @@
-package com.example.chinyao.mow.mowtweebook;
+package com.example.chinyao.mow.mowtweebook.utility;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

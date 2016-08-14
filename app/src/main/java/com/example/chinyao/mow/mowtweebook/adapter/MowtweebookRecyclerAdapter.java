@@ -1,4 +1,4 @@
-package com.example.chinyao.mow.mowtweebook;
+package com.example.chinyao.mow.mowtweebook.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -93,57 +93,64 @@ public class MowtweebookRecyclerAdapter
                     do_full_span = false;
                 }
             }
-            // set up RT
+            // TODO: don't set up tweet here
             MowtweebookTweet theTweet = tweets.get(position);
             if (!theTweet.isMowtweebookProcessed()) {
+                theTweet.setMowtweebookProcessed(true);
+
+                // retweet
                 if (theTweet.getRetweeted_status() != null) {
                     theTweet.getRetweeted_status().setOriginal_user(theTweet.getUser());
                     tweets.set(position, theTweet.getRetweeted_status());
                     theTweet = tweets.get(position);
-                    // theTweet = theTweet.getRetweeted_status();
                 }
 
-                // set up image
+                String tmp;
+
+                // image
                 if (theTweet.getEntities() != null
                         && theTweet.getEntities().getMedia() != null
                         && theTweet.getEntities().getMedia().size() > 0) {
-                    tweets.get(position).setMowtweebookImageUrl(
-                            theTweet.getEntities().getMedia().get(0).getMedia_url());
+                    tmp = theTweet.getEntities().getMedia().get(0).getMedia_url();
+                    tmp = tmp.replaceAll("normal", "bigger");
+                    theTweet.setMowtweebookImageUrl(tmp);
                 }
 
-                // replace
-                String tmp;
-                tmp = tweets.get(position).getText();
+                // tweet content
+                tmp = theTweet.getText();
                 if (tmp != null) {
                     tmp = tmp.replaceAll("https://t.co/.*", "");
-                    tweets.get(position).setText(tmp);
                 }
-                tmp = tweets.get(position).getUser().getScreen_name();
+                if (theTweet.getEntities() != null
+                        && theTweet.getEntities().getUrls() != null
+                        && theTweet.getEntities().getUrls().size() > 0
+                        && theTweet.getEntities().getUrls().get(0).getExpanded_url() != null) {
+                    tmp = tmp + " " + theTweet.getEntities().getUrls().get(0).getExpanded_url();
+                }
+                theTweet.setText(tmp);
+
+                // @id
+                tmp = theTweet.getUser().getScreen_name();
                 if (tmp != null) {
                     tmp = "@" + tmp;
-                    tweets.get(position).getUser().setScreen_name(tmp);
+                    theTweet.getUser().setScreen_name(tmp);
                 }
-                tmp = tweets.get(position).getCreated_at();
+
+                // timestamp
+                tmp = theTweet.getCreated_at();
                 if (tmp != null) {
                     tmp = getRelativeTimeAgo(tmp);
                     tmp = tmp.replaceAll(" seconds ago", "s");
                     tmp = tmp.replaceAll(" minutes ago", "m");
                     tmp = tmp.replaceAll(" hours ago", "h");
                     tmp = tmp.replaceAll(" dats ago", "d");
-                    tweets.get(position).setCreated_at(tmp);
+                    theTweet.setCreated_at(tmp);
                 }
-                tmp = tweets.get(position).getMowtweebookImageUrl();
-                if (tmp != null) {
-                    tmp = tmp.replaceAll("normal", "bigger");
-                    tweets.get(position).setMowtweebookImageUrl(tmp);
-                }
-
-                theTweet.setMowtweebookProcessed(true);
             }
 
             if (do_full_span) {
-                if (tweets.get(position).getMowtweebookImageUrl() != null) {
-                    tweets.get(position).setMowtweebookFullSpan(true);
+                if (theTweet.getMowtweebookImageUrl() != null) {
+                    theTweet.setMowtweebookFullSpan(true);
                     return 1;
                 }
             }

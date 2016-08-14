@@ -7,8 +7,12 @@ import java.util.List;
  */
 public class MowtweebookEntities {
 	List<MowtweebookMedia> media;
+	List<MowtweebookUrls> urls;
 
 	public List<MowtweebookMedia> getMedia() {
 		return media;
+	}
+	public List<MowtweebookUrls> getUrls() {
+		return urls;
 	}
 }

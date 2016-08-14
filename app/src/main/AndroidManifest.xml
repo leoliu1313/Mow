@@ -21,7 +21,7 @@
 
         <!-- Mow Tweebook -->
         <activity
-            android:name=".mowtweebook.MowtweebookSplashActivity"
+            android:name=".mowtweebook.activity.MowtweebookSplashActivity"
             android:taskAffinity=".mowtweebook.MowtweebookSplashActivity"
             android:icon="@mipmap/ic_launcher_mowtube"
             android:label="@string/mowtweebook_app_name"
@@ -44,7 +44,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".mowtweebook.MowtweebookActivity"
+            android:name=".mowtweebook.activity.MowtweebookActivity"
             android:icon="@mipmap/ic_launcher_mowtube"
             android:label="@string/mowtweebook_app_name"
             android:theme="@style/MowtweebookTheme"/>

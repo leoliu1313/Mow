@@ -16,6 +16,7 @@ import java.util.List;
  */
 @Table(name = "Tweet")
 public class MowtweebookPersistentTweet extends Model {
+	// gson cannot parse this class due to "extends Model"
 	@Column(name = "id_str", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
 	String id_str;
 	@Column(name = "json_response")

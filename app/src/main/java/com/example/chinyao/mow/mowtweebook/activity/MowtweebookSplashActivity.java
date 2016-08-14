@@ -1,4 +1,4 @@
-package com.example.chinyao.mow.mowtweebook;
+package com.example.chinyao.mow.mowtweebook.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.view.View;
 
 import com.codepath.oauth.OAuthLoginActionBarActivity;
+import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestClient;
 
 /**
  * Created by chinyao on 7/28/2016.

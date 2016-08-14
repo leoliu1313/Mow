@@ -1,23 +1,23 @@
-package com.example.chinyao.mow.mowtweebook;
+package com.example.chinyao.mow.mowtweebook.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowdigest.EndlessRecyclerViewScrollListener;
+import com.example.chinyao.mow.mowtweebook.adapter.MowtweebookRecyclerAdapter;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookPersistentTweet;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookTweet;
+import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -44,7 +44,6 @@ public class MowtweebookFragment extends Fragment {
 
     private int mode = 1;
     private List<MowtweebookTweet> tweets = null;
-    private ViewPager viewPager = null;
     private MowtweebookRecyclerAdapter tweetsAdapter = null;
     MowtweebookRestClient client = null;
 
@@ -52,24 +51,11 @@ public class MowtweebookFragment extends Fragment {
     private String query = null;
     private boolean first_time = true;
 
-    public MenuItem searchItem = null;
-    public String begin_date = null;
-    public String end_date = null;
-    public int sort_spinner_mode = 0;
-    public boolean[] sections = null;
-    public String fq = null;
-
-    public static final int NewsContentMode = 2;
-    // 1: debug
-    // 2: nytimes api
-
     public static MowtweebookFragment newInstance(int mode,
-                                                  ViewPager viewPager,
                                                   MowtweebookRestClient client) {
         MowtweebookFragment theFragment = new MowtweebookFragment();
 
         theFragment.mode = mode;
-        theFragment.viewPager = viewPager;
         theFragment.client = client;
 
         theFragment.tweets = new ArrayList<>(); // avoid java.lang.NullPointerException at getItemCount()
@@ -193,8 +179,6 @@ public class MowtweebookFragment extends Fragment {
         if (!lock) {
             lock = true;
             // perform query here
-            // viewPager.setCurrentItem(1);
-            // viewPager.setCurrentItem(1, true);
             if (theSwipeRefreshLayout != null) {
                 theSwipeRefreshLayout.setRefreshing(true);
             }
@@ -291,8 +275,6 @@ public class MowtweebookFragment extends Fragment {
         if (!lock) {
             lock = true;
             // perform query here
-            // viewPager.setCurrentItem(1);
-            // viewPager.setCurrentItem(1, true);
             if (theSwipeRefreshLayout != null) {
                 theSwipeRefreshLayout.setRefreshing(true);
             }
@@ -303,6 +285,7 @@ public class MowtweebookFragment extends Fragment {
                         Log.d("postUpdate", response.toString());
                         tweets.add(0, MowtweebookTweet.parseJSON(3, response.toString()));
                         notifyAdapter();
+                        // TODO: also show post on the other tab
                         // TODO: scroll to the end?
                         if (theSwipeRefreshLayout != null) {
                             theSwipeRefreshLayout.setRefreshing(false);

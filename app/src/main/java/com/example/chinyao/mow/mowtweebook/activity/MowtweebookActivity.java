@@ -1,4 +1,4 @@
-package com.example.chinyao.mow.mowtweebook;
+package com.example.chinyao.mow.mowtweebook.activity;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,6 +24,10 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.chinyao.mow.R;
+import com.example.chinyao.mow.mowtweebook.fragment.MowtweebookFragment;
+import com.example.chinyao.mow.mowtweebook.MowtweebookRestApplication;
+import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestClient;
+import com.example.chinyao.mow.mowtweebook.adapter.MowtweebookViewPagerAdapter;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookPersistentTweet;
 
 import butterknife.BindView;
@@ -97,7 +101,6 @@ public class MowtweebookActivity extends AppCompatActivity {
                 new MowtweebookViewPagerAdapter(
                         getSupportFragmentManager(),
                         this, // context
-                        viewPager,
                         client
                         );
 
@@ -167,7 +170,6 @@ public class MowtweebookActivity extends AppCompatActivity {
         inflater.inflate(R.menu.mowdigest_menu, menu);
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        theHomeTimelineFragment.searchItem = searchItem;
 
         final MenuItem filterItem = menu.findItem(R.id.action_filter);
         filterItem.setVisible(false);
