@@ -38,31 +38,20 @@ public class YahooSlidePageFragment extends Fragment {
         TextView title = (TextView) rootView.findViewById(R.id.title);
         TextView content_text = (TextView) rootView.findViewById(R.id.content_text);
 
-        int index = getArguments().getInt(BundleKey.PAGE_INDEX,0);
-        switch (index){
-            case 0:
-                Glide.with(this)
-                        .load(first_image)
-                        .centerCrop()
+        // Arguments with Bundle
+        int index = getArguments().getInt(BundleKey.PAGE_INDEX, 0);
+
+        Glide.with(this)
+                .load(first_image)
+                .centerCrop()
                         /*
                         .placeholder(R.drawable.mediumthreebytwo440)
                         .error(R.drawable.mediumthreebytwo440)
                         */
-                        .into(mCoverImageView);
-                section.setText(first_section);
-                title.setText(first_title);
-                content_text.setText(first_abstract);
-                break;
-            case 1:
-                mCoverImageView.setImageResource(R.drawable.ginobili);
-                break;
-            case 2:
-                mCoverImageView.setImageResource(R.drawable.ginobili_fake);
-                section.setText("Sports");
-                title.setText("Manu Ginobili hasn't decided if he will retire this summer.");
-                content_text.setText("Similar to Tim Duncan, Ginobili has a player option for the 2016-17 season but will take his time this summer before making a decision. Ginobili will be 39 years old in July and averaged 9.6 points, 3.1 assists, 2.5 boards, 1.1 steals and 1.2 3-pointers in 19.6 minutes in 58 regular-season appearances.");
-                break;
-        }
+                .into(mCoverImageView);
+        section.setText(first_section);
+        title.setText(first_title);
+        content_text.setText(first_abstract);
 
         ViewTreeObserver obs = mCoverImageView.getViewTreeObserver();
         obs.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {

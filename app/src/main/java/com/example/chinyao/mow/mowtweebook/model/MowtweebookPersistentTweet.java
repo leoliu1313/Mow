@@ -5,6 +5,7 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
+import com.example.chinyao.mow.mowtweebook.utility.MowtweebookUtility;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -52,12 +53,12 @@ public class MowtweebookPersistentTweet extends Model {
 		Gson gson = new GsonBuilder().create();
 		ArrayList<MowtweebookTweet> tweets = new ArrayList<>();
 		for (int i = 0; i < persistentTweets.size(); i++) {
-			tweets.add(
-					gson.fromJson(
-							persistentTweets.get(i).json_response,
-							MowtweebookTweet.class
-					)
+			MowtweebookTweet theTweet = gson.fromJson(
+					persistentTweets.get(i).json_response,
+					MowtweebookTweet.class
 			);
+			MowtweebookUtility.process_tweet(theTweet);
+			tweets.add(theTweet);
 		}
 		return tweets;
 	}

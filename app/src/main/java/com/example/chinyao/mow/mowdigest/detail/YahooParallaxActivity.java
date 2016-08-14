@@ -10,6 +10,9 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.example.chinyao.mow.R;
+import com.example.chinyao.mow.mowtweebook.model.MowtweebookParcelWrap;
+
+import org.parceler.Parcels;
 
 
 public class YahooParallaxActivity extends AppCompatActivity {
@@ -25,22 +28,44 @@ public class YahooParallaxActivity extends AppCompatActivity {
         setupToolbar();
         handleStatusBar();
 
-        Bundle bundle = getIntent().getBundleExtra(BundleKey.TYPE_YAHOO);
-        float speed = bundle.getFloat(BundleKey.PARALLAX_SPEED);
-        String first_image = bundle.getString("first_image");
-        String first_title = bundle.getString("first_title");
-        String first_section = bundle.getString("first_section");
-        String first_abstract = bundle.getString("first_abstract");
+        // Bundle
 
+        Bundle bundle = getIntent().getBundleExtra(BundleKey.TYPE_YAHOO);
+        String first_image = null;
+        String first_title = null;
+        String first_section = null;
+        String first_abstract = null;
+        if (bundle != null) {
+            first_image = bundle.getString("first_image");
+            first_title = bundle.getString("first_title");
+            first_section = bundle.getString("first_section");
+            first_abstract = bundle.getString("first_abstract");
+        }
+
+        // Parcels
+        MowtweebookParcelWrap theWrap =
+                (MowtweebookParcelWrap) Parcels.unwrap(getIntent().getParcelableExtra("tweets"));
+
+        // SlidePagerAdapter
+        int size = 3;
+        if (theWrap != null && theWrap.tweets != null) {
+            size = theWrap.tweets.size();
+        }
         mPager = (ViewPager) findViewById(R.id.pager);
-        mPagerAdapter = new SlidePagerAdapter(getSupportFragmentManager(), 3);
+        mPagerAdapter = new SlidePagerAdapter(getSupportFragmentManager(), size);
+
+        // Bundle
         mPagerAdapter.first_image = first_image;
         mPagerAdapter.first_title = first_title;
         mPagerAdapter.first_section = first_section;
         mPagerAdapter.first_abstract = first_abstract;
+
+        // Parcels
+        mPagerAdapter.tweets = theWrap.tweets;
+
         mPager.setAdapter(mPagerAdapter);
         int[] resId = {R.id.cover_img};
-        mPager.setPageTransformer(true, new ParallaxTransformer(speed, 0, resId, true));
+        mPager.setPageTransformer(true, new ParallaxTransformer(0.6f, 0, resId, true));
     }
     
     /**Hide the status bar on pre-19 android

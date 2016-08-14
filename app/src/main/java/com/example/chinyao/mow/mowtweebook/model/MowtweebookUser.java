@@ -1,8 +1,12 @@
 package com.example.chinyao.mow.mowtweebook.model;
 
+import org.parceler.Parcel;
+
 /**
  * Created by chinyao on 8/7/2016.
  */
+
+@Parcel
 public class MowtweebookUser {
 	String profile_image_url;
 	String location;
@@ -14,6 +18,8 @@ public class MowtweebookUser {
 	String friends_count;
 	String screen_name;
 	String name;
+
+	public MowtweebookUser() {}
 
 	public String getName() {
 		return name;

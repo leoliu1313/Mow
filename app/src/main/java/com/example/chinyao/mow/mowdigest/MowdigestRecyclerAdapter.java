@@ -194,7 +194,6 @@ public class MowdigestRecyclerAdapter
                     Toast.makeText(context, "Clicked Position = " + position, Toast.LENGTH_SHORT).show();
 
                     Bundle bundle = new Bundle();
-                    bundle.putFloat(BundleKey.PARALLAX_SPEED, 0.6f);
                     bundle.putString("first_image",
                             newsDigest.get(position).getMedia().get(0).getMediaMetadata().get(0).getUrl());
                     bundle.putString("first_title",

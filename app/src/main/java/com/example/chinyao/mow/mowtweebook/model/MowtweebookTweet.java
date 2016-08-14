@@ -1,11 +1,16 @@
 package com.example.chinyao.mow.mowtweebook.model;
 
+import com.example.chinyao.mow.mowtweebook.utility.MowtweebookUtility;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import org.parceler.Parcel;
 
 /**
  * Created by chinyao on 8/7/2016.
  */
+
+@Parcel
 public class MowtweebookTweet {
 	String created_at;
 	String id_str;
@@ -26,27 +31,32 @@ public class MowtweebookTweet {
 	boolean mowtweebookProcessed;
 
 	// gson needs this
-	public MowtweebookTweet() {
-	}
+	public MowtweebookTweet() {}
 
 	public static MowtweebookTweet parseJSON(int mode, String json_response) {
 		Gson gson = new GsonBuilder().create();
 		// Log.d("parseJSON", json_response);
 		MowtweebookTweet theTweet = gson.fromJson(json_response, MowtweebookTweet.class);
 		if (theTweet != null) {
-			MowtweebookPersistentTweet persistentTweet;
-			if (mode == 3) {
-				persistentTweet = new MowtweebookPersistentTweet(1, theTweet.id_str, json_response);
-				persistentTweet.save();
-				persistentTweet = new MowtweebookPersistentTweet(2, theTweet.id_str, json_response);
-				persistentTweet.save();
-			}
-			else {
-				persistentTweet = new MowtweebookPersistentTweet(mode, theTweet.id_str, json_response);
-				persistentTweet.save();
-			}
+			theTweet = MowtweebookUtility.process_tweet(theTweet);
+			persistent_tweet(mode, json_response, theTweet);
 		}
 		return theTweet;
+	}
+
+	// offline
+	private static void persistent_tweet(int mode, String json_response, MowtweebookTweet theTweet) {
+		MowtweebookPersistentTweet persistentTweet;
+		if (mode == 3) {
+			persistentTweet = new MowtweebookPersistentTweet(1, theTweet.id_str, json_response);
+			persistentTweet.save();
+			persistentTweet = new MowtweebookPersistentTweet(2, theTweet.id_str, json_response);
+			persistentTweet.save();
+		}
+		else {
+			persistentTweet = new MowtweebookPersistentTweet(mode, theTweet.id_str, json_response);
+			persistentTweet.save();
+		}
 	}
 
 	public String getMowtweebookImageUrl() {

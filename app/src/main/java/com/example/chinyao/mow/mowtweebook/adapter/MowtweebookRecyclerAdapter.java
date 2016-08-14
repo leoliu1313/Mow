@@ -2,30 +2,27 @@ package com.example.chinyao.mow.mowtweebook.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.chinyao.mow.R;
-import com.example.chinyao.mow.mowdigest.detail.BundleKey;
 import com.example.chinyao.mow.mowdigest.detail.YahooParallaxActivity;
+import com.example.chinyao.mow.mowtweebook.model.MowtweebookParcelWrap;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookTweet;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import org.parceler.Parcels;
+
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
  * Created by chinyao on 7/29/2016.
@@ -93,61 +90,7 @@ public class MowtweebookRecyclerAdapter
                     do_full_span = false;
                 }
             }
-            // TODO: don't set up tweet here
             MowtweebookTweet theTweet = tweets.get(position);
-            if (!theTweet.isMowtweebookProcessed()) {
-                theTweet.setMowtweebookProcessed(true);
-
-                // retweet
-                if (theTweet.getRetweeted_status() != null) {
-                    theTweet.getRetweeted_status().setOriginal_user(theTweet.getUser());
-                    tweets.set(position, theTweet.getRetweeted_status());
-                    theTweet = tweets.get(position);
-                }
-
-                String tmp;
-
-                // image
-                if (theTweet.getEntities() != null
-                        && theTweet.getEntities().getMedia() != null
-                        && theTweet.getEntities().getMedia().size() > 0) {
-                    tmp = theTweet.getEntities().getMedia().get(0).getMedia_url();
-                    tmp = tmp.replaceAll("normal", "bigger");
-                    theTweet.setMowtweebookImageUrl(tmp);
-                }
-
-                // tweet content
-                tmp = theTweet.getText();
-                if (tmp != null) {
-                    tmp = tmp.replaceAll("https://t.co/.*", "");
-                }
-                if (theTweet.getEntities() != null
-                        && theTweet.getEntities().getUrls() != null
-                        && theTweet.getEntities().getUrls().size() > 0
-                        && theTweet.getEntities().getUrls().get(0).getExpanded_url() != null) {
-                    tmp = tmp + " " + theTweet.getEntities().getUrls().get(0).getExpanded_url();
-                }
-                theTweet.setText(tmp);
-
-                // @id
-                tmp = theTweet.getUser().getScreen_name();
-                if (tmp != null) {
-                    tmp = "@" + tmp;
-                    theTweet.getUser().setScreen_name(tmp);
-                }
-
-                // timestamp
-                tmp = theTweet.getCreated_at();
-                if (tmp != null) {
-                    tmp = getRelativeTimeAgo(tmp);
-                    tmp = tmp.replaceAll(" seconds ago", "s");
-                    tmp = tmp.replaceAll(" minutes ago", "m");
-                    tmp = tmp.replaceAll(" hours ago", "h");
-                    tmp = tmp.replaceAll(" dats ago", "d");
-                    theTweet.setCreated_at(tmp);
-                }
-            }
-
             if (do_full_span) {
                 if (theTweet.getMowtweebookImageUrl() != null) {
                     theTweet.setMowtweebookFullSpan(true);
@@ -204,6 +147,9 @@ public class MowtweebookRecyclerAdapter
         }
         Glide.with(context)
                 .load(theTweet.getUser().getProfile_image_url())
+                .bitmapTransform(new RoundedCornersTransformation(
+                        context, 5, 0,
+                        RoundedCornersTransformation.CornerType.ALL))
                 .placeholder(R.drawable.profile_image)
                 .error(R.drawable.profile_image)
                 .into(holder.card_profile_image);
@@ -215,20 +161,14 @@ public class MowtweebookRecyclerAdapter
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Clicked Position = " + position, Toast.LENGTH_SHORT).show();
+                // Toast.makeText(context, "Clicked Position = " + position, Toast.LENGTH_SHORT).show();
 
-                Bundle bundle = new Bundle();
-                bundle.putFloat(BundleKey.PARALLAX_SPEED, 0.6f);
-                bundle.putString("first_image",
-                        tweets.get(position).getMowtweebookImageUrl());
-                bundle.putString("first_title",
-                        tweets.get(position).getText());
-                bundle.putString("first_section",
-                        tweets.get(position).getUser().getScreen_name());
-                bundle.putString("first_abstract",
-                        tweets.get(position).getText());
                 Intent intent = new Intent(context, YahooParallaxActivity.class);
-                intent.putExtra(BundleKey.TYPE_YAHOO, bundle);
+
+                // Parcels
+                MowtweebookParcelWrap theWrap = new MowtweebookParcelWrap(tweets);
+                intent.putExtra("tweets", Parcels.wrap(theWrap));
+
                 context.startActivity(intent);
             }
         });
@@ -242,25 +182,5 @@ public class MowtweebookRecyclerAdapter
         else {
             return 0;
         }
-    }
-
-    // relative timestamp
-    // https://gist.github.com/nesquena/f786232f5ef72f6e10a7
-    public String getRelativeTimeAgo(String rawJsonDate) {
-        String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
-        SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
-        sf.setLenient(true);
-
-        String relativeDate;
-        try {
-            long dateMillis = sf.parse(rawJsonDate).getTime();
-            relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
-                    System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
-        } catch (ParseException e) {
-            e.printStackTrace();
-            relativeDate = rawJsonDate;
-        }
-
-        return relativeDate;
     }
 }

@@ -19,7 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum = "7"
             android:id="@+id/card_top"
             >
             <ImageView
@@ -34,13 +33,13 @@
                 android:id="@+id/card_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:paddingTop="20dp"
                 android:paddingBottom="8dp"
-                android:paddingLeft="8dp"
-                android:paddingStart="8dp"
-                android:paddingRight="8dp"
-                android:paddingEnd="8dp"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingRight="4dp"
+                android:paddingEnd="4dp"
                 android:textColor="@color/mowtubeColorDateDarkDark"
                 android:text="@string/fake_name"
                 tools:text="@string/fake_name"
@@ -53,27 +52,27 @@
                 android:textSize="12sp"
                 android:paddingTop="20dp"
                 android:paddingBottom="8dp"
-                android:paddingLeft="8dp"
-                android:paddingStart="8dp"
-                android:paddingRight="8dp"
-                android:paddingEnd="8dp"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingRight="4dp"
+                android:paddingEnd="4dp"
                 android:textColor="@color/mowtubeColorDate"
                 android:text="@string/fake_id"
                 tools:text="@string/fake_id"
                 />
             <TextView
                 android:id="@+id/card_published_date"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:gravity="end"
                 android:textSize="12sp"
                 android:paddingTop="20dp"
-                android:paddingBottom="8dp"
-                android:paddingLeft="8dp"
-                android:paddingStart="8dp"
-                android:paddingRight="8dp"
-                android:paddingEnd="8dp"
+                android:paddingBottom="4dp"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingRight="16dp"
+                android:paddingEnd="16dp"
                 android:textColor="@color/mowtubeColorDate"
                 android:text="@string/fake_relative_date"
                 tools:text="@string/fake_relative_date"
@@ -95,7 +94,7 @@
             android:paddingEnd="16dp"
             android:textColor="@color/mowtubeColorDateDarkDark"
             android:text=""
-            tools:text="@string/fake_title"
+            tools:text="@string/fake_title_space"
             android:autoLink="all"
             android:linksClickable="true"
             />
@@ -121,28 +120,49 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="end"
+            android:weightSum = "7"
             >
-
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:contentDescription="@string/contentDescription"
-                android:src="@drawable/ic_reply"
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
                 />
-
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:contentDescription="@string/contentDescription"
-                android:src="@drawable/ic_retweet"
-                />
-
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:contentDescription="@string/contentDescription"
-                android:src="@drawable/ic_like"
-                />
+            <LinearLayout
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                >
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:contentDescription="@string/contentDescription"
+                    android:src="@drawable/ic_reply"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                >
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:contentDescription="@string/contentDescription"
+                    android:src="@drawable/ic_retweet"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                >
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:contentDescription="@string/contentDescription"
+                    android:src="@drawable/ic_like"
+                    />
+            </LinearLayout>
 
         </LinearLayout>
 
