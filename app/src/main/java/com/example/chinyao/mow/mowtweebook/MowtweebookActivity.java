@@ -78,6 +78,12 @@ public class MowtweebookActivity extends AppCompatActivity {
         // chrome://inspect/#devices
         // TODO: square/retrofit with OAuth is hard... try again?
         client = MowtweebookRestApplication.getRestClient();
+        if (!client.hasNetwork()) {
+            Toast.makeText(this,
+                    getResources().getString(R.string.no_internet),
+                    Toast.LENGTH_SHORT)
+                    .show();
+        }
     }
 
     private void setupViewPager() {

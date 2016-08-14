@@ -1,5 +1,7 @@
 package com.example.chinyao.mow.mowtweebook.model;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -25,13 +27,21 @@ public class MowtweebookTweet {
 	String mowtweebookImageUrl;
 	boolean mowtweebookProcessed;
 
+	// gson needs this
 	public MowtweebookTweet() {
 	}
 
-	public static MowtweebookTweet parseJSON(String response) {
+	public static MowtweebookTweet parseJSON(String json_response) {
 		Gson gson = new GsonBuilder().create();
-		MowtweebookTweet boxOfficeMovieResponse = gson.fromJson(response, MowtweebookTweet.class);
-		return boxOfficeMovieResponse;
+		Log.d("parseJSON", json_response);
+		MowtweebookTweet theTweet = gson.fromJson(json_response, MowtweebookTweet.class);
+		if (theTweet != null) {
+			MowtweebookPersistentTweet persistentTweet =
+					new MowtweebookPersistentTweet(theTweet.id_str, json_response);
+			persistentTweet.save();
+			Log.d("parseJSON", theTweet.id_str);
+		}
+		return theTweet;
 	}
 
 	public String getMowtweebookImageUrl() {

@@ -21,6 +21,8 @@ public class MowtweebookRestApplication extends com.activeandroid.app.Applicatio
 	}
 
 	public static MowtweebookRestClient getRestClient() {
-		return (MowtweebookRestClient) MowtweebookRestClient.getInstance(MowtweebookRestClient.class, MowtweebookRestApplication.context);
+		return (MowtweebookRestClient) MowtweebookRestClient.getInstance(
+				MowtweebookRestClient.class,
+				MowtweebookRestApplication.context);
 	}
 }

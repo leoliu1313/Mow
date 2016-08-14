@@ -12,9 +12,11 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowdigest.EndlessRecyclerViewScrollListener;
+import com.example.chinyao.mow.mowtweebook.model.MowtweebookPersistentTweet;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookTweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -144,6 +146,18 @@ public class MowtweebookFragment extends Fragment {
             lock = true;
             page++;
             if (query == null) {
+                if (!client.hasNetwork()) {
+                    Toast.makeText(getContext(),
+                            getResources().getString(R.string.no_internet),
+                            Toast.LENGTH_SHORT)
+                            .show();
+                    tweets.addAll(MowtweebookPersistentTweet.getAll());
+                    if (theSwipeRefreshLayout != null) {
+                        theSwipeRefreshLayout.setRefreshing(false);
+                    }
+                    lock = false;
+                    return;
+                }
                 client.getHomeTimeline(page, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {

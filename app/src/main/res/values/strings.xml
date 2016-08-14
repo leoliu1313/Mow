@@ -12,6 +12,7 @@
     strings.xml ***
     DatabaseHelper.java
     MowActivity.java
+    AndroidManifest.xml *** AA_DB_VERSION
     -->
 
     <string name="add_item_hint">Add a new item...</string>
@@ -125,5 +126,6 @@
     <string name="fake_name">Demi Lovato</string>
     <string name="fake_id">\@ddlovato</string>
     <string name="fake_relative_date">8h</string>
+    <string name="no_internet">Cannot retrieve messages at this time. Please try again later.</string>
 
 </resources>

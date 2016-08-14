@@ -1,6 +1,8 @@
 package com.example.chinyao.mow.mowtweebook;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -8,6 +10,8 @@ import com.loopj.android.http.RequestParams;
 
 import org.scribe.builder.api.Api;
 import org.scribe.builder.api.TwitterApi;
+
+import java.io.IOException;
 
 /*
  * 
@@ -27,9 +31,35 @@ public class MowtweebookRestClient extends OAuthBaseClient {
 	public static final String REST_CONSUMER_KEY = "5j2STGNDc0tDKCmfnr0QHkQpQ";       // Change this
 	public static final String REST_CONSUMER_SECRET = "5FeuOKadCVoQUjWOtHEe08hWc5GRdXRgKhSh48bNnHzqQggcnx"; // Change this
 	public static final String REST_CALLBACK_URL = "oauth://cprest"; // Change this (here and in manifest)
+	public static final boolean FAKE_NO_INTERNET = true; // TODO
 
 	public MowtweebookRestClient(Context context) {
 		super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
+	}
+
+	public boolean isNetworkAvailable() {
+		ConnectivityManager connectivityManager =
+				(ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+		return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+	}
+
+	public boolean isOnline() {
+		Runtime runtime = Runtime.getRuntime();
+		try {
+			Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+			int     exitValue = ipProcess.waitFor();
+			return (exitValue == 0);
+		}
+		catch (IOException | InterruptedException e) { e.printStackTrace(); }
+		return false;
+	}
+
+	public boolean hasNetwork() {
+		if (FAKE_NO_INTERNET) {
+			return false;
+		}
+		return isNetworkAvailable() && isOnline();
 	}
 
 	/* 1. Define the endpoint URL with getApiUrl and pass a relative path to the endpoint
