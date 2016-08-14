@@ -11,7 +11,9 @@
         android:supportsRtl="true"
         android:icon="@mipmap/ic_launcher_mow"
         android:label="@string/app_name"
-        android:theme="@style/MowTheme">
+        android:theme="@style/MowTheme"
+        android:largeHeap="true"
+        >
         <meta-data
             android:name="AA_DB_NAME"
             android:value="RestClient.db" />
