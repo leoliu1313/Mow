@@ -50,7 +50,6 @@ public class MowtweebookFragment extends Fragment {
 
     private boolean lock = false;
     private String query = null;
-    private int page = 0;
     private boolean first_time = true;
 
     public MenuItem searchItem = null;
@@ -140,6 +139,7 @@ public class MowtweebookFragment extends Fragment {
         // rotation orientation
         if (first_time) {
             // avoid reloading
+            first_time = false;
             doSearch();
         }
     }
@@ -173,6 +173,7 @@ public class MowtweebookFragment extends Fragment {
 
     public void clearAndrefreshAsync() {
         tweets.clear(); // avoid crash here if mode == 2
+        notifyAdapter();
         doSearch();
     }
 
@@ -183,10 +184,6 @@ public class MowtweebookFragment extends Fragment {
     public void doSearch(final String theQuery) {
         // TODO: theQuery
         if (!lock) {
-            if (first_time) {
-                first_time = false;
-                page = 0;
-            }
             lock = true;
             // perform query here
             // viewPager.setCurrentItem(1);
@@ -194,7 +191,6 @@ public class MowtweebookFragment extends Fragment {
             if (theSwipeRefreshLayout != null) {
                 theSwipeRefreshLayout.setRefreshing(true);
             }
-            tweets.clear();
             if (query == null) {
                 if (!client.hasNetwork()) {
                     Toast.makeText(getContext(),
@@ -210,11 +206,15 @@ public class MowtweebookFragment extends Fragment {
                     return;
                 }
                 if (mode == 1) {
-                    page++;
-                    client.getHomeTimeline(page, new JsonHttpResponseHandler() {
+                    long max_id = -1;
+                    if (tweets.size() > 0) {
+                        max_id = Long.parseLong(tweets.get(tweets.size() - 1).getId_str());
+                    }
+                    Log.d("getHomeTimeline", "max_id = " + max_id);
+                    client.getHomeTimeline(max_id, new JsonHttpResponseHandler() {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                            Log.d("populateTimeline", response.toString());
+                            Log.d("getHomeTimeline", response.toString());
                             try {
                                 JSONObject theJSONObject;
                                 for (int i = 0; i < response.length(); i++) {
@@ -235,7 +235,7 @@ public class MowtweebookFragment extends Fragment {
 
                         @Override
                         public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                            Log.d("populateTimeline", errorResponse.toString());
+                            Log.d("getHomeTimeline", errorResponse.toString());
                             if (theSwipeRefreshLayout != null) {
                                 theSwipeRefreshLayout.setRefreshing(false);
                             }
@@ -247,7 +247,7 @@ public class MowtweebookFragment extends Fragment {
                     client.getUserTimeline(new JsonHttpResponseHandler() {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                            Log.d("populateTimeline", response.toString());
+                            Log.d("getUserTimeline", response.toString());
                             try {
                                 JSONObject theJSONObject;
                                 for (int i = 0; i < response.length(); i++) {
@@ -257,7 +257,6 @@ public class MowtweebookFragment extends Fragment {
                                 notifyAdapter();
                                 // TODO
                                 // query = theQuery;
-                                page = 1;
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -269,7 +268,7 @@ public class MowtweebookFragment extends Fragment {
 
                         @Override
                         public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                            Log.d("populateTimeline", errorResponse.toString());
+                            Log.d("getUserTimeline", errorResponse.toString());
                             if (theSwipeRefreshLayout != null) {
                                 theSwipeRefreshLayout.setRefreshing(false);
                             }
@@ -296,8 +295,8 @@ public class MowtweebookFragment extends Fragment {
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         Log.d("postUpdate", response.toString());
                         tweets.add(MowtweebookTweet.parseJSON(3, response.toString()));
-                        // TODO: scroll to the end?
                         notifyAdapter();
+                        // TODO: scroll to the end?
                         if (theSwipeRefreshLayout != null) {
                             theSwipeRefreshLayout.setRefreshing(false);
                         }

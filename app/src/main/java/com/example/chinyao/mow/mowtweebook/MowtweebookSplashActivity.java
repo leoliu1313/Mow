@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.widget.Toast;
 
 import com.codepath.oauth.OAuthLoginActionBarActivity;
 
@@ -37,7 +36,7 @@ public class MowtweebookSplashActivity extends OAuthLoginActionBarActivity<Mowtw
             // remove all the callbacks
             handler.removeCallbacksAndMessages(null);
         }
-        Toast.makeText(this, "Success!", Toast.LENGTH_LONG).show();
+        // Toast.makeText(this, "Success!", Toast.LENGTH_LONG).show();
         Intent i = new Intent(this, MowtweebookActivity.class);
         startActivity(i);
     }

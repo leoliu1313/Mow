@@ -1,7 +1,5 @@
 package com.example.chinyao.mow.mowtweebook.model;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -33,7 +31,7 @@ public class MowtweebookTweet {
 
 	public static MowtweebookTweet parseJSON(int mode, String json_response) {
 		Gson gson = new GsonBuilder().create();
-		Log.d("parseJSON", json_response);
+		// Log.d("parseJSON", json_response);
 		MowtweebookTweet theTweet = gson.fromJson(json_response, MowtweebookTweet.class);
 		if (theTweet != null) {
 			MowtweebookPersistentTweet persistentTweet;
