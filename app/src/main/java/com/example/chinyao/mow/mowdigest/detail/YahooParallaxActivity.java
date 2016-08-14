@@ -13,7 +13,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.example.chinyao.mow.R;
-import com.example.chinyao.mow.databinding.MowdigestDetailParallaxBinding;
+import com.example.chinyao.mow.databinding.MowtweebookDetailActivityBinding;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookParcelWrap;
 
 import org.parceler.Parcels;
@@ -24,7 +24,7 @@ public class YahooParallaxActivity extends AppCompatActivity {
     // private ViewPager mPager;
     private SlidePagerAdapter mPagerAdapter;
     private MowtweebookParcelWrap theWrap;
-    private MowdigestDetailParallaxBinding binding;
+    private MowtweebookDetailActivityBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,7 @@ public class YahooParallaxActivity extends AppCompatActivity {
         // setContentView(R.layout.mowdigest_detail_parallax);
 
         // Data Binding
-        binding = DataBindingUtil.setContentView(this, R.layout.mowdigest_detail_parallax);
+        binding = DataBindingUtil.setContentView(this, R.layout.mowtweebook_detail_activity);
 
         setupToolbar();
         handleStatusBar();

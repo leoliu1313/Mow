@@ -78,7 +78,6 @@ The following **additional** features are implemented:
 * [x] Users can clear offline data
 * [x] Users can scroll left/right to see other tweet detail views
 
-
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:

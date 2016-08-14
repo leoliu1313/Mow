@@ -1,42 +1,49 @@
 package com.example.chinyao.mow.mowdigest.detail;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.ImageView;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.chinyao.mow.R;
+import com.example.chinyao.mow.databinding.MowtweebookDetailFragmentBinding;
 
 /**
  * Created by Jiaqi Ning on 4/5/2015.
  */
 public class YahooSlidePageFragment extends Fragment {
 
-    private ImageView mCoverImageView;
-    private int mCoverImageHeight;
-    private float mVerticalParalllaxSpeed = 0.3f;
+    private static float mVerticalParalllaxSpeed = 0.3f;
+
+    // TODO: remvoe these
     public String first_image;
     public String first_section;
     public String first_title;
     public String first_abstract;
 
+    private MowtweebookDetailFragmentBinding binding;
+    private int mCoverImageHeight;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(
-                R.layout.mowdigest_detail, container, false);
-        ((NotifyingScrollView) rootView.findViewById(R.id.scroll_view))
-                .setOnScrollChangedListener(mOnScrollChangedListener);
-        mCoverImageView = (ImageView) rootView.findViewById(R.id.cover_img);
-        TextView section = (TextView) rootView.findViewById(R.id.section);
-        TextView title = (TextView) rootView.findViewById(R.id.title);
-        TextView content_text = (TextView) rootView.findViewById(R.id.content_text);
+        // ViewGroup rootView = (ViewGroup) inflater.inflate(
+        //        R.layout.mowtweebook_detail_fragment, container, false);
+
+        // Data Binding
+        binding = DataBindingUtil.inflate(
+                inflater,
+                R.layout.mowtweebook_detail_fragment,
+                container,
+                false
+        );
+
+        binding.scrollView.setOnScrollChangedListener(mOnScrollChangedListener);
 
         // Arguments with Bundle
         int index = getArguments().getInt(BundleKey.PAGE_INDEX, 0);
@@ -54,26 +61,26 @@ public class YahooSlidePageFragment extends Fragment {
                     .centerCrop()
                     .placeholder(R.drawable.square320)
                     .error(R.drawable.square320)
-                    .into(mCoverImageView);
+                    .into(binding.coverImg);
         }
         else {
-            mCoverImageView.setImageResource(R.drawable.twitter_storms);
+            binding.coverImg.setImageResource(R.drawable.twitter_storms);
         }
-        section.setText(first_section);
-        title.setText(first_title);
-        content_text.setText(first_abstract);
+        binding.section.setText(first_section);
+        binding.title.setText(first_title);
+        binding.contentText.setText(first_abstract);
 
-        ViewTreeObserver obs = mCoverImageView.getViewTreeObserver();
+        ViewTreeObserver obs = binding.coverImg.getViewTreeObserver();
         obs.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                mCoverImageHeight = mCoverImageView.getHeight();
-                ViewTreeObserver obs = mCoverImageView.getViewTreeObserver();
+                mCoverImageHeight = binding.coverImg.getHeight();
+                ViewTreeObserver obs = binding.coverImg.getViewTreeObserver();
                 obs.removeOnGlobalLayoutListener(this);
             }
         });
 
-        return rootView;
+        return binding.scrollView;
     }
     private NotifyingScrollView.OnScrollChangedListener mOnScrollChangedListener
             = new NotifyingScrollView.OnScrollChangedListener() {
@@ -81,7 +88,7 @@ public class YahooSlidePageFragment extends Fragment {
             if (l < mCoverImageHeight){
                 final float ratio =
                         (float) Math.min(Math.max(t, 0), mCoverImageHeight) / mCoverImageHeight;
-                mCoverImageView.setTranslationY(ratio* mCoverImageHeight * mVerticalParalllaxSpeed);
+                binding.coverImg.setTranslationY(ratio* mCoverImageHeight * mVerticalParalllaxSpeed);
             }
         }
     };
