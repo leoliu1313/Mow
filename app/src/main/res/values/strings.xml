@@ -127,5 +127,10 @@
     <string name="fake_id">\@ddlovato</string>
     <string name="fake_relative_date">8h</string>
     <string name="no_internet">Cannot retrieve messages at this time. Please try again later.</string>
+    <string name="change_location">Change location</string>
+    <string name="clear_data">Clear Offline Data</string>
+    <string name="change">Change</string>
+    <string name="change_location_title">Trends tailored just for you</string>
+    <string name="change_location_content">Trends offer a unique way to get closer to what you care about. They are tailored for you based on your location and who you follow.</string>
 
 </resources>

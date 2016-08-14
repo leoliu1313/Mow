@@ -8,6 +8,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
@@ -20,8 +21,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.chinyao.mow.R;
+import com.example.chinyao.mow.mowtweebook.model.MowtweebookPersistentTweet;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,8 +44,8 @@ public class MowtweebookActivity extends AppCompatActivity {
     @BindView(R.id.m_fab)
     FloatingActionButton fab;
 
-    private MowtweebookFragment HomeTimelineFragment;
-    private MowtweebookFragment UserTimelineFragment;
+    private MowtweebookFragment theHomeTimelineFragment;
+    private MowtweebookFragment theUserTimelineFragment;
     private Spinner sort_spinner;
     private TextView date_range_textview;
     private CheckBox art_checkbox;
@@ -98,8 +101,8 @@ public class MowtweebookActivity extends AppCompatActivity {
                         client
                         );
 
-        HomeTimelineFragment = (MowtweebookFragment) theAdapter.getRegisteredFragment(0);
-        UserTimelineFragment = (MowtweebookFragment) theAdapter.getRegisteredFragment(1);
+        theHomeTimelineFragment = (MowtweebookFragment) theAdapter.getRegisteredFragment(0);
+        theUserTimelineFragment = (MowtweebookFragment) theAdapter.getRegisteredFragment(1);
 
         viewPager.setAdapter(theAdapter);
 
@@ -144,7 +147,7 @@ public class MowtweebookActivity extends AppCompatActivity {
                                         //         input.toString(),
                                         //         Toast.LENGTH_SHORT).show();
 
-                                        HomeTimelineFragment.doTweet(input.toString());
+                                        theHomeTimelineFragment.doTweet(input.toString());
 
                                         // showMaterialDialog(position_tag);
                                     }
@@ -164,7 +167,7 @@ public class MowtweebookActivity extends AppCompatActivity {
         inflater.inflate(R.menu.mowdigest_menu, menu);
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        HomeTimelineFragment.searchItem = searchItem;
+        theHomeTimelineFragment.searchItem = searchItem;
 
         final MenuItem filterItem = menu.findItem(R.id.action_filter);
         filterItem.setVisible(false);
@@ -174,7 +177,7 @@ public class MowtweebookActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                UserTimelineFragment.doSearch(query);
+                theUserTimelineFragment.doSearch(query);
 
                 // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
                 // see https://code.google.com/p/android/issues/detail?id=24599
@@ -185,6 +188,50 @@ public class MowtweebookActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        filterItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                PopupMenu popup = new PopupMenu(
+                        MowtweebookActivity.this,
+                        findViewById(R.id.action_filter)
+                );
+                // Inflate the menu from xml
+                popup.getMenuInflater().inflate(R.menu.mowtweebook_actions, popup.getMenu());
+                // Setup menu item selection
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.change_location:
+                                new MaterialDialog.Builder(MowtweebookActivity.this)
+                                    .title(getString(R.string.change_location_title))
+                                    .content(getString(R.string.change_location_content))
+                                    .positiveText(getString(R.string.change))
+                                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                        @Override
+                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                            // TODO
+                                        }
+                                    }).build().show();
+                                return true;
+                            case R.id.clear_data:
+                                Toast.makeText(MowtweebookActivity.this,
+                                        "Delete persistent tweets",
+                                        Toast.LENGTH_SHORT)
+                                        .show();
+                                MowtweebookPersistentTweet.deleteAll();
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+                });
+                // Handle dismissal with: popup.setOnDismissListener(...);
+                // Show the menu
+                popup.show();
                 return false;
             }
         });

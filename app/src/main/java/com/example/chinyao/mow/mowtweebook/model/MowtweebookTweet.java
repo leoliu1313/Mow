@@ -31,15 +31,22 @@ public class MowtweebookTweet {
 	public MowtweebookTweet() {
 	}
 
-	public static MowtweebookTweet parseJSON(String json_response) {
+	public static MowtweebookTweet parseJSON(int mode, String json_response) {
 		Gson gson = new GsonBuilder().create();
 		Log.d("parseJSON", json_response);
 		MowtweebookTweet theTweet = gson.fromJson(json_response, MowtweebookTweet.class);
 		if (theTweet != null) {
-			MowtweebookPersistentTweet persistentTweet =
-					new MowtweebookPersistentTweet(theTweet.id_str, json_response);
-			persistentTweet.save();
-			Log.d("parseJSON", theTweet.id_str);
+			MowtweebookPersistentTweet persistentTweet;
+			if (mode == 3) {
+				persistentTweet = new MowtweebookPersistentTweet(1, theTweet.id_str, json_response);
+				persistentTweet.save();
+				persistentTweet = new MowtweebookPersistentTweet(2, theTweet.id_str, json_response);
+				persistentTweet.save();
+			}
+			else {
+				persistentTweet = new MowtweebookPersistentTweet(mode, theTweet.id_str, json_response);
+				persistentTweet.save();
+			}
 		}
 		return theTweet;
 	}

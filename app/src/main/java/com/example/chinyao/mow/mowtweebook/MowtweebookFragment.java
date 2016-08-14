@@ -50,7 +50,7 @@ public class MowtweebookFragment extends Fragment {
 
     private boolean lock = false;
     private String query = null;
-    private int page = 1;
+    private int page = 0;
     private boolean first_time = true;
 
     public MenuItem searchItem = null;
@@ -124,7 +124,11 @@ public class MowtweebookFragment extends Fragment {
             public void onLoadMore(int page, int totalItemsCount) {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
-                customLoadMoreDataFromApi();
+                // customLoadMoreDataFromApi();
+                if (mode == 1) {
+                    doSearch();
+                }
+                // TODO: support mode == 2
             }
         });
         tweetsAdapter = new MowtweebookRecyclerAdapter(
@@ -136,58 +140,7 @@ public class MowtweebookFragment extends Fragment {
         // rotation orientation
         if (first_time) {
             // avoid reloading
-            first_time = false;
             doSearch();
-        }
-    }
-
-    private void customLoadMoreDataFromApi() {
-        if (!lock) {
-            lock = true;
-            page++;
-            if (query == null) {
-                if (!client.hasNetwork()) {
-                    Toast.makeText(getContext(),
-                            getResources().getString(R.string.no_internet),
-                            Toast.LENGTH_SHORT)
-                            .show();
-                    tweets.addAll(MowtweebookPersistentTweet.getAll());
-                    if (theSwipeRefreshLayout != null) {
-                        theSwipeRefreshLayout.setRefreshing(false);
-                    }
-                    lock = false;
-                    return;
-                }
-                client.getHomeTimeline(page, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                        Log.d("populateTimeline", response.toString());
-                        try {
-                            JSONObject theJSONObject;
-                            for (int i = 0; i < response.length(); i++) {
-                                theJSONObject = response.getJSONObject(i);
-                                tweets.add(MowtweebookTweet.parseJSON(theJSONObject.toString()));
-                            }
-                            notifyAdapter();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        if (theSwipeRefreshLayout != null) {
-                            theSwipeRefreshLayout.setRefreshing(false);
-                        }
-                        lock = false;
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                        Log.d("populateTimeline", errorResponse.toString());
-                        if (theSwipeRefreshLayout != null) {
-                            theSwipeRefreshLayout.setRefreshing(false);
-                        }
-                        lock = false;
-                    }
-                });
-            }
         }
     }
 
@@ -208,8 +161,7 @@ public class MowtweebookFragment extends Fragment {
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
-                tweets.clear(); // avoid crash here if mode == 2
-                refreshAsync();
+                clearAndrefreshAsync();
             }
         });
         // Configure the refreshing colors
@@ -219,8 +171,8 @@ public class MowtweebookFragment extends Fragment {
         );
     }
 
-    public void refreshAsync() {
-        // setupRecyclerView(theRecyclerView);
+    public void clearAndrefreshAsync() {
+        tweets.clear(); // avoid crash here if mode == 2
         doSearch();
     }
 
@@ -229,7 +181,12 @@ public class MowtweebookFragment extends Fragment {
     }
 
     public void doSearch(final String theQuery) {
+        // TODO: theQuery
         if (!lock) {
+            if (first_time) {
+                first_time = false;
+                page = 0;
+            }
             lock = true;
             // perform query here
             // viewPager.setCurrentItem(1);
@@ -239,21 +196,34 @@ public class MowtweebookFragment extends Fragment {
             }
             tweets.clear();
             if (query == null) {
+                if (!client.hasNetwork()) {
+                    Toast.makeText(getContext(),
+                            getResources().getString(R.string.no_internet),
+                            Toast.LENGTH_SHORT)
+                            .show();
+                    tweets.addAll(MowtweebookPersistentTweet.getAll(mode));
+                    notifyAdapter();
+                    if (theSwipeRefreshLayout != null) {
+                        theSwipeRefreshLayout.setRefreshing(false);
+                    }
+                    lock = false;
+                    return;
+                }
                 if (mode == 1) {
-                    client.getHomeTimeline(1, new JsonHttpResponseHandler() {
+                    page++;
+                    client.getHomeTimeline(page, new JsonHttpResponseHandler() {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                             Log.d("populateTimeline", response.toString());
                             try {
                                 JSONObject theJSONObject;
                                 for (int i = 0; i < response.length(); i++) {
-                                    theJSONObject = response.getJSONObject(i);
-                                    tweets.add(MowtweebookTweet.parseJSON(theJSONObject.toString()));
+                                    theJSONObject = response.getJSONObject(i); // JSONException
+                                    tweets.add(MowtweebookTweet.parseJSON(mode, theJSONObject.toString()));
                                 }
                                 notifyAdapter();
                                 // TODO
                                 // query = theQuery;
-                                page = 1;
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -282,7 +252,7 @@ public class MowtweebookFragment extends Fragment {
                                 JSONObject theJSONObject;
                                 for (int i = 0; i < response.length(); i++) {
                                     theJSONObject = response.getJSONObject(i);
-                                    tweets.add(MowtweebookTweet.parseJSON(theJSONObject.toString()));
+                                    tweets.add(MowtweebookTweet.parseJSON(mode, theJSONObject.toString()));
                                 }
                                 notifyAdapter();
                                 // TODO
@@ -323,8 +293,11 @@ public class MowtweebookFragment extends Fragment {
             if (query == null) {
                 client.postUpdate(status, new JsonHttpResponseHandler() {
                     @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                        Log.d("populateTimeline", response.toString());
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        Log.d("postUpdate", response.toString());
+                        tweets.add(MowtweebookTweet.parseJSON(3, response.toString()));
+                        // TODO: scroll to the end?
+                        notifyAdapter();
                         if (theSwipeRefreshLayout != null) {
                             theSwipeRefreshLayout.setRefreshing(false);
                         }
@@ -332,8 +305,8 @@ public class MowtweebookFragment extends Fragment {
                     }
 
                     @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                        Log.d("populateTimeline", errorResponse.toString());
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        Log.d("postUpdate", errorResponse.toString());
                         if (theSwipeRefreshLayout != null) {
                             theSwipeRefreshLayout.setRefreshing(false);
                         }
