@@ -41,14 +41,24 @@ public class YahooSlidePageFragment extends Fragment {
         // Arguments with Bundle
         int index = getArguments().getInt(BundleKey.PAGE_INDEX, 0);
 
-        Glide.with(this)
-                .load(first_image)
-                .centerCrop()
-                        /*
-                        .placeholder(R.drawable.mediumthreebytwo440)
-                        .error(R.drawable.mediumthreebytwo440)
-                        */
-                .into(mCoverImageView);
+        if (first_image != null) {
+            Glide.with(this)
+                    .load(first_image)
+                    // TODO: override
+                    /*
+                    .override(
+                            width,
+                            height
+                    )
+                    */
+                    .centerCrop()
+                    .placeholder(R.drawable.square320)
+                    .error(R.drawable.square320)
+                    .into(mCoverImageView);
+        }
+        else {
+            mCoverImageView.setImageResource(R.drawable.twitter_storms);
+        }
         section.setText(first_section);
         title.setText(first_title);
         content_text.setText(first_abstract);

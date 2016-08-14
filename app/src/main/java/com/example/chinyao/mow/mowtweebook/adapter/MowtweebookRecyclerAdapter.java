@@ -18,6 +18,8 @@ import com.example.chinyao.mow.mowtweebook.model.MowtweebookTweet;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -132,16 +134,22 @@ public class MowtweebookRecyclerAdapter
             layoutParams.setFullSpan(false);
         }
         if (image == null) {
-            holder.card_image.setImageResource(android.R.color.transparent);
+            // holder.card_image.setImageResource(android.R.color.transparent);
+            holder.card_image.setImageResource(0);
             holder.card_image.setVisibility(View.GONE);
         }
         else {
             holder.card_image.setVisibility(View.INVISIBLE);
             Glide.with(context)
                     .load(image)
+                    // TODO: override doesn't work correctly
+                    .override(
+                            theTweet.getEntities().getMedia().get(0).getSizes().getLarge().getW(),
+                            theTweet.getEntities().getMedia().get(0).getSizes().getLarge().getH()
+                            )
                     .centerCrop()
-                    .placeholder(R.drawable.mediumthreebytwo440)
-                    .error(R.drawable.mediumthreebytwo440)
+                    .placeholder(R.drawable.square320)
+                    .error(R.drawable.square320)
                     .into(holder.card_image);
             holder.card_image.setVisibility(View.VISIBLE);
         }
@@ -166,9 +174,33 @@ public class MowtweebookRecyclerAdapter
                 Intent intent = new Intent(context, YahooParallaxActivity.class);
 
                 // Parcels
-                MowtweebookParcelWrap theWrap = new MowtweebookParcelWrap(tweets);
+                // TODO: memory issue
+                List<MowtweebookTweet> theTweets = new ArrayList<>();
+                theTweets.add(tweets.get(position));
+                int index;
+                int count = 0;
+                for (index = position - 1; index >= 0; index--) {
+                    if (tweets.get(index).getMowtweebookImageUrl() != null) {
+                        theTweets.add(tweets.get(index));
+                        count++;
+                        if (theTweets.size() > 10) {
+                            break;
+                        }
+                    }
+                }
+                Collections.reverse(theTweets);
+                for (index = position + 1; index < tweets.size(); index++) {
+                    if (tweets.get(index).getMowtweebookImageUrl() != null) {
+                        theTweets.add(tweets.get(index));
+                        if (theTweets.size() > 20) {
+                            break;
+                        }
+                    }
+                }
+                MowtweebookParcelWrap theWrap =
+                        new MowtweebookParcelWrap(theTweets);
                 intent.putExtra("tweets", Parcels.wrap(theWrap));
-                intent.putExtra("default", position);
+                intent.putExtra("default", count);
 
                 context.startActivity(intent);
             }

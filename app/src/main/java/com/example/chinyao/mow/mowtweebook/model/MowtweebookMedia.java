@@ -9,10 +9,15 @@ import org.parceler.Parcel;
 @Parcel
 public class MowtweebookMedia {
 	String media_url;
+	MowtweebookSizes sizes;
 
 	public MowtweebookMedia() {}
 
 	public String getMedia_url() {
 		return media_url;
+	}
+
+	public MowtweebookSizes getSizes() {
+		return sizes;
 	}
 }
