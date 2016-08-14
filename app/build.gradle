@@ -2,6 +2,10 @@ apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 
 android {
+    // Previously there
+    // Add this next line
+    dataBinding.enabled = true // <----
+
     compileSdkVersion 24
     buildToolsVersion "24.0.0"
 

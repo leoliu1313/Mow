@@ -1,9 +1,10 @@
 package com.example.chinyao.mow.mowdigest.detail;
 
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -12,6 +13,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.example.chinyao.mow.R;
+import com.example.chinyao.mow.databinding.MowdigestDetailParallaxBinding;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookParcelWrap;
 
 import org.parceler.Parcels;
@@ -19,14 +21,19 @@ import org.parceler.Parcels;
 
 public class YahooParallaxActivity extends AppCompatActivity {
 
-    private ViewPager mPager;
+    // private ViewPager mPager;
     private SlidePagerAdapter mPagerAdapter;
     private MowtweebookParcelWrap theWrap;
+    private MowdigestDetailParallaxBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.mowdigest_detail_parallax);
+
+        // setContentView(R.layout.mowdigest_detail_parallax);
+
+        // Data Binding
+        binding = DataBindingUtil.setContentView(this, R.layout.mowdigest_detail_parallax);
 
         setupToolbar();
         handleStatusBar();
@@ -46,14 +53,14 @@ public class YahooParallaxActivity extends AppCompatActivity {
         }
 
         // Parcels
-        theWrap = (MowtweebookParcelWrap) Parcels.unwrap(getIntent().getParcelableExtra("tweets"));
+        theWrap = Parcels.unwrap(getIntent().getParcelableExtra("tweets"));
 
         // SlidePagerAdapter
         int size = 3;
         if (theWrap != null && theWrap.tweets != null) {
             size = theWrap.tweets.size();
         }
-        mPager = (ViewPager) findViewById(R.id.pager);
+        // binding.mPager = (ViewPager) findViewById(R.id.mPager);
         mPagerAdapter = new SlidePagerAdapter(getSupportFragmentManager(), size);
 
         // Bundle
@@ -69,20 +76,23 @@ public class YahooParallaxActivity extends AppCompatActivity {
             mPagerAdapter.tweets = theWrap.tweets;
         }
 
-        mPager.setAdapter(mPagerAdapter);
-        mPager.setCurrentItem(getIntent().getIntExtra("default", 0));
+        binding.mPager.setAdapter(mPagerAdapter);
+        binding.mPager.setCurrentItem(getIntent().getIntExtra("default", 0));
 
         int[] resId = {R.id.cover_img};
-        mPager.setPageTransformer(true, new ParallaxTransformer(0.6f, 0, resId, true));
+        binding.mPager.setPageTransformer(true, new ParallaxTransformer(0.6f, 0, resId, true));
     }
 
     private void setupToolbar() {
         // http://guides.codepath.com/android/Extended-ActionBar-Guide
-        Toolbar toolbar = (Toolbar)findViewById(R.id.my_toolbar);
+        Toolbar toolbar = (Toolbar)findViewById(R.id.mToolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        ActionBar theActionBar = getSupportActionBar();
+        if (theActionBar != null) {
+            theActionBar.setDisplayShowTitleEnabled(false);
+            theActionBar.setDisplayHomeAsUpEnabled(true);
+            theActionBar.setDisplayShowHomeEnabled(true);
+        }
         toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
     }
 
@@ -127,12 +137,12 @@ public class YahooParallaxActivity extends AppCompatActivity {
                 shareIntent.setType("text/plain");
                 String tmp = mPagerAdapter.first_abstract;
                 if (theWrap != null && theWrap.tweets != null) {
-                    if (mPager.getCurrentItem() < theWrap.tweets.size()) {
-                        tmp = theWrap.tweets.get(mPager.getCurrentItem()).getText();
+                    if (binding.mPager.getCurrentItem() < theWrap.tweets.size()) {
+                        tmp = theWrap.tweets.get(binding.mPager.getCurrentItem()).getText();
                     }
                 }
                 shareIntent.putExtra(Intent.EXTRA_TEXT, tmp);
-                startActivity(Intent.createChooser(shareIntent, "")); // title
+                startActivity(Intent.createChooser(shareIntent, "Share to")); // title for the chooser
                 return false;
             }
         });
