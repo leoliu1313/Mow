@@ -17,8 +17,8 @@ public class SlidePagerAdapter extends FragmentStatePagerAdapter {
 
     // Bundle
     public String first_image;
-    public String first_title;
     public String first_section;
+    public String first_title;
     public String first_abstract;
 
     // Parcels
@@ -38,16 +38,16 @@ public class SlidePagerAdapter extends FragmentStatePagerAdapter {
         if (tweets == null) {
             // Bundle
             fragment.first_image = first_image;
-            fragment.first_title = first_title;
             fragment.first_section = first_section;
+            fragment.first_title = first_title;
             fragment.first_abstract = first_abstract;
         }
         else {
             // Parcels
             fragment.first_image = tweets.get(i).getMowtweebookImageUrl();
-            fragment.first_title = tweets.get(i).getText();
             fragment.first_section = tweets.get(i).getUser().getScreen_name();
-            fragment.first_abstract = tweets.get(i).getText();
+            fragment.first_title = tweets.get(i).getText();
+            fragment.first_abstract = "";
         }
 
         // Arguments with Bundle

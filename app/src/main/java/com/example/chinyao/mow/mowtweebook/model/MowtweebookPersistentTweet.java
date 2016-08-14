@@ -57,8 +57,8 @@ public class MowtweebookPersistentTweet extends Model {
 					persistentTweets.get(i).json_response,
 					MowtweebookTweet.class
 			);
-			MowtweebookUtility.process_tweet(theTweet);
-			tweets.add(theTweet);
+			theTweet = MowtweebookUtility.process_tweet(theTweet);
+			tweets.add(MowtweebookUtility.process_tweet(theTweet));
 		}
 		return tweets;
 	}

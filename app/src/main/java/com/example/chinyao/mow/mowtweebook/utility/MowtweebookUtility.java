@@ -14,8 +14,6 @@ import java.util.Locale;
 public class MowtweebookUtility {
 	public static MowtweebookTweet process_tweet(MowtweebookTweet theTweet) {
 		if (!theTweet.isMowtweebookProcessed()) {
-			theTweet.setMowtweebookProcessed(true);
-
 			// retweet
 			if (theTweet.getRetweeted_status() != null) {
 				theTweet.getRetweeted_status().setOriginal_user(theTweet.getUser());
@@ -64,6 +62,8 @@ public class MowtweebookUtility {
 				tmp = tmp.replaceAll(" dats ago", "d");
 				theTweet.setCreated_at(tmp);
 			}
+
+			theTweet.setMowtweebookProcessed(true);
 		}
 		return theTweet;
 	}

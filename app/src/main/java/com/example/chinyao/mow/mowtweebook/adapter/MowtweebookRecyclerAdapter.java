@@ -168,6 +168,7 @@ public class MowtweebookRecyclerAdapter
                 // Parcels
                 MowtweebookParcelWrap theWrap = new MowtweebookParcelWrap(tweets);
                 intent.putExtra("tweets", Parcels.wrap(theWrap));
+                intent.putExtra("default", position);
 
                 context.startActivity(intent);
             }

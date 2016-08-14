@@ -22,8 +22,8 @@ public class YahooSlidePageFragment extends Fragment {
     private int mCoverImageHeight;
     private float mVerticalParalllaxSpeed = 0.3f;
     public String first_image;
-    public String first_title;
     public String first_section;
+    public String first_title;
     public String first_abstract;
 
     @Override

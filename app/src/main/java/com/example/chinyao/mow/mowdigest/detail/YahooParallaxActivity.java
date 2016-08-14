@@ -40,8 +40,8 @@ public class YahooParallaxActivity extends AppCompatActivity {
         String first_abstract = null;
         if (bundle != null) {
             first_image = bundle.getString("first_image");
-            first_title = bundle.getString("first_title");
             first_section = bundle.getString("first_section");
+            first_title = bundle.getString("first_title");
             first_abstract = bundle.getString("first_abstract");
         }
 
@@ -59,8 +59,8 @@ public class YahooParallaxActivity extends AppCompatActivity {
         // Bundle
         if (bundle != null) {
             mPagerAdapter.first_image = first_image;
-            mPagerAdapter.first_title = first_title;
             mPagerAdapter.first_section = first_section;
+            mPagerAdapter.first_title = first_title;
             mPagerAdapter.first_abstract = first_abstract;
         }
 
@@ -70,11 +70,14 @@ public class YahooParallaxActivity extends AppCompatActivity {
         }
 
         mPager.setAdapter(mPagerAdapter);
+        mPager.setCurrentItem(getIntent().getIntExtra("default", 0));
+
         int[] resId = {R.id.cover_img};
         mPager.setPageTransformer(true, new ParallaxTransformer(0.6f, 0, resId, true));
     }
 
     private void setupToolbar() {
+        // http://guides.codepath.com/android/Extended-ActionBar-Guide
         Toolbar toolbar = (Toolbar)findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -141,6 +144,19 @@ public class YahooParallaxActivity extends AppCompatActivity {
         return true;
     }
 
-
+    // back button in the top bar doesn't work
+    // http://guides.codepath.com/android/Extended-ActionBar-Guide
+    // http://codetheory.in/difference-between-setdisplayhomeasupenabled-sethomebuttonenabled-and-setdisplayshowhomeenabled/
+    // http://stackoverflow.com/questions/34020745/home-back-button-in-navigation-bar-doesnt-work-in-my-android-app
+    // http://stackoverflow.com/questions/22182888/actionbar-up-button-destroys-parent-activity-back-does-not
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 }
