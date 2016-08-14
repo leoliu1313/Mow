@@ -5,11 +5,11 @@
     <com.example.chinyao.mow.mowdigest.detail.NotifyingScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         >
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             >
             <ImageView
                 android:scaleType="centerCrop"
@@ -29,7 +29,7 @@
             <TextView
                 android:id="@+id/section"
                 android:layout_alignTop="@id/sharp_rect"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/fake_section"
                 tools:text="@string/fake_section"
@@ -45,7 +45,7 @@
                 android:layout_alignLeft="@id/section"
                 android:layout_alignStart="@id/section"
                 android:layout_below="@id/section"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/fake_title"
                 tools:text="@string/fake_title"
@@ -59,7 +59,7 @@
                 android:layout_alignLeft="@id/title"
                 android:layout_alignStart="@id/title"
                 android:layout_below="@id/title"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/fake_content"
                 android:layout_marginTop="8dp"
@@ -67,6 +67,66 @@
                 android:padding="6dp"
                 android:lineSpacingExtra="2dp"
                 />
+            <LinearLayout
+                android:layout_alignLeft="@id/content_text"
+                android:layout_alignStart="@id/content_text"
+                android:layout_below="@+id/content_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum = "7"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                >
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    />
+                <LinearLayout
+                    android:layout_weight="2"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    >
+                    <ImageButton
+                        android:scaleType="centerCrop"
+                        android:id="@+id/ic_reply"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:contentDescription="@string/contentDescription"
+                        android:src="@drawable/ic_reply"
+                        android:background="@android:color/transparent"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_weight="2"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    >
+                    <ImageButton
+                        android:scaleType="centerCrop"
+                        android:id="@+id/ic_retweet"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:contentDescription="@string/contentDescription"
+                        android:src="@drawable/ic_retweet"
+                        android:background="@android:color/transparent"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_weight="2"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    >
+                    <ImageButton
+                        android:scaleType="centerCrop"
+                        android:id="@+id/ic_like"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:contentDescription="@string/contentDescription"
+                        android:src="@drawable/ic_like"
+                        android:background="@android:color/transparent"/>
+                </LinearLayout>
+
+            </LinearLayout>
         </RelativeLayout>
     </com.example.chinyao.mow.mowdigest.detail.NotifyingScrollView>
 </layout>
