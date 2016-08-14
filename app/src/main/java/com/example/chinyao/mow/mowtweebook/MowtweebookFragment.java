@@ -124,6 +124,13 @@ public class MowtweebookFragment extends Fragment {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
                 // customLoadMoreDataFromApi();
+                if (!client.hasNetwork()) {
+                    Toast.makeText(getContext(),
+                            getResources().getString(R.string.no_internet),
+                            Toast.LENGTH_SHORT)
+                            .show();
+                    return;
+                }
                 if (mode == 1) {
                     doSearch();
                 }
@@ -172,7 +179,7 @@ public class MowtweebookFragment extends Fragment {
     }
 
     public void clearAndrefreshAsync() {
-        tweets.clear(); // avoid crash here if mode == 2
+        tweets.clear();
         notifyAdapter();
         doSearch();
     }
@@ -294,7 +301,7 @@ public class MowtweebookFragment extends Fragment {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         Log.d("postUpdate", response.toString());
-                        tweets.add(MowtweebookTweet.parseJSON(3, response.toString()));
+                        tweets.add(0, MowtweebookTweet.parseJSON(3, response.toString()));
                         notifyAdapter();
                         // TODO: scroll to the end?
                         if (theSwipeRefreshLayout != null) {

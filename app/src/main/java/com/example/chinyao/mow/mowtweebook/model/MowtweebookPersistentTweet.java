@@ -45,6 +45,7 @@ public class MowtweebookPersistentTweet extends Model {
 		List<MowtweebookPersistentTweet> persistentTweets = new Select()
 				.from(MowtweebookPersistentTweet.class)
 				.where("mode=" + mode)
+				.orderBy("id_str DESC")
 				.execute();
 
 		Gson gson = new GsonBuilder().create();

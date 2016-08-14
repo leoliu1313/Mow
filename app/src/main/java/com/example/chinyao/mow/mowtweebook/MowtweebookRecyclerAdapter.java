@@ -126,6 +126,7 @@ public class MowtweebookRecyclerAdapter
                 tmp = tweets.get(position).getCreated_at();
                 if (tmp != null) {
                     tmp = getRelativeTimeAgo(tmp);
+                    tmp = tmp.replaceAll(" seconds ago", "s");
                     tmp = tmp.replaceAll(" minutes ago", "m");
                     tmp = tmp.replaceAll(" hours ago", "h");
                     tmp = tmp.replaceAll(" dats ago", "d");
@@ -236,6 +237,7 @@ public class MowtweebookRecyclerAdapter
         }
     }
 
+    // relative timestamp
     // https://gist.github.com/nesquena/f786232f5ef72f6e10a7
     public String getRelativeTimeAgo(String rawJsonDate) {
         String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
