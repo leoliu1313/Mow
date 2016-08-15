@@ -1,8 +1,6 @@
-package com.example.chinyao.mow.mowtweebook;
+package com.example.chinyao.mow.mowtweebook.utility;
 
 import android.content.Context;
-
-import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestClient;
 
 /*
  * This is the Android application itself and is used to configure various settings

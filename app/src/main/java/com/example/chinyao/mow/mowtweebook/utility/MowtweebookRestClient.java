@@ -31,7 +31,8 @@ public class MowtweebookRestClient extends OAuthBaseClient {
 	public static final String REST_CONSUMER_KEY = "5j2STGNDc0tDKCmfnr0QHkQpQ";       // Change this
 	public static final String REST_CONSUMER_SECRET = "5FeuOKadCVoQUjWOtHEe08hWc5GRdXRgKhSh48bNnHzqQggcnx"; // Change this
 	public static final String REST_CALLBACK_URL = "oauth://cprest"; // Change this (here and in manifest)
-	public static final boolean FAKE_NO_INTERNET = true; // TODO
+
+	public static final boolean FAKE_NO_INTERNET = false; // TODO
 
 	public MowtweebookRestClient(Context context) {
 		super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
@@ -90,10 +91,26 @@ public class MowtweebookRestClient extends OAuthBaseClient {
 		client.get(apiUrl, params, handler);
 	}
 
-	public void postUpdate(String status, JsonHttpResponseHandler handler) {
+	public void postUpdate(String status, String in_reply_to_status_id, JsonHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("statuses/update.json");
 		RequestParams params = new RequestParams();
 		params.put("status", status);
+		if (in_reply_to_status_id != null) {
+			params.put("in_reply_to_status_id", in_reply_to_status_id); // reply
+		}
+		client.post(apiUrl, params, handler);
+	}
+
+	public void postRetweet(String id, JsonHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("statuses/retweet/" + id + ".json");
+		RequestParams params = new RequestParams();
+		client.post(apiUrl, params, handler);
+	}
+
+	public void postLike(String id, JsonHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("favorites/create.json");
+		RequestParams params = new RequestParams();
+		params.put("id", id);
 		client.post(apiUrl, params, handler);
 	}
 }

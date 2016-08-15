@@ -25,7 +25,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowtweebook.fragment.MowtweebookFragment;
-import com.example.chinyao.mow.mowtweebook.MowtweebookRestApplication;
+import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestApplication;
 import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestClient;
 import com.example.chinyao.mow.mowtweebook.adapter.MowtweebookViewPagerAdapter;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookPersistentTweet;

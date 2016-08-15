@@ -134,4 +134,12 @@ public class MowtweebookTweet {
 	public void setMowtweebookProcessed(boolean mowtweebookProcessed) {
 		this.mowtweebookProcessed = mowtweebookProcessed;
 	}
+
+	public void setRetweeted(String retweeted) {
+		this.retweeted = retweeted;
+	}
+
+	public void setFavorited(String favorited) {
+		this.favorited = favorited;
+	}
 }

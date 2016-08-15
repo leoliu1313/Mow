@@ -56,10 +56,10 @@ public class MowtweebookUtility {
 			tmp = theTweet.getCreated_at();
 			if (tmp != null) {
 				tmp = getRelativeTimeAgo(tmp);
-				tmp = tmp.replaceAll(" seconds ago", "s");
-				tmp = tmp.replaceAll(" minutes ago", "m");
-				tmp = tmp.replaceAll(" hours ago", "h");
-				tmp = tmp.replaceAll(" dats ago", "d");
+				tmp = tmp.replaceAll(" second.*$", "s"); // 1 second ago, 2 seconds ago
+				tmp = tmp.replaceAll(" minute.*$", "m"); // 1 minute ago, 2 minutes ago
+				tmp = tmp.replaceAll(" hour.*$", "h"); // 1 hour ago, 2 hours ago
+				tmp = tmp.replaceAll(" days.*$", "d"); // yesterday
 				theTweet.setCreated_at(tmp);
 			}
 

@@ -45,7 +45,7 @@ public class MowtweebookFragment extends Fragment {
     private int mode = 1;
     private List<MowtweebookTweet> tweets = null;
     private MowtweebookRecyclerAdapter tweetsAdapter = null;
-    MowtweebookRestClient client = null;
+    private MowtweebookRestClient client = null;
 
     private boolean lock = false;
     private String query = null;
@@ -125,6 +125,7 @@ public class MowtweebookFragment extends Fragment {
         });
         tweetsAdapter = new MowtweebookRecyclerAdapter(
                 getActivity(),
+                client,
                 tweets
         );
         recyclerView.setAdapter(tweetsAdapter);
@@ -279,7 +280,7 @@ public class MowtweebookFragment extends Fragment {
                 theSwipeRefreshLayout.setRefreshing(true);
             }
             if (query == null) {
-                client.postUpdate(status, new JsonHttpResponseHandler() {
+                client.postUpdate(status, null, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         Log.d("postUpdate", response.toString());
