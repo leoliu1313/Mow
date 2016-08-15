@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -54,6 +55,8 @@ public class MowtweebookActivity extends AppCompatActivity {
     public MowtweebookFragment theUserTimelineFragment;
     private MowtweebookFragment theMentionsTimelineFragment;
     private MowtweebookRestClient client;
+    private MenuItem miActionProgressItem;
+    private MenuItem searchItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +148,7 @@ public class MowtweebookActivity extends AppCompatActivity {
                                     @Override
                                     public void onInput(@NonNull MaterialDialog dialog,
                                                         CharSequence input) {
+                                        showProgressBar();
                                         client.postUpdate(input.toString(), null, new JsonHttpResponseHandler() {
                                             @Override
                                             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -155,11 +159,13 @@ public class MowtweebookActivity extends AppCompatActivity {
                                                 theUserTimelineFragment.tweets.add(1, // profile is index 0
                                                         MowtweebookTweet.parseJSON(3, response.toString()));
                                                 theUserTimelineFragment.notifyAdapter();
+                                                hideProgressBar();
                                             }
 
                                             @Override
                                             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                                                 Log.d("postUpdate", errorResponse.toString());
+                                                hideProgressBar();
                                             }
                                         });
                                     }
@@ -178,7 +184,7 @@ public class MowtweebookActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.mowdigest_menu, menu);
 
-        MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchItem = menu.findItem(R.id.action_search);
 
         final MenuItem filterItem = menu.findItem(R.id.action_filter);
         filterItem.setVisible(false);
@@ -272,5 +278,28 @@ public class MowtweebookActivity extends AppCompatActivity {
         );
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    // http://guides.codepath.com/android/Handling-ProgressBars#progress-within-actionbar
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // Store instance of the menu item containing progress
+        miActionProgressItem = menu.findItem(R.id.miActionProgress);
+        // Extract the action-view from the menu item
+        ProgressBar v =  (ProgressBar) MenuItemCompat.getActionView(miActionProgressItem);
+        // Return to finish
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    public void showProgressBar() {
+        // Show progress item
+        searchItem.setVisible(false);
+        miActionProgressItem.setVisible(true);
+    }
+
+    public void hideProgressBar() {
+        // Hide progress item
+        miActionProgressItem.setVisible(false);
+        searchItem.setVisible(true);
     }
 }

@@ -10,4 +10,11 @@
         android:title="Filter"
         android:icon="@drawable/ic_action_filter"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/miActionProgress"
+        android:title="Loading..."
+        android:visible="false"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        app:actionLayout="@layout/mowtweebook_action_view_progress" />
 </menu>

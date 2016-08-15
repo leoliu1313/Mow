@@ -23,6 +23,7 @@ import com.example.chinyao.mow.mowtweebook.model.MowtweebookParcelWrap;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookTweet;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookUser;
 import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestClient;
+import com.example.chinyao.mow.mowtweebook.utility.MowtweebookUtility;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONObject;
@@ -232,6 +233,7 @@ public class MowtweebookRecyclerAdapter
         holder1.card_id.setText(theTweet.getUser().getScreen_name());
         holder1.card_published_date.setText(theTweet.getCreated_at());
         holder1.card_body.setText(theTweet.getText());
+        MowtweebookUtility.createClilckableStyledSpans(theActivity, holder1.card_body);
         holder1.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
