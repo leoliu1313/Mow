@@ -46,8 +46,8 @@ public class MowtweebookFragment extends Fragment {
     public List<MowtweebookTweet> tweets = null;
     public MowtweebookRecyclerAdapter tweetsAdapter = null;
     public MowtweebookActivity theActivity = null;
+    public int mode = 1;
 
-    private int mode = 1;
     private MowtweebookRestClient client = null;
 
     private boolean lock = false;
@@ -124,8 +124,8 @@ public class MowtweebookFragment extends Fragment {
                 if (mode == 1) {
                     doSearch();
                 }
-                // TODO: support mode == 2
-                // TODO: support mode == 3
+                // TODO mode == 2
+                // TODO mode == 3
             }
         });
         tweetsAdapter = new MowtweebookRecyclerAdapter(
@@ -322,6 +322,32 @@ public class MowtweebookFragment extends Fragment {
                     @Override
                     public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
                         Log.d("getMentionsTimeline", errorResponse.toString());
+                        if (theSwipeRefreshLayout != null) {
+                            theSwipeRefreshLayout.setRefreshing(false);
+                        }
+                        lock = false;
+                    }
+                });
+            }
+            else if (mode == 4) {
+                long max_id = -1;
+                if (tweets.size() > 0) {
+                    max_id = Long.parseLong(tweets.get(tweets.size() - 1).getId_str());
+                }
+                Log.d("getSearchTweets", "max_id = " + max_id);
+                client.getSearchTweets(max_id, theQuery, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        Log.d("getSearchTweets", response.toString());
+                        if (theSwipeRefreshLayout != null) {
+                            theSwipeRefreshLayout.setRefreshing(false);
+                        }
+                        lock = false;
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        Log.d("getSearchTweets", errorResponse.toString());
                         if (theSwipeRefreshLayout != null) {
                             theSwipeRefreshLayout.setRefreshing(false);
                         }

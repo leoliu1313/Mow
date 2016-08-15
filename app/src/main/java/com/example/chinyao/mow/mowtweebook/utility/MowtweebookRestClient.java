@@ -105,6 +105,18 @@ public class MowtweebookRestClient extends OAuthBaseClient {
 		client.get(apiUrl, params, handler);
 	}
 
+	public void getSearchTweets(long max_id, String q, JsonHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("search/tweets.json");
+		RequestParams params = new RequestParams();
+		params.put("count", 25);
+		if (max_id > 0) {
+			params.put("max_id", max_id);
+		}
+		params.put("q", q);
+		params.put("result_type", "popular");
+		client.get(apiUrl, params, handler);
+	}
+
 	public void postUpdate(String status, String in_reply_to_status_id, JsonHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("statuses/update.json");
 		RequestParams params = new RequestParams();

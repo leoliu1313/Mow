@@ -194,7 +194,9 @@ public class MowtweebookActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                theUserTimelineFragment.doSearch(query);
+                viewPager.setCurrentItem(0);
+                theHomeTimelineFragment.mode = 4;
+                theHomeTimelineFragment.clearAndrefreshAsync(query);
 
                 // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
                 // see https://code.google.com/p/android/issues/detail?id=24599
