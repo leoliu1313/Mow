@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -19,6 +20,7 @@ import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowdigest.detail.YahooParallaxActivity;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookParcelWrap;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookTweet;
+import com.example.chinyao.mow.mowtweebook.model.MowtweebookUser;
 import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -38,7 +40,7 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
  * Created by chinyao on 7/29/2016.
  */
 public class MowtweebookRecyclerAdapter
-        extends RecyclerView.Adapter<MowtweebookRecyclerAdapter.ViewHolder> {
+        extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
     MowtweebookRestClient client;
@@ -97,7 +99,7 @@ public class MowtweebookRecyclerAdapter
     }
 
     @Override
-    public MowtweebookRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View theView = null;
         // Heterogenous-Layouts-inside-RecyclerView
@@ -110,47 +112,100 @@ public class MowtweebookRecyclerAdapter
         }
         else if (viewType == 2) {
             theView = inflater.inflate(R.layout.mowtweebook_profile_view, parent, false);
+            return new ViewHolder2(theView);
         }
         // Log.d("onCreateViewHolder", "viewType = " + viewType);
-        return new ViewHolder(theView, viewType);
+        return new ViewHolder1(theView);
     }
 
     @Override
-    public void onBindViewHolder(final MowtweebookRecyclerAdapter.ViewHolder holder, final int position) {
-        MowtweebookTweet theTweet = tweets.get(position);
-        String image = theTweet.getMowtweebookImageUrl();
-        StaggeredGridLayoutManager.LayoutParams layoutParams =
-                (StaggeredGridLayoutManager.LayoutParams) holder.view.getLayoutParams();
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        StaggeredGridLayoutManager.LayoutParams layoutParams;
         // Heterogenous-Layouts-inside-RecyclerView
-        if (holder.getItemViewType() == 0) {
-            layoutParams.setFullSpan(false);
+        switch (holder.getItemViewType()) {
+            case 2:
+                ViewHolder2 holder2 = (ViewHolder2) holder;
+                layoutParams = (StaggeredGridLayoutManager.LayoutParams) holder2.view.getLayoutParams();
+                layoutParams.setFullSpan(true);
+                setupHolder2(holder2);
+                break;
+            case 0:
+            case 1:
+            default:
+                final ViewHolder1 holder1 = (ViewHolder1) holder;
+                layoutParams = (StaggeredGridLayoutManager.LayoutParams) holder1.view.getLayoutParams();
+                layoutParams.setFullSpan(false);
+                setupHolder1(holder1, position);
+                break;
         }
-        else if (holder.getItemViewType() == 1) {
-            layoutParams.setFullSpan(true);
-        }
-        else if (holder.getItemViewType() == 2) {
-            layoutParams.setFullSpan(true);
-            return;
-        }
-        if (image == null) {
-            // holder.card_image.setImageResource(android.R.color.transparent);
-            holder.card_image.setImageResource(0);
-            holder.card_image.setVisibility(View.GONE);
+    }
+
+    @Override
+    public int getItemCount() {
+        if (tweets != null) {
+            return tweets.size();
         }
         else {
-            holder.card_image.setVisibility(View.INVISIBLE);
+            return 0;
+        }
+    }
+
+    public void setupHolder2(ViewHolder2 holder2) {
+        if (tweets.size() == 0) {
+            // this is not expected
+            holder2.wrapper.setVisibility(View.GONE);
+            return;
+        }
+
+        holder2.wrapper.setVisibility(View.VISIBLE); // in case View.GONE
+        MowtweebookUser theUser = tweets.get(1).getUser();
+
+        Glide.with(context)
+                .load(theUser.getProfile_banner_url())
+                .centerCrop()
+                .placeholder(R.drawable.mediumthreebytwo440)
+                .error(R.drawable.mediumthreebytwo440)
+                .into(holder2.banner);
+
+        Glide.with(context)
+                .load(theUser.getProfile_image_url())
+                .bitmapTransform(new RoundedCornersTransformation(
+                        context, 5, 0,
+                        RoundedCornersTransformation.CornerType.ALL))
+                .placeholder(R.drawable.profile_image)
+                .error(R.drawable.profile_image)
+                .into(holder2.profile);
+
+        holder2.name.setText(theUser.getName());
+        holder2.screen.setText(theUser.getScreen_name());
+        holder2.description.setText(theUser.getDescription());
+        holder2.following_count.setText(theUser.getFriends_count());
+        holder2.follower_count.setText(theUser.getFollowers_count());
+        holder2.tweet_count.setText(theUser.getStatuses_count());
+    }
+
+    public void setupHolder1(final ViewHolder1 holder1, final int position) {
+        MowtweebookTweet theTweet = tweets.get(position);
+        String image = theTweet.getMowtweebookImageUrl();
+        if (image == null) {
+            // holder.card_image.setImageResource(android.R.color.transparent);
+            holder1.card_image.setImageResource(0);
+            holder1.card_image.setVisibility(View.GONE);
+        }
+        else {
+            holder1.card_image.setVisibility(View.INVISIBLE);
             Glide.with(context)
                     .load(image)
                     // TODO: override doesn't work correctly
                     .override(
                             theTweet.getEntities().getMedia().get(0).getSizes().getLarge().getW(),
                             theTweet.getEntities().getMedia().get(0).getSizes().getLarge().getH()
-                            )
+                    )
                     .centerCrop()
                     .placeholder(R.drawable.square320)
                     .error(R.drawable.square320)
-                    .into(holder.card_image);
-            holder.card_image.setVisibility(View.VISIBLE);
+                    .into(holder1.card_image);
+            holder1.card_image.setVisibility(View.VISIBLE);
         }
         Glide.with(context)
                 .load(theTweet.getUser().getProfile_image_url())
@@ -159,13 +214,13 @@ public class MowtweebookRecyclerAdapter
                         RoundedCornersTransformation.CornerType.ALL))
                 .placeholder(R.drawable.profile_image)
                 .error(R.drawable.profile_image)
-                .into(holder.card_profile_image);
-        holder.card_image.setVisibility(View.VISIBLE);
-        holder.card_name.setText(theTweet.getUser().getName());
-        holder.card_id.setText(theTweet.getUser().getScreen_name());
-        holder.card_published_date.setText(theTweet.getCreated_at());
-        holder.card_body.setText(theTweet.getText());
-        holder.view.setOnClickListener(new View.OnClickListener() {
+                .into(holder1.card_profile_image);
+        holder1.card_image.setVisibility(View.VISIBLE);
+        holder1.card_name.setText(theTweet.getUser().getName());
+        holder1.card_id.setText(theTweet.getUser().getScreen_name());
+        holder1.card_published_date.setText(theTweet.getCreated_at());
+        holder1.card_body.setText(theTweet.getText());
+        holder1.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Toast.makeText(context, "Clicked Position = " + position, Toast.LENGTH_SHORT).show();
@@ -205,7 +260,7 @@ public class MowtweebookRecyclerAdapter
             }
         });
 
-        holder.ic_reply.setOnClickListener(new View.OnClickListener() {
+        holder1.ic_reply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("ic_reply", "onClick");
@@ -218,41 +273,41 @@ public class MowtweebookRecyclerAdapter
                                         "", // hint
                                         tweets.get(position).getUser().getScreen_name() + " ", // prefill
                                         new MaterialDialog.InputCallback() {
-                                    @Override
-                                    public void onInput(@NonNull MaterialDialog dialog,
-                                                        CharSequence input) {
-                                        client.postUpdate(
-                                                input.toString(),
-                                                tweets.get(position).getId_str(),
-                                                new JsonHttpResponseHandler() {
                                             @Override
-                                            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                                                Log.d("postUpdate", response.toString());
-                                                tweets.add(0, MowtweebookTweet.parseJSON(3, response.toString()));
-                                                notifyDataSetChanged();
-                                                // TODO: also show post on the other tab
-                                                // TODO: scroll to the end?
-                                            }
+                                            public void onInput(@NonNull MaterialDialog dialog,
+                                                                CharSequence input) {
+                                                client.postUpdate(
+                                                        input.toString(),
+                                                        tweets.get(position).getId_str(),
+                                                        new JsonHttpResponseHandler() {
+                                                            @Override
+                                                            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                                                                Log.d("postUpdate", response.toString());
+                                                                tweets.add(0, MowtweebookTweet.parseJSON(3, response.toString()));
+                                                                notifyDataSetChanged();
+                                                                // TODO: also show post on the other tab
+                                                                // TODO: scroll to the end?
+                                                            }
 
-                                            @Override
-                                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                                                Log.d("postUpdate", errorResponse.toString());
+                                                            @Override
+                                                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                                                                Log.d("postUpdate", errorResponse.toString());
+                                                            }
+                                                        });
                                             }
-                                        });
-                                    }
-                                }).build();
+                                        }).build();
                 theDialog.getInputEditText().setSingleLine(false);
                 theDialog.show();
             }
         });
 
         if (tweets.get(position).getRetweeted().equals("true")) {
-            holder.ic_retweet.setImageResource(R.drawable.ic_retweeted);
+            holder1.ic_retweet.setImageResource(R.drawable.ic_retweeted);
             // TODO: untweet
         }
         else {
-            holder.ic_retweet.setImageResource(R.drawable.ic_retweet);
-            holder.ic_retweet.setOnClickListener(new View.OnClickListener() {
+            holder1.ic_retweet.setImageResource(R.drawable.ic_retweet);
+            holder1.ic_retweet.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Log.d("ic_retweet", "onClick");
@@ -260,7 +315,7 @@ public class MowtweebookRecyclerAdapter
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                             Log.d("ic_retweet", response.toString());
-                            holder.ic_retweet.setImageResource(R.drawable.ic_retweeted);
+                            holder1.ic_retweet.setImageResource(R.drawable.ic_retweeted);
                             tweets.get(position).setRetweeted("true");
                         }
 
@@ -274,12 +329,12 @@ public class MowtweebookRecyclerAdapter
         }
 
         if (tweets.get(position).getFavorited().equals("true")) {
-            holder.ic_like.setImageResource(R.drawable.ic_liked);
+            holder1.ic_like.setImageResource(R.drawable.ic_liked);
             // TODO: unlike
         }
         else {
-            holder.ic_like.setImageResource(R.drawable.ic_like);
-            holder.ic_like.setOnClickListener(new View.OnClickListener() {
+            holder1.ic_like.setImageResource(R.drawable.ic_like);
+            holder1.ic_like.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Log.d("ic_like", "onClick");
@@ -287,7 +342,7 @@ public class MowtweebookRecyclerAdapter
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                             Log.d("ic_like", response.toString());
-                            holder.ic_like.setImageResource(R.drawable.ic_liked);
+                            holder1.ic_like.setImageResource(R.drawable.ic_liked);
                             tweets.get(position).setFavorited("true");
                         }
 
@@ -301,19 +356,8 @@ public class MowtweebookRecyclerAdapter
         }
     }
 
-    @Override
-    public int getItemCount() {
-        if (tweets != null) {
-            return tweets.size();
-        }
-        else {
-            return 0;
-        }
-    }
-
-    public class ViewHolder
-            extends RecyclerView.ViewHolder
-    {
+    public class ViewHolder1
+            extends RecyclerView.ViewHolder {
         @BindView(R.id.card_profile_image)
         ImageView card_profile_image;
         @BindView(R.id.card_name)
@@ -335,12 +379,40 @@ public class MowtweebookRecyclerAdapter
 
         public final View view;
 
-        public ViewHolder(View itemView, int viewType) {
+        public ViewHolder1(View itemView) {
             super(itemView);
             view = itemView;
-            if (viewType != 2) {
-                ButterKnife.bind(this, itemView);
-            }
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
+    public class ViewHolder2
+            extends RecyclerView.ViewHolder {
+        @BindView(R.id.wrapper)
+        RelativeLayout wrapper;
+        @BindView(R.id.banner)
+        ImageView banner;
+        @BindView(R.id.profile)
+        ImageView profile;
+        @BindView(R.id.name)
+        TextView name;
+        @BindView(R.id.screen)
+        TextView screen;
+        @BindView(R.id.description)
+        TextView description;
+        @BindView(R.id.following_count)
+        TextView following_count;
+        @BindView(R.id.follower_count)
+        TextView follower_count;
+        @BindView(R.id.tweet_count)
+        TextView tweet_count;
+
+        public final View view;
+
+        public ViewHolder2(View itemView) {
+            super(itemView);
+            view = itemView;
+            ButterKnife.bind(this, itemView);
         }
     }
 }

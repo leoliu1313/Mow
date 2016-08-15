@@ -15,8 +15,8 @@ public class MowtweebookUser {
 	String name;
 	String screen_name; // @
 	String description; // tagline
-	Integer friends_count; // following
-	Integer followers_count; // follower
+	String friends_count; // following
+	String followers_count; // follower
 	String statuses_count; // number of tweets
 
 	String location;
@@ -39,11 +39,11 @@ public class MowtweebookUser {
 		return description;
 	}
 
-	public Integer getFollowers_count() {
+	public String getFollowers_count() {
 		return followers_count;
 	}
 
-	public Integer getFriends_count() {
+	public String getFriends_count() {
 		return friends_count;
 	}
 
