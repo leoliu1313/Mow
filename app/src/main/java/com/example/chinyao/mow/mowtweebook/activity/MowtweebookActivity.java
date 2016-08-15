@@ -16,23 +16,19 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.chinyao.mow.R;
+import com.example.chinyao.mow.mowtweebook.adapter.MowtweebookViewPagerAdapter;
 import com.example.chinyao.mow.mowtweebook.fragment.MowtweebookFragment;
+import com.example.chinyao.mow.mowtweebook.model.MowtweebookPersistentTweet;
 import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestApplication;
 import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestClient;
-import com.example.chinyao.mow.mowtweebook.adapter.MowtweebookViewPagerAdapter;
-import com.example.chinyao.mow.mowtweebook.model.MowtweebookPersistentTweet;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.OkHttpClient;
 
 public class MowtweebookActivity extends AppCompatActivity {
     // ButterKnife
@@ -50,13 +46,6 @@ public class MowtweebookActivity extends AppCompatActivity {
 
     private MowtweebookFragment theHomeTimelineFragment;
     private MowtweebookFragment theUserTimelineFragment;
-    private Spinner sort_spinner;
-    private TextView date_range_textview;
-    private CheckBox art_checkbox;
-    private CheckBox style_checkbox;
-    private CheckBox sports_checkbox;
-
-    public static OkHttpClient TheOkHttpClient = null;
     private MowtweebookRestClient client;
 
     @Override

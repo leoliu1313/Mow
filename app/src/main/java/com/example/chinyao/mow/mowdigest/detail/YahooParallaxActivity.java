@@ -61,7 +61,7 @@ public class YahooParallaxActivity extends AppCompatActivity {
             size = theWrap.tweets.size();
         }
         // binding.mPager = (ViewPager) findViewById(R.id.mPager);
-        mPagerAdapter = new SlidePagerAdapter(getSupportFragmentManager(), size);
+        mPagerAdapter = new SlidePagerAdapter(getSupportFragmentManager(), size, binding.mPager);
 
         // Bundle
         if (bundle != null) {

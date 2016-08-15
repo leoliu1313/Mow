@@ -4,8 +4,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookTweet;
+import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestApplication;
+import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestClient;
 
 import java.util.List;
 
@@ -24,10 +27,15 @@ public class SlidePagerAdapter extends FragmentStatePagerAdapter {
     // Parcels
     public List<MowtweebookTweet> tweets;
 
-    public SlidePagerAdapter(FragmentManager fm, int count) {
+    private ViewPager mPager;
+    private MowtweebookRestClient client;
+
+    public SlidePagerAdapter(FragmentManager fm, int count, ViewPager mPager) {
         super(fm);
         TOTAL_PAGE_COUNT = count;
         tweets = null;
+        this.mPager = mPager;
+        client = MowtweebookRestApplication.getRestClient();
     }
 
 
@@ -49,6 +57,10 @@ public class SlidePagerAdapter extends FragmentStatePagerAdapter {
             fragment.first_title = tweets.get(i).getText();
             fragment.first_abstract = "";
         }
+
+        fragment.tweets = tweets;
+        fragment.mPager = mPager;
+        fragment.client = client;
 
         // Arguments with Bundle
         Bundle bundle = new Bundle();
