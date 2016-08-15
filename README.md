@@ -73,7 +73,7 @@ The following **bonus** features are implemented:
 
 The following **additional** features are implemented:
 
-* [x] Users see a nice loading screen when app starts
+* [x] Users see loading screen when app starts
 * [x] Users are automatically directed to twitter website for access permission
 * [x] Users can clear offline data
 * [x] Users can scroll left/right to see other tweet detail views

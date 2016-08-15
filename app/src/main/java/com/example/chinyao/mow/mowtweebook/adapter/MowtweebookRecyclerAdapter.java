@@ -18,6 +18,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowdigest.detail.YahooParallaxActivity;
+import com.example.chinyao.mow.mowtweebook.activity.MowtweebookActivity;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookParcelWrap;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookTweet;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookUser;
@@ -43,8 +44,9 @@ public class MowtweebookRecyclerAdapter
         extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
-    MowtweebookRestClient client;
+    private MowtweebookRestClient client;
     private List<MowtweebookTweet> tweets;
+    public MowtweebookActivity theActivity;
 
     public MowtweebookRecyclerAdapter(
             Context context,
@@ -179,9 +181,19 @@ public class MowtweebookRecyclerAdapter
         holder2.name.setText(theUser.getName());
         holder2.screen.setText(theUser.getScreen_name());
         holder2.description.setText(theUser.getDescription());
-        holder2.following_count.setText(theUser.getFriends_count());
-        holder2.follower_count.setText(theUser.getFollowers_count());
-        holder2.tweet_count.setText(theUser.getStatuses_count());
+        holder2.following_count.setText(convertCount(theUser.getFriends_count()));
+        holder2.follower_count.setText(convertCount(theUser.getFollowers_count()));
+        holder2.tweet_count.setText(convertCount(theUser.getStatuses_count()));
+    }
+
+    private String convertCount(String input) {
+        if (input.length() > 6) {
+            return input.substring(0, input.length() - 6) + "M";
+        }
+        if (input.length() > 3) {
+            return input.substring(0, input.length() - 3) + "K";
+        }
+        return input;
     }
 
     public void setupHolder1(final ViewHolder1 holder1, final int position) {
@@ -354,6 +366,15 @@ public class MowtweebookRecyclerAdapter
                 }
             });
         }
+
+        holder1.card_profile_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("card_profile_image", "onClick");
+                theActivity.viewPager.setCurrentItem(1);
+                theActivity.theUserTimelineFragment.clearAndrefreshAsync(tweets.get(position).getUser().getId_str());
+            }
+        });
     }
 
     public class ViewHolder1

@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowdigest.EndlessRecyclerViewScrollListener;
+import com.example.chinyao.mow.mowtweebook.activity.MowtweebookActivity;
 import com.example.chinyao.mow.mowtweebook.adapter.MowtweebookRecyclerAdapter;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookPersistentTweet;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookTweet;
@@ -43,9 +44,10 @@ public class MowtweebookFragment extends Fragment {
     RecyclerView theRecyclerView;
 
     public List<MowtweebookTweet> tweets = null;
+    public MowtweebookRecyclerAdapter tweetsAdapter = null;
+    public MowtweebookActivity theActivity = null;
 
     private int mode = 1;
-    private MowtweebookRecyclerAdapter tweetsAdapter = null;
     private MowtweebookRestClient client = null;
 
     private boolean lock = false;
@@ -131,6 +133,7 @@ public class MowtweebookFragment extends Fragment {
                 client,
                 tweets
         );
+        tweetsAdapter.theActivity = theActivity;
         theRecyclerView.setAdapter(tweetsAdapter);
         // TODO
         // rotation orientation
@@ -174,153 +177,157 @@ public class MowtweebookFragment extends Fragment {
         doSearch();
     }
 
+    public void clearAndrefreshAsync(String theQuery) {
+        tweets.clear();
+        notifyAdapter();
+        doSearch(theQuery);
+    }
+
     public void doSearch() {
         doSearch(query);
     }
 
     public void doSearch(final String theQuery) {
-        // TODO: theQuery
         if (!lock) {
             lock = true;
             // perform query here
             if (theSwipeRefreshLayout != null) {
                 theSwipeRefreshLayout.setRefreshing(true);
             }
-            if (query == null) {
-                if (!client.hasNetwork()) {
-                    Toast.makeText(getContext(),
-                            getResources().getString(R.string.no_internet),
-                            Toast.LENGTH_SHORT)
-                            .show();
-                    tweets.addAll(MowtweebookPersistentTweet.getAll(mode));
-                    notifyAdapter();
-                    if (theSwipeRefreshLayout != null) {
-                        theSwipeRefreshLayout.setRefreshing(false);
-                    }
-                    lock = false;
-                    return;
+            if (!client.hasNetwork()) {
+                Toast.makeText(getContext(),
+                        getResources().getString(R.string.no_internet),
+                        Toast.LENGTH_SHORT)
+                        .show();
+                tweets.addAll(MowtweebookPersistentTweet.getAll(mode));
+                notifyAdapter();
+                if (theSwipeRefreshLayout != null) {
+                    theSwipeRefreshLayout.setRefreshing(false);
                 }
-                if (mode == 1) {
-                    long max_id = -1;
-                    if (tweets.size() > 0) {
-                        max_id = Long.parseLong(tweets.get(tweets.size() - 1).getId_str());
-                    }
-                    Log.d("getHomeTimeline", "max_id = " + max_id);
-                    client.getHomeTimeline(max_id, new JsonHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                            Log.d("getHomeTimeline", response.toString());
-                            try {
-                                JSONObject theJSONObject;
-                                for (int i = 0; i < response.length(); i++) {
-                                    theJSONObject = response.getJSONObject(i); // JSONException
-                                    tweets.add(MowtweebookTweet.parseJSON(mode, theJSONObject.toString()));
-                                }
-                                notifyAdapter();
-                                // TODO
-                                // query = theQuery;
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                lock = false;
+                return;
+            }
+            if (mode == 1) {
+                long max_id = -1;
+                if (tweets.size() > 0) {
+                    max_id = Long.parseLong(tweets.get(tweets.size() - 1).getId_str());
+                }
+                Log.d("getHomeTimeline", "max_id = " + max_id);
+                client.getHomeTimeline(max_id, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                        Log.d("getHomeTimeline", response.toString());
+                        try {
+                            JSONObject theJSONObject;
+                            for (int i = 0; i < response.length(); i++) {
+                                theJSONObject = response.getJSONObject(i); // JSONException
+                                tweets.add(MowtweebookTweet.parseJSON(mode, theJSONObject.toString()));
                             }
-                            if (theSwipeRefreshLayout != null) {
-                                theSwipeRefreshLayout.setRefreshing(false);
-                            }
-                            lock = false;
+                            notifyAdapter();
+                            // TODO
+                            // query = theQuery;
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
+                        if (theSwipeRefreshLayout != null) {
+                            theSwipeRefreshLayout.setRefreshing(false);
+                        }
+                        lock = false;
+                    }
 
-                        @Override
-                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                            Log.d("getHomeTimeline", errorResponse.toString());
-                            if (theSwipeRefreshLayout != null) {
-                                theSwipeRefreshLayout.setRefreshing(false);
-                            }
-                            lock = false;
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                        Log.d("getHomeTimeline", errorResponse.toString());
+                        if (theSwipeRefreshLayout != null) {
+                            theSwipeRefreshLayout.setRefreshing(false);
                         }
-                    });
-                }
-                else if (mode == 2) {
-                    long max_id = -1;
-                    if (tweets.size() > 1) { // profile is index 0
-                        max_id = Long.parseLong(tweets.get(tweets.size() - 1).getId_str());
+                        lock = false;
                     }
-                    client.getUserTimeline(max_id, null,new JsonHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                            Log.d("getUserTimeline", response.toString());
-                            try {
-                                boolean add_profile = false;
-                                if (tweets.size() == 0) {
-                                    add_profile = true;
-                                }
-                                JSONObject theJSONObject;
-                                for (int i = 0; i < response.length(); i++) {
-                                    theJSONObject = response.getJSONObject(i);
-                                    tweets.add(MowtweebookTweet.parseJSON(mode, theJSONObject.toString()));
-                                }
-                                if (add_profile && tweets.size() > 0) {
-                                    // profile is index 0
-                                    tweets.add(0, MowtweebookTweet.profile());
-                                }
-                                notifyAdapter();
-                                // TODO
-                                // query = theQuery;
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            if (theSwipeRefreshLayout != null) {
-                                theSwipeRefreshLayout.setRefreshing(false);
-                            }
-                            lock = false;
-                        }
-
-                        @Override
-                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                            Log.d("getUserTimeline", errorResponse.toString());
-                            if (theSwipeRefreshLayout != null) {
-                                theSwipeRefreshLayout.setRefreshing(false);
-                            }
-                            lock = false;
-                        }
-                    });
+                });
+            }
+            else if (mode == 2) {
+                long max_id = -1;
+                if (tweets.size() > 1) { // profile is index 0
+                    max_id = Long.parseLong(tweets.get(tweets.size() - 1).getId_str());
                 }
-                else if (mode == 3) {
-                    long max_id = -1;
-                    if (tweets.size() > 0) {
-                        max_id = Long.parseLong(tweets.get(tweets.size() - 1).getId_str());
+                client.getUserTimeline(max_id, theQuery,new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                        Log.d("getUserTimeline", response.toString());
+                        query = theQuery;
+                        try {
+                            boolean add_profile = false;
+                            if (tweets.size() == 0) {
+                                add_profile = true;
+                            }
+                            JSONObject theJSONObject;
+                            for (int i = 0; i < response.length(); i++) {
+                                theJSONObject = response.getJSONObject(i);
+                                tweets.add(MowtweebookTweet.parseJSON(mode, theJSONObject.toString()));
+                            }
+                            if (add_profile && tweets.size() > 0) {
+                                // profile is index 0
+                                tweets.add(0, MowtweebookTweet.profile());
+                            }
+                            notifyAdapter();
+                            // TODO
+                            // query = theQuery;
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        if (theSwipeRefreshLayout != null) {
+                            theSwipeRefreshLayout.setRefreshing(false);
+                        }
+                        lock = false;
                     }
-                    Log.d("getMentionsTimeline", "max_id = " + max_id);
-                    client.getMentionsTimeline(max_id, new JsonHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                            Log.d("getMentionsTimeline", response.toString());
-                            try {
-                                JSONObject theJSONObject;
-                                for (int i = 0; i < response.length(); i++) {
-                                    theJSONObject = response.getJSONObject(i); // JSONException
-                                    tweets.add(MowtweebookTweet.parseJSON(mode, theJSONObject.toString()));
-                                }
-                                notifyAdapter();
-                                // TODO
-                                // query = theQuery;
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            if (theSwipeRefreshLayout != null) {
-                                theSwipeRefreshLayout.setRefreshing(false);
-                            }
-                            lock = false;
-                        }
 
-                        @Override
-                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                            Log.d("getMentionsTimeline", errorResponse.toString());
-                            if (theSwipeRefreshLayout != null) {
-                                theSwipeRefreshLayout.setRefreshing(false);
-                            }
-                            lock = false;
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                        Log.d("getUserTimeline", errorResponse.toString());
+                        if (theSwipeRefreshLayout != null) {
+                            theSwipeRefreshLayout.setRefreshing(false);
                         }
-                    });
+                        lock = false;
+                    }
+                });
+            }
+            else if (mode == 3) {
+                long max_id = -1;
+                if (tweets.size() > 0) {
+                    max_id = Long.parseLong(tweets.get(tweets.size() - 1).getId_str());
                 }
+                Log.d("getMentionsTimeline", "max_id = " + max_id);
+                client.getMentionsTimeline(max_id, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                        Log.d("getMentionsTimeline", response.toString());
+                        try {
+                            JSONObject theJSONObject;
+                            for (int i = 0; i < response.length(); i++) {
+                                theJSONObject = response.getJSONObject(i); // JSONException
+                                tweets.add(MowtweebookTweet.parseJSON(mode, theJSONObject.toString()));
+                            }
+                            notifyAdapter();
+                            // TODO
+                            // query = theQuery;
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        if (theSwipeRefreshLayout != null) {
+                            theSwipeRefreshLayout.setRefreshing(false);
+                        }
+                        lock = false;
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                        Log.d("getMentionsTimeline", errorResponse.toString());
+                        if (theSwipeRefreshLayout != null) {
+                            theSwipeRefreshLayout.setRefreshing(false);
+                        }
+                        lock = false;
+                    }
+                });
             }
         }
     }

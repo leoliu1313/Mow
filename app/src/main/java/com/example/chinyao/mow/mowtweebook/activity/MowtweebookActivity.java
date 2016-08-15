@@ -46,12 +46,12 @@ public class MowtweebookActivity extends AppCompatActivity {
     @BindView(R.id.m_tab_layout)
     TabLayout tabLayout;
     @BindView(R.id.m_view_pager)
-    ViewPager viewPager;
+    public ViewPager viewPager;
     @BindView(R.id.m_fab)
     FloatingActionButton fab;
 
     private MowtweebookFragment theHomeTimelineFragment;
-    private MowtweebookFragment theUserTimelineFragment;
+    public MowtweebookFragment theUserTimelineFragment;
     private MowtweebookFragment theMentionsTimelineFragment;
     private MowtweebookRestClient client;
 
@@ -103,6 +103,8 @@ public class MowtweebookActivity extends AppCompatActivity {
         theHomeTimelineFragment = (MowtweebookFragment) theAdapter.getRegisteredFragment(0);
         theUserTimelineFragment = (MowtweebookFragment) theAdapter.getRegisteredFragment(1);
         theMentionsTimelineFragment = (MowtweebookFragment) theAdapter.getRegisteredFragment(2);
+
+        theHomeTimelineFragment.theActivity = this;
 
         viewPager.setAdapter(theAdapter);
 
