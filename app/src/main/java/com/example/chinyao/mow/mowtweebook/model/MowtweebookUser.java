@@ -8,18 +8,24 @@ import org.parceler.Parcel;
 
 @Parcel
 public class MowtweebookUser {
-	String profile_image_url;
-	String location;
 	String id_str;
-	String favourites_count;
-	String followers_count;
-	String description;
-	String statuses_count;
-	String friends_count;
-	String screen_name;
+
+	String profile_banner_url;
+	String profile_image_url;
 	String name;
+	String screen_name; // @
+	String description; // tagline
+	Integer friends_count; // following
+	Integer followers_count; // follower
+	String statuses_count; // number of tweets
+
+	String location;
 
 	public MowtweebookUser() {}
+
+	public String getProfile_banner_url() {
+		return profile_banner_url;
+	}
 
 	public String getName() {
 		return name;
@@ -33,15 +39,11 @@ public class MowtweebookUser {
 		return description;
 	}
 
-	public String getFavourites_count() {
-		return favourites_count;
-	}
-
-	public String getFollowers_count() {
+	public Integer getFollowers_count() {
 		return followers_count;
 	}
 
-	public String getFriends_count() {
+	public Integer getFriends_count() {
 		return friends_count;
 	}
 
