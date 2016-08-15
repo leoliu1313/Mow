@@ -82,4 +82,4 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-https://www.youtube.com/watch?v=PywjZqvlj0w
+https://youtu.be/x5qd-KfqGDQ
