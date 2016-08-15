@@ -2,10 +2,8 @@ package com.example.chinyao.mow.mowdigest.detail;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +12,12 @@ import android.view.ViewTreeObserver;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.databinding.MowtweebookDetailFragmentBinding;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookTweet;
 import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestClient;
+import com.example.chinyao.mow.mowtweebook.utility.MowtweebookUtility;
 import com.example.chinyao.mow.mowtweebook.utility.PatternEditableBuilder;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -142,34 +140,7 @@ public class YahooSlidePageFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d("ic_reply", "onClick");
-                MaterialDialog theDialog =
-                        new MaterialDialog.Builder(getContext())
-                                .inputType(InputType.TYPE_CLASS_TEXT)
-                                .content(tweets.get(position).getUser().getScreen_name() + " ")
-                                .positiveText(getContext().getResources().getString(R.string.save_button))
-                                .inputRangeRes(1, 100, R.color.mowColorAccentLight)
-                                .input(null, "", new MaterialDialog.InputCallback() {
-                                    @Override
-                                    public void onInput(@NonNull MaterialDialog dialog,
-                                                        CharSequence input) {
-                                        client.postUpdate(
-                                                input.toString(),
-                                                tweets.get(position).getId_str(),
-                                                new JsonHttpResponseHandler() {
-                                                    @Override
-                                                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                                                        Log.d("postUpdate", response.toString());
-                                                    }
-
-                                                    @Override
-                                                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                                                        Log.d("postUpdate", errorResponse.toString());
-                                                    }
-                                                });
-                                    }
-                                }).build();
-                theDialog.getInputEditText().setSingleLine(false);
-                theDialog.show();
+                MowtweebookUtility.createPostUpdateDialog();
             }
         });
 

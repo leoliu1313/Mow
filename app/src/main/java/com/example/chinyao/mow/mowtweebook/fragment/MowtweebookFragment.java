@@ -14,10 +14,10 @@ import android.widget.Toast;
 
 import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowdigest.EndlessRecyclerViewScrollListener;
-import com.example.chinyao.mow.mowtweebook.activity.MowtweebookActivity;
 import com.example.chinyao.mow.mowtweebook.adapter.MowtweebookRecyclerAdapter;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookPersistentTweet;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookTweet;
+import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestApplication;
 import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -45,7 +45,6 @@ public class MowtweebookFragment extends Fragment {
 
     public List<MowtweebookTweet> tweets = null;
     public MowtweebookRecyclerAdapter tweetsAdapter = null;
-    public MowtweebookActivity theActivity = null;
     public int mode = 1;
 
     private MowtweebookRestClient client = null;
@@ -54,12 +53,11 @@ public class MowtweebookFragment extends Fragment {
     private String query = null;
     private boolean first_time = true;
 
-    public static MowtweebookFragment newInstance(int mode,
-                                                  MowtweebookRestClient client) {
+    public static MowtweebookFragment newInstance(int mode) {
         MowtweebookFragment theFragment = new MowtweebookFragment();
 
         theFragment.mode = mode;
-        theFragment.client = client;
+        theFragment.client = MowtweebookRestApplication.getRestClient();
 
         theFragment.tweets = new ArrayList<>(); // avoid java.lang.NullPointerException at getItemCount()
 
@@ -130,10 +128,8 @@ public class MowtweebookFragment extends Fragment {
         });
         tweetsAdapter = new MowtweebookRecyclerAdapter(
                 getActivity(),
-                client,
                 tweets
         );
-        tweetsAdapter.theActivity = theActivity;
         theRecyclerView.setAdapter(tweetsAdapter);
         // TODO
         // rotation orientation

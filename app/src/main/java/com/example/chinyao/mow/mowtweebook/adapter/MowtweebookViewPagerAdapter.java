@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowtweebook.fragment.MowtweebookFragment;
-import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestClient;
+import com.example.chinyao.mow.mowtweebook.utility.MowtweebookUtility;
 
 import java.util.ArrayList;
 
@@ -24,15 +24,13 @@ public class MowtweebookViewPagerAdapter extends FragmentPagerAdapter {
     // http://guides.codepath.com/android/ViewPager-with-FragmentPagerAdapter
     // https://gist.github.com/nesquena/c715c9b22fb873b1d259
 
-    public MowtweebookViewPagerAdapter(FragmentManager fm,
-                                   Context context,
-                                   MowtweebookRestClient client) {
+    public MowtweebookViewPagerAdapter(FragmentManager fm) {
         super(fm);
-        this.context = context;
+        context = MowtweebookUtility.getTheContext();
         registeredFragments = new ArrayList<>();
-        registeredFragments.add(MowtweebookFragment.newInstance(1, client));
-        registeredFragments.add(MowtweebookFragment.newInstance(2, client));
-        registeredFragments.add(MowtweebookFragment.newInstance(3, client));
+        registeredFragments.add(MowtweebookFragment.newInstance(1));
+        registeredFragments.add(MowtweebookFragment.newInstance(2));
+        registeredFragments.add(MowtweebookFragment.newInstance(3));
     }
 
     @Override

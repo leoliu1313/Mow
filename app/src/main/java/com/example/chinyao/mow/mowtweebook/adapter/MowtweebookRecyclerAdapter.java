@@ -2,10 +2,8 @@ package com.example.chinyao.mow.mowtweebook.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,15 +12,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowdigest.detail.YahooParallaxActivity;
-import com.example.chinyao.mow.mowtweebook.activity.MowtweebookActivity;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookParcelWrap;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookTweet;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookUser;
+import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestApplication;
 import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestClient;
+import com.example.chinyao.mow.mowtweebook.utility.MowtweebookUtility;
 import com.example.chinyao.mow.mowtweebook.utility.PatternEditableBuilder;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -46,20 +44,18 @@ public class MowtweebookRecyclerAdapter
         extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
-    private MowtweebookRestClient client;
     private List<MowtweebookTweet> tweets;
-    public MowtweebookActivity theActivity;
+    private MowtweebookRestClient client;
 
     public MowtweebookRecyclerAdapter(
             Context context,
-            MowtweebookRestClient client,
             List<MowtweebookTweet> tweets
             ) {
         // context.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
         // mBackground = mTypedValue.resourceId;
         this.context = context;
-        this.client = client;
         this.tweets = tweets;
+        client = MowtweebookRestApplication.getRestClient();
     }
 
     // Heterogenous-Layouts-inside-RecyclerView
@@ -71,6 +67,7 @@ public class MowtweebookRecyclerAdapter
                 return 2;
             }
 
+            // TODO
             boolean do_full_span = true;
             if (position - 1 >= 0) {
                 if (tweets.get(position - 1).isMowtweebookFullSpan()) {
@@ -104,22 +101,25 @@ public class MowtweebookRecyclerAdapter
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder theViewHolder = null;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View theView = null;
+        View theView;
         // Heterogenous-Layouts-inside-RecyclerView
         if (viewType == 0) {
             theView = inflater.inflate(R.layout.mowtweebook_card_view, parent, false);
+            theViewHolder = new ViewHolder1(theView);
         }
         else if (viewType == 1) {
             // theView = inflater.inflate(R.layout.mowdigest_card_view_full_span, parent, false);
             theView = inflater.inflate(R.layout.mowtweebook_card_view, parent, false);
+            theViewHolder = new ViewHolder1(theView);
         }
         else if (viewType == 2) {
             theView = inflater.inflate(R.layout.mowtweebook_profile_view, parent, false);
-            return new ViewHolder2(theView);
+            theViewHolder = new ViewHolder2(theView);
         }
         // Log.d("onCreateViewHolder", "viewType = " + viewType);
-        return new ViewHolder1(theView);
+        return theViewHolder;
     }
 
     @Override
@@ -136,7 +136,7 @@ public class MowtweebookRecyclerAdapter
             case 0:
             case 1:
             default:
-                final ViewHolder1 holder1 = (ViewHolder1) holder;
+                ViewHolder1 holder1 = (ViewHolder1) holder;
                 layoutParams = (StaggeredGridLayoutManager.LayoutParams) holder1.view.getLayoutParams();
                 layoutParams.setFullSpan(false);
                 setupHolder1(holder1, position);
@@ -234,8 +234,11 @@ public class MowtweebookRecyclerAdapter
         holder1.card_name.setText(theTweet.getUser().getName());
         holder1.card_id.setText(theTweet.getUser().getScreen_name());
         holder1.card_published_date.setText(theTweet.getCreated_at());
+
+        // card_body
         holder1.card_body.setText(theTweet.getText());
         createClilckableStyledSpans(holder1.card_body);
+
         holder1.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -280,40 +283,7 @@ public class MowtweebookRecyclerAdapter
             @Override
             public void onClick(View v) {
                 Log.d("ic_reply", "onClick");
-                MaterialDialog theDialog =
-                        new MaterialDialog.Builder(context)
-                                .inputType(InputType.TYPE_CLASS_TEXT)
-                                .positiveText(context.getResources().getString(R.string.save_button))
-                                .inputRangeRes(1, 100, R.color.mowColorAccentLight)
-                                .input(
-                                        "", // hint
-                                        tweets.get(position).getUser().getScreen_name() + " ", // prefill
-                                        new MaterialDialog.InputCallback() {
-                                            @Override
-                                            public void onInput(@NonNull MaterialDialog dialog,
-                                                                CharSequence input) {
-                                                client.postUpdate(
-                                                        input.toString(),
-                                                        tweets.get(position).getId_str(),
-                                                        new JsonHttpResponseHandler() {
-                                                            @Override
-                                                            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                                                                Log.d("postUpdate", response.toString());
-                                                                tweets.add(0, MowtweebookTweet.parseJSON(3, response.toString()));
-                                                                notifyDataSetChanged();
-                                                                // TODO: also show post on the other tab
-                                                                // TODO: scroll to the end?
-                                                            }
-
-                                                            @Override
-                                                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                                                                Log.d("postUpdate", errorResponse.toString());
-                                                            }
-                                                        });
-                                            }
-                                        }).build();
-                theDialog.getInputEditText().setSingleLine(false);
-                theDialog.show();
+                MowtweebookUtility.createPostUpdateDialog();
             }
         });
 
@@ -375,8 +345,8 @@ public class MowtweebookRecyclerAdapter
             @Override
             public void onClick(View v) {
                 Log.d("card_profile_image", "onClick");
-                theActivity.viewPager.setCurrentItem(1);
-                theActivity.theUserTimelineFragment.clearAndrefreshAsync(tweets.get(position).getUser().getId_str());
+                // TODO
+                MowtweebookUtility.searchUserTimeline(tweets.get(position).getUser().getId_str());
             }
         });
     }
@@ -393,7 +363,7 @@ public class MowtweebookRecyclerAdapter
                             @Override
                             public void onSpanClicked(String text) {
                                 // TODO
-                                theActivity.theUserTimelineFragment.doSearch(text);
+                                MowtweebookUtility.moreUserTimeline(text);
                             }
                         })
                 .addPattern(Pattern.compile(
@@ -403,7 +373,7 @@ public class MowtweebookRecyclerAdapter
                             @Override
                             public void onSpanClicked(String text) {
                                 // TODO
-                                theActivity.theUserTimelineFragment.doSearch(text);
+                                MowtweebookUtility.moreUserTimeline(text);
                             }
                         })
                 .into(textView);

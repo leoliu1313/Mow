@@ -13,16 +13,21 @@ import android.content.Context;
  */
 public class MowtweebookRestApplication extends com.activeandroid.app.Application {
 	private static Context context;
+	private static MowtweebookRestClient client;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		MowtweebookRestApplication.context = this;
+		context = this;
+		client = null;
 	}
 
 	public static MowtweebookRestClient getRestClient() {
-		return (MowtweebookRestClient) MowtweebookRestClient.getInstance(
-				MowtweebookRestClient.class,
-				MowtweebookRestApplication.context);
+		if (client == null) {
+			client = (MowtweebookRestClient) MowtweebookRestClient.getInstance(
+					MowtweebookRestClient.class,
+					MowtweebookRestApplication.context);
+		}
+		return client;
 	}
 }

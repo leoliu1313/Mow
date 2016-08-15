@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.databinding.MowtweebookDetailActivityBinding;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookParcelWrap;
+import com.example.chinyao.mow.mowtweebook.utility.MowtweebookUtility;
 
 import org.parceler.Parcels;
 
@@ -34,12 +35,12 @@ public class YahooParallaxActivity extends AppCompatActivity {
 
         // Data Binding
         binding = DataBindingUtil.setContentView(this, R.layout.mowtweebook_detail_activity);
+        MowtweebookUtility.setupContext(this);
 
         setupToolbar();
         handleStatusBar();
 
         // Bundle
-
         Bundle bundle = getIntent().getBundleExtra(BundleKey.TYPE_YAHOO);
         String first_image = null;
         String first_title = null;

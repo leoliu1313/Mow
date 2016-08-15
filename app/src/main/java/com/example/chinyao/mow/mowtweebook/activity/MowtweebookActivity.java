@@ -11,13 +11,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -26,16 +23,12 @@ import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowtweebook.adapter.MowtweebookViewPagerAdapter;
 import com.example.chinyao.mow.mowtweebook.fragment.MowtweebookFragment;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookPersistentTweet;
-import com.example.chinyao.mow.mowtweebook.model.MowtweebookTweet;
 import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestApplication;
 import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import org.json.JSONObject;
+import com.example.chinyao.mow.mowtweebook.utility.MowtweebookUtility;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cz.msebera.android.httpclient.Header;
 
 public class MowtweebookActivity extends AppCompatActivity {
     // ButterKnife
@@ -51,9 +44,9 @@ public class MowtweebookActivity extends AppCompatActivity {
     @BindView(R.id.m_fab)
     FloatingActionButton fab;
 
-    private MowtweebookFragment theHomeTimelineFragment;
+    public MowtweebookFragment theHomeTimelineFragment;
     public MowtweebookFragment theUserTimelineFragment;
-    private MowtweebookFragment theMentionsTimelineFragment;
+
     private MowtweebookRestClient client;
     private MenuItem miActionProgressItem;
     private MenuItem searchItem;
@@ -65,13 +58,12 @@ public class MowtweebookActivity extends AppCompatActivity {
 
         // ButterKnife
         ButterKnife.bind(this);
+        MowtweebookUtility.setupContext(this);
 
         setupNetwork();
 
         setSupportActionBar(toolbar);
-
         setupViewPager();
-
         setupFAB();
 
         Toast.makeText(this,
@@ -96,18 +88,28 @@ public class MowtweebookActivity extends AppCompatActivity {
         // 3 tabs so set it to 2
         viewPager.setOffscreenPageLimit(MowtweebookViewPagerAdapter.NUM_ITEMS - 1);
 
+        // http://guides.codepath.com/android/Creating-and-Using-Fragments
+        // http://guides.codepath.com/android/Creating-and-Using-Fragments#communicating-with-fragments
+        // http://guides.codepath.com/android/ViewPager-with-FragmentPagerAdapter
+        // a Fragment must have only a constructor with no arguments.
+        /*
+        Every fragment must have an empty constructor, so it can be instantiated
+        when restoring its activity's state. It is strongly recommended that
+        subclasses do not have other constructors with parameters,
+        since these constructors will not be called when the fragment is re-instantiated;
+        instead, arguments can be supplied by the caller with setArguments(Bundle)
+        and later retrieved by the Fragment with getArguments().
+
+        The important thing to keep in mind is that fragments should not directly communicate
+        with each other and should generally only communicate with their parent activity.
+        Think of the Activity as the controller managing all interaction
+        with each of the fragments contained within.
+         */
         MowtweebookViewPagerAdapter theAdapter =
-                new MowtweebookViewPagerAdapter(
-                        getSupportFragmentManager(),
-                        this, // context
-                        client
-                        );
+                new MowtweebookViewPagerAdapter(getSupportFragmentManager());
 
         theHomeTimelineFragment = (MowtweebookFragment) theAdapter.getRegisteredFragment(0);
         theUserTimelineFragment = (MowtweebookFragment) theAdapter.getRegisteredFragment(1);
-        theMentionsTimelineFragment = (MowtweebookFragment) theAdapter.getRegisteredFragment(2);
-
-        theHomeTimelineFragment.theActivity = this;
 
         viewPager.setAdapter(theAdapter);
 
@@ -139,39 +141,6 @@ public class MowtweebookActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MaterialDialog theDialog =
-                        new MaterialDialog.Builder(MowtweebookActivity.this)
-                                .inputType(InputType.TYPE_CLASS_TEXT)
-                                .positiveText(getString(R.string.save_button))
-                                .inputRangeRes(1, 100, R.color.mowColorAccentLight)
-                                .input(null, "", new MaterialDialog.InputCallback() {
-                                    @Override
-                                    public void onInput(@NonNull MaterialDialog dialog,
-                                                        CharSequence input) {
-                                        showProgressBar();
-                                        client.postUpdate(input.toString(), null, new JsonHttpResponseHandler() {
-                                            @Override
-                                            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                                                Log.d("postUpdate", response.toString());
-                                                theHomeTimelineFragment.tweets.add(0,
-                                                        MowtweebookTweet.parseJSON(3, response.toString()));
-                                                theHomeTimelineFragment.notifyAdapter();
-                                                theUserTimelineFragment.tweets.add(1, // profile is index 0
-                                                        MowtweebookTweet.parseJSON(3, response.toString()));
-                                                theUserTimelineFragment.notifyAdapter();
-                                                hideProgressBar();
-                                            }
-
-                                            @Override
-                                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                                                Log.d("postUpdate", errorResponse.toString());
-                                                hideProgressBar();
-                                            }
-                                        });
-                                    }
-                                }).build();
-                theDialog.getInputEditText().setSingleLine(false);
-                theDialog.show();
             }
         });
     }
@@ -288,7 +257,7 @@ public class MowtweebookActivity extends AppCompatActivity {
         // Store instance of the menu item containing progress
         miActionProgressItem = menu.findItem(R.id.miActionProgress);
         // Extract the action-view from the menu item
-        ProgressBar v =  (ProgressBar) MenuItemCompat.getActionView(miActionProgressItem);
+        // ProgressBar v =  (ProgressBar) MenuItemCompat.getActionView(miActionProgressItem);
         // Return to finish
         return super.onPrepareOptionsMenu(menu);
     }
