@@ -47,7 +47,8 @@ public class MowtweebookRecyclerAdapter
     public MowtweebookRecyclerAdapter(
             Context context,
             MowtweebookRestClient client,
-            List<MowtweebookTweet> tweets) {
+            List<MowtweebookTweet> tweets
+            ) {
         // context.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
         // mBackground = mTypedValue.resourceId;
         this.context = context;
@@ -59,6 +60,11 @@ public class MowtweebookRecyclerAdapter
     @Override
     public int getItemViewType(int position) {
         if (position < tweets.size()) {
+            MowtweebookTweet theTweet = tweets.get(position);
+            if (theTweet.isMowtweebookProfile()) {
+                return 2;
+            }
+
             boolean do_full_span = true;
             if (position - 1 >= 0) {
                 if (tweets.get(position - 1).isMowtweebookFullSpan()) {
@@ -80,7 +86,6 @@ public class MowtweebookRecyclerAdapter
                     do_full_span = false;
                 }
             }
-            MowtweebookTweet theTweet = tweets.get(position);
             if (do_full_span) {
                 if (theTweet.getMowtweebookImageUrl() != null) {
                     theTweet.setMowtweebookFullSpan(true);
@@ -96,16 +101,18 @@ public class MowtweebookRecyclerAdapter
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View theView = null;
         // Heterogenous-Layouts-inside-RecyclerView
-        /*
         if (viewType == 0) {
-            theView = inflater.inflate(R.layout.mowdigest_card_view, parent, false);
+            theView = inflater.inflate(R.layout.mowtweebook_card_view, parent, false);
         }
         else if (viewType == 1) {
-            theView = inflater.inflate(R.layout.mowdigest_card_view_full_span, parent, false);
+            // theView = inflater.inflate(R.layout.mowdigest_card_view_full_span, parent, false);
+            theView = inflater.inflate(R.layout.mowtweebook_card_view, parent, false);
         }
-        */
-        theView = inflater.inflate(R.layout.mowtweebook_card_view, parent, false);
-        return new ViewHolder(theView);
+        else if (viewType == 2) {
+            theView = inflater.inflate(R.layout.mowtweebook_profile_view, parent, false);
+        }
+        // Log.d("onCreateViewHolder", "viewType = " + viewType);
+        return new ViewHolder(theView, viewType);
     }
 
     @Override
@@ -115,11 +122,15 @@ public class MowtweebookRecyclerAdapter
         StaggeredGridLayoutManager.LayoutParams layoutParams =
                 (StaggeredGridLayoutManager.LayoutParams) holder.view.getLayoutParams();
         // Heterogenous-Layouts-inside-RecyclerView
-        if (holder.getItemViewType() == 1) {
+        if (holder.getItemViewType() == 0) {
+            layoutParams.setFullSpan(false);
+        }
+        else if (holder.getItemViewType() == 1) {
             layoutParams.setFullSpan(true);
         }
-        else if (holder.getItemViewType() == 0) {
-            layoutParams.setFullSpan(false);
+        else if (holder.getItemViewType() == 2) {
+            layoutParams.setFullSpan(true);
+            return;
         }
         if (image == null) {
             // holder.card_image.setImageResource(android.R.color.transparent);
@@ -324,10 +335,12 @@ public class MowtweebookRecyclerAdapter
 
         public final View view;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView, int viewType) {
             super(itemView);
             view = itemView;
-            ButterKnife.bind(this, itemView);
+            if (viewType != 2) {
+                ButterKnife.bind(this, itemView);
+            }
         }
     }
 }

@@ -42,8 +42,9 @@ public class MowtweebookFragment extends Fragment {
     @BindView(R.id.mowtube_recycler_view)
     RecyclerView theRecyclerView;
 
+    public List<MowtweebookTweet> tweets = null;
+
     private int mode = 1;
-    private List<MowtweebookTweet> tweets = null;
     private MowtweebookRecyclerAdapter tweetsAdapter = null;
     private MowtweebookRestClient client = null;
 
@@ -66,8 +67,9 @@ public class MowtweebookFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view;
         // Note that this can have more than RecyclerView
-        View view = inflater.inflate(R.layout.mowtube_stream_fragment, container, false);
+        view = inflater.inflate(R.layout.mowtube_stream_fragment, container, false);
 
         // orientation issue
         // http://stackoverflow.com/questions/9727173/support-fragmentpageradapter-holds-reference-to-old-fragments
@@ -91,20 +93,20 @@ public class MowtweebookFragment extends Fragment {
         // http://stackoverflow.com/questions/27002200/butterknife-fragment-rotation-giving-nullpointer
         ButterKnife.bind(this, view);
 
-        setupRecyclerView(theRecyclerView);
+        setupRecyclerView();
 
         setupSwipeRefreshLayout();
     }
 
-    private void setupRecyclerView(RecyclerView recyclerView) {
+    private void setupRecyclerView() {
         // recyclerView.setHasFixedSize(true);
         StaggeredGridLayoutManager layoutManager =
                 new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(layoutManager);
+        theRecyclerView.setLayoutManager(layoutManager);
         // Endless-Scrolling-with-AdapterViews-and-RecyclerView
         // http://guides.codepath.com/android/Endless-Scrolling-with-AdapterViews-and-RecyclerView#troubleshooting
         // https://gist.github.com/nesquena/d09dc68ff07e845cc622
-        recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+        theRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 // Triggered only when new data needs to be appended to the list
@@ -129,7 +131,7 @@ public class MowtweebookFragment extends Fragment {
                 client,
                 tweets
         );
-        recyclerView.setAdapter(tweetsAdapter);
+        theRecyclerView.setAdapter(tweetsAdapter);
         // TODO
         // rotation orientation
         if (first_time) {
@@ -139,7 +141,7 @@ public class MowtweebookFragment extends Fragment {
         }
     }
 
-    void notifyAdapter() {
+    public void notifyAdapter() {
         if (tweetsAdapter != null) {
             tweetsAdapter.notifyDataSetChanged();
         }
@@ -238,7 +240,7 @@ public class MowtweebookFragment extends Fragment {
                 }
                 else if (mode == 2) {
                     long max_id = -1;
-                    if (tweets.size() > 0) {
+                    if (tweets.size() > 1) { // profile is index 0
                         max_id = Long.parseLong(tweets.get(tweets.size() - 1).getId_str());
                     }
                     client.getUserTimeline(max_id, null,new JsonHttpResponseHandler() {
@@ -246,10 +248,18 @@ public class MowtweebookFragment extends Fragment {
                         public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                             Log.d("getUserTimeline", response.toString());
                             try {
+                                boolean add_profile = false;
+                                if (tweets.size() == 0) {
+                                    add_profile = true;
+                                }
                                 JSONObject theJSONObject;
                                 for (int i = 0; i < response.length(); i++) {
                                     theJSONObject = response.getJSONObject(i);
                                     tweets.add(MowtweebookTweet.parseJSON(mode, theJSONObject.toString()));
+                                }
+                                if (add_profile && tweets.size() > 0) {
+                                    // profile is index 0
+                                    tweets.add(0, MowtweebookTweet.profile());
                                 }
                                 notifyAdapter();
                                 // TODO
@@ -311,41 +321,6 @@ public class MowtweebookFragment extends Fragment {
                         }
                     });
                 }
-            }
-        }
-    }
-
-    public void doTweet(String status) {
-        if (!lock) {
-            lock = true;
-            // perform query here
-            if (theSwipeRefreshLayout != null) {
-                theSwipeRefreshLayout.setRefreshing(true);
-            }
-            if (query == null) {
-                client.postUpdate(status, null, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        Log.d("postUpdate", response.toString());
-                        tweets.add(0, MowtweebookTweet.parseJSON(3, response.toString()));
-                        notifyAdapter();
-                        // TODO: also show post on the other tab
-                        // TODO: scroll to the end?
-                        if (theSwipeRefreshLayout != null) {
-                            theSwipeRefreshLayout.setRefreshing(false);
-                        }
-                        lock = false;
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        Log.d("postUpdate", errorResponse.toString());
-                        if (theSwipeRefreshLayout != null) {
-                            theSwipeRefreshLayout.setRefreshing(false);
-                        }
-                        lock = false;
-                    }
-                });
             }
         }
     }

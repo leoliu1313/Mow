@@ -29,9 +29,16 @@ public class MowtweebookTweet {
 	boolean mowtweebookFullSpan;
 	String mowtweebookImageUrl;
 	boolean mowtweebookProcessed;
+	boolean mowtweebookProfile;
 
 	// gson needs this
 	public MowtweebookTweet() {}
+
+	public static MowtweebookTweet profile() {
+		MowtweebookTweet profile = new MowtweebookTweet();
+		profile.mowtweebookProfile = true;
+		return profile;
+	}
 
 	public static MowtweebookTweet parseJSON(int mode, String json_response) {
 		Gson gson = new GsonBuilder().create();
@@ -57,6 +64,10 @@ public class MowtweebookTweet {
 			persistentTweet = new MowtweebookPersistentTweet(mode, theTweet.id_str, json_response);
 			persistentTweet.save();
 		}
+	}
+
+	public boolean isMowtweebookProfile() {
+		return mowtweebookProfile;
 	}
 
 	public String getMowtweebookImageUrl() {

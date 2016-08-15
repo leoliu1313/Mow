@@ -12,6 +12,7 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,11 +25,16 @@ import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowtweebook.adapter.MowtweebookViewPagerAdapter;
 import com.example.chinyao.mow.mowtweebook.fragment.MowtweebookFragment;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookPersistentTweet;
+import com.example.chinyao.mow.mowtweebook.model.MowtweebookTweet;
 import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestApplication;
 import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cz.msebera.android.httpclient.Header;
 
 public class MowtweebookActivity extends AppCompatActivity {
     // ButterKnife
@@ -137,13 +143,23 @@ public class MowtweebookActivity extends AppCompatActivity {
                                     @Override
                                     public void onInput(@NonNull MaterialDialog dialog,
                                                         CharSequence input) {
-                                        // Toast.makeText(MowActivity.this,
-                                        //         input.toString(),
-                                        //         Toast.LENGTH_SHORT).show();
+                                        client.postUpdate(input.toString(), null, new JsonHttpResponseHandler() {
+                                            @Override
+                                            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                                                Log.d("postUpdate", response.toString());
+                                                theHomeTimelineFragment.tweets.add(0,
+                                                        MowtweebookTweet.parseJSON(3, response.toString()));
+                                                theHomeTimelineFragment.notifyAdapter();
+                                                theUserTimelineFragment.tweets.add(1, // profile is index 0
+                                                        MowtweebookTweet.parseJSON(3, response.toString()));
+                                                theUserTimelineFragment.notifyAdapter();
+                                            }
 
-                                        theHomeTimelineFragment.doTweet(input.toString());
-
-                                        // showMaterialDialog(position_tag);
+                                            @Override
+                                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                                                Log.d("postUpdate", errorResponse.toString());
+                                            }
+                                        });
                                     }
                                 }).build();
                 theDialog.getInputEditText().setSingleLine(false);
