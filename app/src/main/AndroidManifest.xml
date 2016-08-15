@@ -19,7 +19,7 @@
             android:value="RestClient.db" />
         <meta-data
             android:name="AA_DB_VERSION"
-            android:value="12" />
+            android:value="13" />
 
         <!-- Mow Tweebook -->
         <activity

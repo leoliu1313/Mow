@@ -339,6 +339,18 @@ public class MowtweebookFragment extends Fragment {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         Log.d("getSearchTweets", response.toString());
+                        try {
+                            JSONArray responseArray = response.getJSONArray("statuses");
+                            JSONObject theJSONObject;
+                            for (int i = 0; i < responseArray.length(); i++) {
+                                theJSONObject = responseArray.getJSONObject(i); // JSONException
+                                tweets.add(MowtweebookTweet.parseJSON(mode, theJSONObject.toString()));
+                            }
+                            notifyAdapter();
+                            query = theQuery;
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         if (theSwipeRefreshLayout != null) {
                             theSwipeRefreshLayout.setRefreshing(false);
                         }

@@ -14,7 +14,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 24
         versionCode 1
-        versionName "16.0731.0849"
+        versionName "16.0814.2222"
         // update this with
         // app/build.gradle ***
         // strings.xml ***
