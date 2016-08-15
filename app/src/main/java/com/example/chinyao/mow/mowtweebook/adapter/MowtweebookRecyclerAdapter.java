@@ -23,7 +23,7 @@ import com.example.chinyao.mow.mowtweebook.model.MowtweebookParcelWrap;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookTweet;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookUser;
 import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestClient;
-import com.example.chinyao.mow.mowtweebook.utility.MowtweebookUtility;
+import com.example.chinyao.mow.mowtweebook.utility.PatternEditableBuilder;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONObject;
@@ -32,6 +32,7 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -182,6 +183,7 @@ public class MowtweebookRecyclerAdapter
         holder2.name.setText(theUser.getName());
         holder2.screen.setText(theUser.getScreen_name());
         holder2.description.setText(theUser.getDescription());
+        createClilckableStyledSpans(holder2.description);
         holder2.following_count.setText(convertCount(theUser.getFriends_count()));
         holder2.follower_count.setText(convertCount(theUser.getFollowers_count()));
         holder2.tweet_count.setText(convertCount(theUser.getStatuses_count()));
@@ -233,7 +235,7 @@ public class MowtweebookRecyclerAdapter
         holder1.card_id.setText(theTweet.getUser().getScreen_name());
         holder1.card_published_date.setText(theTweet.getCreated_at());
         holder1.card_body.setText(theTweet.getText());
-        MowtweebookUtility.createClilckableStyledSpans(theActivity, holder1.card_body);
+        createClilckableStyledSpans(holder1.card_body);
         holder1.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -377,6 +379,34 @@ public class MowtweebookRecyclerAdapter
                 theActivity.theUserTimelineFragment.clearAndrefreshAsync(tweets.get(position).getUser().getId_str());
             }
         });
+    }
+
+    // http://guides.codepath.com/android/Working-with-the-TextView#creating-clickable-styled-spans
+    // TODO: move to MowtweebookUtility
+    public void createClilckableStyledSpans(TextView textView) {
+        // Style clickable spans based on pattern
+        new PatternEditableBuilder()
+                .addPattern(Pattern.compile(
+                        "\\@(\\w+)"),
+                        R.color.mowtweebookColorAccent,
+                        new PatternEditableBuilder.SpannableClickedListener() {
+                            @Override
+                            public void onSpanClicked(String text) {
+                                // TODO
+                                theActivity.theUserTimelineFragment.doSearch(text);
+                            }
+                        })
+                .addPattern(Pattern.compile(
+                        "\\#(\\w+)"),
+                        R.color.mowtweebookColorAccent,
+                        new PatternEditableBuilder.SpannableClickedListener() {
+                            @Override
+                            public void onSpanClicked(String text) {
+                                // TODO
+                                theActivity.theUserTimelineFragment.doSearch(text);
+                            }
+                        })
+                .into(textView);
     }
 
     public class ViewHolder1

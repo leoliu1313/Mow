@@ -1,17 +1,12 @@
 package com.example.chinyao.mow.mowtweebook.utility;
 
-import android.support.v4.content.ContextCompat;
 import android.text.format.DateUtils;
-import android.widget.TextView;
 
-import com.example.chinyao.mow.R;
-import com.example.chinyao.mow.mowtweebook.activity.MowtweebookActivity;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookTweet;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-import java.util.regex.Pattern;
 
 /**
  * Created by chinyao on 8/14/2016.
@@ -91,32 +86,5 @@ public class MowtweebookUtility {
 		}
 
 		return relativeDate;
-	}
-
-	// http://guides.codepath.com/android/Working-with-the-TextView#creating-clickable-styled-spans
-	public static void createClilckableStyledSpans(final MowtweebookActivity theActivity, TextView textView) {
-		// Style clickable spans based on pattern
-		new PatternEditableBuilder()
-				.addPattern(Pattern.compile(
-						"\\@(\\w+)"),
-						ContextCompat.getColor(theActivity, R.color.mowtweebookColorAccent),
-						new PatternEditableBuilder.SpannableClickedListener() {
-							@Override
-							public void onSpanClicked(String text) {
-								// TODO
-								theActivity.theUserTimelineFragment.doSearch(text);
-							}
-						})
-				.addPattern(Pattern.compile(
-						"\\#(\\w+)"),
-						ContextCompat.getColor(theActivity, R.color.mowtweebookColorAccent),
-						new PatternEditableBuilder.SpannableClickedListener() {
-							@Override
-							public void onSpanClicked(String text) {
-								// TODO
-								theActivity.theUserTimelineFragment.doSearch(text);
-							}
-						})
-				.into(textView);
 	}
 }

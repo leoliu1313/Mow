@@ -53,7 +53,7 @@ public class SlidePagerAdapter extends FragmentStatePagerAdapter {
         else {
             // Parcels
             fragment.first_image = tweets.get(i).getMowtweebookImageUrl();
-            fragment.first_section = tweets.get(i).getUser().getScreen_name();
+            fragment.first_section = tweets.get(i).getUser().getName();
             fragment.first_title = tweets.get(i).getText();
             fragment.first_abstract = "";
         }

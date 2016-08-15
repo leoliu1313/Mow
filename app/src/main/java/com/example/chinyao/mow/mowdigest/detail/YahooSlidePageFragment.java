@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
@@ -19,11 +20,13 @@ import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.databinding.MowtweebookDetailFragmentBinding;
 import com.example.chinyao.mow.mowtweebook.model.MowtweebookTweet;
 import com.example.chinyao.mow.mowtweebook.utility.MowtweebookRestClient;
+import com.example.chinyao.mow.mowtweebook.utility.PatternEditableBuilder;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -88,6 +91,7 @@ public class YahooSlidePageFragment extends Fragment {
         }
         binding.section.setText(first_section);
         binding.title.setText(first_title);
+        createClilckableStyledSpans(binding.title);
         binding.contentText.setText(first_abstract);
 
         setOnClickListener();
@@ -103,6 +107,32 @@ public class YahooSlidePageFragment extends Fragment {
         });
 
         return binding.scrollView;
+    }
+
+    // http://guides.codepath.com/android/Working-with-the-TextView#creating-clickable-styled-spans
+    // TODO: move to MowtweebookUtility
+    public void createClilckableStyledSpans(TextView textView) {
+        // Style clickable spans based on pattern
+        new PatternEditableBuilder()
+                .addPattern(Pattern.compile(
+                        "\\@(\\w+)"),
+                        R.color.mowtweebookColorAccent,
+                        new PatternEditableBuilder.SpannableClickedListener() {
+                            @Override
+                            public void onSpanClicked(String text) {
+                                // TODO
+                            }
+                        })
+                .addPattern(Pattern.compile(
+                        "\\#(\\w+)"),
+                        R.color.mowtweebookColorAccent,
+                        new PatternEditableBuilder.SpannableClickedListener() {
+                            @Override
+                            public void onSpanClicked(String text) {
+                                // TODO
+                            }
+                        })
+                .into(textView);
     }
 
     private void setOnClickListener() {
