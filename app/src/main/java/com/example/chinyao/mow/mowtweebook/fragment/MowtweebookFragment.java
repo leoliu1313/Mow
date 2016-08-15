@@ -121,6 +121,7 @@ public class MowtweebookFragment extends Fragment {
                     doSearch();
                 }
                 // TODO: support mode == 2
+                // TODO: support mode == 3
             }
         });
         tweetsAdapter = new MowtweebookRecyclerAdapter(
@@ -236,7 +237,11 @@ public class MowtweebookFragment extends Fragment {
                     });
                 }
                 else if (mode == 2) {
-                    client.getUserTimeline(new JsonHttpResponseHandler() {
+                    long max_id = -1;
+                    if (tweets.size() > 0) {
+                        max_id = Long.parseLong(tweets.get(tweets.size() - 1).getId_str());
+                    }
+                    client.getUserTimeline(max_id, null,new JsonHttpResponseHandler() {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                             Log.d("getUserTimeline", response.toString());
@@ -261,6 +266,44 @@ public class MowtweebookFragment extends Fragment {
                         @Override
                         public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
                             Log.d("getUserTimeline", errorResponse.toString());
+                            if (theSwipeRefreshLayout != null) {
+                                theSwipeRefreshLayout.setRefreshing(false);
+                            }
+                            lock = false;
+                        }
+                    });
+                }
+                else if (mode == 3) {
+                    long max_id = -1;
+                    if (tweets.size() > 0) {
+                        max_id = Long.parseLong(tweets.get(tweets.size() - 1).getId_str());
+                    }
+                    Log.d("getMentionsTimeline", "max_id = " + max_id);
+                    client.getMentionsTimeline(max_id, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                            Log.d("getMentionsTimeline", response.toString());
+                            try {
+                                JSONObject theJSONObject;
+                                for (int i = 0; i < response.length(); i++) {
+                                    theJSONObject = response.getJSONObject(i); // JSONException
+                                    tweets.add(MowtweebookTweet.parseJSON(mode, theJSONObject.toString()));
+                                }
+                                notifyAdapter();
+                                // TODO
+                                // query = theQuery;
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            if (theSwipeRefreshLayout != null) {
+                                theSwipeRefreshLayout.setRefreshing(false);
+                            }
+                            lock = false;
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                            Log.d("getMentionsTimeline", errorResponse.toString());
                             if (theSwipeRefreshLayout != null) {
                                 theSwipeRefreshLayout.setRefreshing(false);
                             }

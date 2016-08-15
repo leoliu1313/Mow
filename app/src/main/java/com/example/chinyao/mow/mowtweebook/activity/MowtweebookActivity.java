@@ -46,6 +46,7 @@ public class MowtweebookActivity extends AppCompatActivity {
 
     private MowtweebookFragment theHomeTimelineFragment;
     private MowtweebookFragment theUserTimelineFragment;
+    private MowtweebookFragment theMentionsTimelineFragment;
     private MowtweebookRestClient client;
 
     @Override
@@ -84,7 +85,7 @@ public class MowtweebookActivity extends AppCompatActivity {
 
     private void setupViewPager() {
         // 3 tabs so set it to 2
-        viewPager.setOffscreenPageLimit(2);
+        viewPager.setOffscreenPageLimit(MowtweebookViewPagerAdapter.NUM_ITEMS - 1);
 
         MowtweebookViewPagerAdapter theAdapter =
                 new MowtweebookViewPagerAdapter(
@@ -95,6 +96,7 @@ public class MowtweebookActivity extends AppCompatActivity {
 
         theHomeTimelineFragment = (MowtweebookFragment) theAdapter.getRegisteredFragment(0);
         theUserTimelineFragment = (MowtweebookFragment) theAdapter.getRegisteredFragment(1);
+        theMentionsTimelineFragment = (MowtweebookFragment) theAdapter.getRegisteredFragment(2);
 
         viewPager.setAdapter(theAdapter);
 

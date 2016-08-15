@@ -201,10 +201,12 @@ public class MowtweebookRecyclerAdapter
                 MaterialDialog theDialog =
                         new MaterialDialog.Builder(context)
                                 .inputType(InputType.TYPE_CLASS_TEXT)
-                                .content(tweets.get(position).getUser().getScreen_name() + " ")
                                 .positiveText(context.getResources().getString(R.string.save_button))
                                 .inputRangeRes(1, 100, R.color.mowColorAccentLight)
-                                .input(null, "", new MaterialDialog.InputCallback() {
+                                .input(
+                                        "", // hint
+                                        tweets.get(position).getUser().getScreen_name() + " ", // prefill
+                                        new MaterialDialog.InputCallback() {
                                     @Override
                                     public void onInput(@NonNull MaterialDialog dialog,
                                                         CharSequence input) {

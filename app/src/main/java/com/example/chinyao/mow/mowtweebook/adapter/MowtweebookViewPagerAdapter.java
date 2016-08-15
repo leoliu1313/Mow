@@ -16,7 +16,7 @@ import java.util.ArrayList;
  */
 public class MowtweebookViewPagerAdapter extends FragmentPagerAdapter {
 
-    private static int NUM_ITEMS = 2;
+    public static int NUM_ITEMS = 3;
 
     private Context context;
 
@@ -32,6 +32,7 @@ public class MowtweebookViewPagerAdapter extends FragmentPagerAdapter {
         registeredFragments = new ArrayList<>();
         registeredFragments.add(MowtweebookFragment.newInstance(1, client));
         registeredFragments.add(MowtweebookFragment.newInstance(2, client));
+        registeredFragments.add(MowtweebookFragment.newInstance(3, client));
     }
 
     @Override
@@ -51,6 +52,8 @@ public class MowtweebookViewPagerAdapter extends FragmentPagerAdapter {
                 return context.getResources().getString(R.string.home);
             case 1:
                 return context.getResources().getString(R.string.profile);
+            case 2:
+                return context.getResources().getString(R.string.mention);
             default:
                 return "";
         }
