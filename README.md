@@ -7,19 +7,19 @@ https://bitbucket.org/timeline_cp/timeline
 ## Movie Tube
 
 https://rawgit.com/leoliu1313/Mow/master/Mowtube.demo.html <br>
-https://rawgit.com/leoliu1313/Mow/master/Mowtube.README.md
+https://github.com/leoliu1313/Mowtube
 
 ## News Digest
 
 https://rawgit.com/leoliu1313/Mow/master/Mowdigest.demo.html <br>
-https://rawgit.com/leoliu1313/Mow/master/Mowdigest.README.md
+https://github.com/leoliu1313/Mowdigest
 
 ## Twitter
 
 https://rawgit.com/leoliu1313/Mow/master/Mowtweebook.demo.html <br>
-https://rawgit.com/leoliu1313/Mow/master/Mowtweebook.README.md
+https://github.com/leoliu1313/Mowtweebook
 
 ## First App
 
 https://rawgit.com/leoliu1313/Mow/master/Mow.demo.gif <br>
-https://rawgit.com/leoliu1313/Mow/master/Mow.README.md
+https://github.com/leoliu1313/Mow
