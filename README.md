@@ -1,25 +1,25 @@
 
-## Timeline
+## Timeline - CodePath September 2016 Demo Day Winner
 
 https://www.youtube.com/watch?v=-rjPn00mADM <br>
 https://bitbucket.org/timeline_cp/timeline
 
-## Mowtube
+## Movie Tube
 
 https://rawgit.com/leoliu1313/Mow/master/Mowtube.demo.html <br>
 https://rawgit.com/leoliu1313/Mow/master/Mowtube.README.md
 
-## Mowdigest
+## News Digest
 
 https://rawgit.com/leoliu1313/Mow/master/Mowdigest.demo.html <br>
 https://rawgit.com/leoliu1313/Mow/master/Mowdigest.README.md
 
-## Mowtweebook
+## Twitter
 
 https://rawgit.com/leoliu1313/Mow/master/Mowtweebook.demo.html <br>
 https://rawgit.com/leoliu1313/Mow/master/Mowtweebook.README.md
 
-## Mow
+## First App
 
 https://rawgit.com/leoliu1313/Mow/master/Mow.demo.gif <br>
 https://rawgit.com/leoliu1313/Mow/master/Mow.README.md
