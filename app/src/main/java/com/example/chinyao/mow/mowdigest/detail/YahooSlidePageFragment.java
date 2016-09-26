@@ -92,7 +92,9 @@ public class YahooSlidePageFragment extends Fragment {
         createClilckableStyledSpans(binding.title);
         binding.contentText.setText(first_abstract);
 
-        setOnClickListener();
+        if (tweets != null) {
+            setOnClickListener();
+        }
 
         ViewTreeObserver obs = binding.coverImg.getViewTreeObserver();
         obs.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {

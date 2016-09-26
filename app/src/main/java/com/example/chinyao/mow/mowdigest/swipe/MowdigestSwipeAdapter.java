@@ -10,17 +10,24 @@ import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.chinyao.mow.R;
 import com.example.chinyao.mow.mowdigest.MowdigestActivity;
-import com.example.chinyao.mow.mowdigest.model.MowdigestPopularResult;
 import com.example.chinyao.mow.mowdigest.model.MowdigestPopularNews;
+import com.example.chinyao.mow.mowdigest.model.MowdigestPopularResult;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cz.msebera.android.httpclient.Header;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -136,6 +143,57 @@ public class MowdigestSwipeAdapter extends BaseAdapter {
         }
     }
 
+    public void loadMoreOld() {
+        if (!lock) {
+            lock = true;
+            final int preOffset = offset;
+            AsyncHttpClient client = new AsyncHttpClient();
+            // Turn off Debug Log
+            // client.setLoggingEnabled(false);
+            String url = MowdigestActivity.BASE_URL + MowdigestActivity.MOST_POPULAR + "/all-sections/1.json";
+            RequestParams params = new RequestParams();
+            params.put("api-key", MowdigestActivity.API_KEY);
+            params.put("offset", offset);
+            offset += 20;
+            Log.d("MowdigestSwipeAdapter", "url " + url);
+            client.get(url, params, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            Log.d("MowdigestSwipeAdapter",
+                                    "statusCode " + statusCode);
+                            String input = response.toString();
+                            Log.d("MowdigestSwipeAdapter", input);
+                            input = input.replaceAll(",\"media\":\"\"", "");
+                            // input = input.replaceAll("\"media\":\"\"", "\"media\":[{\"media-metadata\":[{}]}]");
+                            Log.d("MowdigestSwipeAdapter", input);
+                            MowdigestPopularResult theSearch = MowdigestPopularResult.parseJSON(input);
+                            Log.d("MowdigestSwipeAdapter",
+                                    "theSearch.getResults().size() " + theSearch.getResults().size());
+                            if (theSearch != null) {
+                                Log.d("MowdigestSwipeAdapter",
+                                        "theSearch.getResults().size() " + theSearch.getResults().size());
+                                for (MowdigestPopularNews theNews : theSearch.getResults()) {
+                                    if (theNews.getMedia() != null) {
+                                        theSwipes.add(new MowdigestSwipe(theNews));
+                                    }
+                                }
+                                notifyDataSetChanged();
+                                lock = false;
+                                interfaceListenerEvent.onAsyncFinished(preOffset);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
+                            // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                            lock = false;
+                            interfaceListenerEvent.onAsyncFinished(preOffset);
+                        }
+                    }
+            );
+        }
+    }
+
     void loadMore() {
         if (!lock) {
             lock = true;
@@ -150,9 +208,13 @@ public class MowdigestSwipeAdapter extends BaseAdapter {
             call.enqueue(new Callback<MowdigestPopularResult>() {
                 @Override
                 public void onResponse(Call<MowdigestPopularResult> call, Response<MowdigestPopularResult> response) {
+                    int statusCode = response.code();
                     Log.d("MowdigestSwipeAdapter", "onResponse");
-                    Log.d("MowdigestSwipeAdapter",
-                            "statusCode " + response.code());
+                    Log.d("MowdigestSwipeAdapter", "statusCode " + statusCode);
+                    if (statusCode == 403) {
+                        Toast.makeText(context, "Invalid authentication credentials", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     MowdigestPopularResult theSearch = response.body();
                     if (theSearch != null) {
                         Log.d("MowdigestSwipeAdapter",
@@ -169,6 +231,8 @@ public class MowdigestSwipeAdapter extends BaseAdapter {
                 @Override
                 public void onFailure(Call<MowdigestPopularResult> call, Throwable t) {
                     Log.d("MowdigestSwipeAdapter", "onFailure");
+                    Log.d("MowdigestSwipeAdapter", call.request().toString());
+                    Log.d("MowdigestSwipeAdapter", t.toString());
                     lock = false;
                     interfaceListenerEvent.onAsyncFinished(preOffset);
                 }

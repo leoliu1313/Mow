@@ -65,7 +65,8 @@ public class MowdigestActivity extends AppCompatActivity implements DatePickerDi
     public static OkHttpClient TheOkHttpClient = null;
     public static MowdigestAPIInterface TheAPIInterface = null;
 
-    public static final String API_KEY = "fb2092b45dc44c299ecf5098b9b1209d";
+    // https://developer.nytimes.com/signup
+    public static final String API_KEY = "90a4e884bb6f4ba3b5aa1f17e305658e";
     public static final String BASE_URL = "http://api.nytimes.com";
     public static final String MOST_POPULAR = "/svc/mostpopular/v2/mostviewed"; /* /all-sections/1.json */
     public static final String ARTICALE_SEARCH = "/svc/search/v2/articlesearch.json";
