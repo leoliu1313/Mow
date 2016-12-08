@@ -1,5 +1,5 @@
 
-## Timeline - CodePath September 2016 Demo Day Winner
+## Timeline - Winner of Uber and CodePath Fall 2016 Demo Day Event
 
 https://www.youtube.com/watch?v=-rjPn00mADM <br>
 https://bitbucket.org/timeline_cp/timeline
